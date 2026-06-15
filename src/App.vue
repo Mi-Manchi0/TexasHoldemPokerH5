@@ -3,9 +3,20 @@ import {
   FullscreenExitOutlined,
   FullscreenOutlined,
   SettingOutlined,
-  WechatOutlined,
 } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import type {
+  PostApiAuthV1LoginRequest,
+  PostApiAuthV1LoginResponse,
+} from '@/services/basis/basis'
+import {
+  getLastLoginCredentials,
+  saveAuthSession,
+  saveLastLoginCredentials,
+} from '@/utils/auth'
+import { basisHttp } from '@/utils/http'
 
 type FullscreenDocument = Document & {
   msExitFullscreen?: () => Promise<void> | void
@@ -22,7 +33,13 @@ type FullscreenElement = HTMLElement & {
   webkitRequestFullscreen?: () => Promise<void> | void
 }
 
-const hasAcceptedAgreement = ref(false)
+const router = useRouter()
+const route = useRoute()
+const lastLoginCredentials = getLastLoginCredentials()
+
+const loginAccount = ref(lastLoginCredentials.account)
+const loginPassword = ref(lastLoginCredentials.password)
+const isLoginSubmitting = ref(false)
 const isFullscreen = ref(false)
 const isFullscreenSupported = ref(false)
 const isImmersiveMode = ref(false)
@@ -30,6 +47,68 @@ const isSettingsOpen = ref(false)
 
 const isDisplayExpanded = computed(() => isFullscreen.value || isImmersiveMode.value)
 const fullscreenLabel = computed(() => (isDisplayExpanded.value ? '退出全屏' : '全屏展示'))
+const getSafeRedirect = (redirect: unknown) => {
+  if (typeof redirect !== 'string') return '/'
+  if (!redirect.startsWith('/') || redirect.startsWith('//')) return '/'
+  return redirect
+}
+const loginRedirect = computed(() =>
+  getSafeRedirect(route.query.redirect),
+)
+
+const loginWithPassword = (requestData: PostApiAuthV1LoginRequest) =>
+  basisHttp.post<PostApiAuthV1LoginResponse>(
+    {
+      data: requestData,
+      url: '/api/auth/v1/login',
+    },
+    {
+      withToken: false,
+    },
+  )
+
+const handleLogin = async () => {
+  const phone = loginAccount.value.trim()
+  const password = loginPassword.value
+
+  if (!phone) {
+    message.warning('请输入账号')
+    return
+  }
+
+  if (!password) {
+    message.warning('请输入密码')
+    return
+  }
+
+  if (isLoginSubmitting.value) return
+
+  isLoginSubmitting.value = true
+
+  try {
+    const loginResult = await loginWithPassword({ password, phone })
+
+    try {
+      saveLastLoginCredentials({
+        account: phone,
+        password,
+      })
+
+      if (saveAuthSession(loginResult)) {
+        message.success('登录成功')
+        await router.replace(loginRedirect.value)
+      } else {
+        message.error('登录失败：接口未返回登录凭证')
+      }
+    } catch {
+      message.error('登录状态保存失败，请检查浏览器存储权限')
+    }
+  } catch {
+    // 请求层会展示后端返回的错误提示，这里只负责恢复提交状态。
+  } finally {
+    isLoginSubmitting.value = false
+  }
+}
 
 const syncViewportSize = () => {
   const viewport = window.visualViewport
@@ -170,18 +249,7 @@ onBeforeUnmount(() => {
       <div class="soft-shape soft-shape-blue" aria-hidden="true"></div>
       <div class="line-texture" aria-hidden="true"></div>
 
-      <div class="status-bar" aria-hidden="true">
-        <span>13:51</span>
-        <span class="status-icons">
-          <span class="signal-bars"><span></span><span></span><span></span><span></span></span>
-          <span class="wifi-mark"></span>
-          <span class="battery-mark"><span></span></span>
-        </span>
-      </div>
-
       <nav class="top-nav" aria-label="登录导航">
-        <button class="skip-button" type="button">跳过，看好货</button>
-
         <div class="settings-area">
           <button
             class="settings-button"
@@ -210,31 +278,40 @@ onBeforeUnmount(() => {
       </nav>
 
       <div class="brand-lockup">
-        <h1>SELF<br />SHERO</h1>
-        <p><span>希乔</span><span>|</span><span>做自己的英雄</span></p>
+        <h1>SCALE<br />WULIN</h1>
+        <p><span>無鳞</span><span>德州 | 鸡尾酒</span></p>
       </div>
 
-      <div class="login-actions" aria-label="登录方式">
-        <button class="login-option login-option-wechat" type="button">
-          <WechatOutlined class="login-option-icon" />
-          <span>微信一键登录</span>
-        </button>
+      <div class="login-actions" aria-label="账号密码登录">
+        <input
+          v-model="loginAccount"
+          class="login-option login-input"
+          type="text"
+          placeholder="请输入账号"
+          autocomplete="username"
+          :disabled="isLoginSubmitting"
+          @keyup.enter="handleLogin"
+        />
 
-        <button class="login-option" type="button">手机号一键登录</button>
+        <input
+          v-model="loginPassword"
+          class="login-option login-input"
+          type="password"
+          placeholder="请输入密码"
+          autocomplete="current-password"
+          :disabled="isLoginSubmitting"
+          @keyup.enter="handleLogin"
+        />
       </div>
 
-      <button class="account-login" type="button">账号登录</button>
-
-      <label class="agreement">
-        <input v-model="hasAcceptedAgreement" type="checkbox" />
-        <span class="agreement-box" aria-hidden="true"></span>
-        <span>
-          我已阅读并同意
-          <a href="#" @click.prevent>《用户注册协议》</a>
-          和
-          <a href="#" @click.prevent>《希乔平台隐私政策》</a>
-        </span>
-      </label>
+      <button
+        class="account-login"
+        type="button"
+        :disabled="isLoginSubmitting"
+        @click="handleLogin"
+      >
+        {{ isLoginSubmitting ? '登录中...' : '登录' }}
+      </button>
 
       <div class="home-indicator" aria-hidden="true"></div>
     </section>
