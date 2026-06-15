@@ -1,0 +1,19 @@
+{
+  "name": "Texas Holdem Poker",
+  "short_name": "Holdem",
+  "description": "Texas Holdem Poker H5",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

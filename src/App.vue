@@ -1,0 +1,242 @@
+<script setup lang="ts">
+import {
+  FullscreenExitOutlined,
+  FullscreenOutlined,
+  SettingOutlined,
+  WechatOutlined,
+} from '@ant-design/icons-vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+
+type FullscreenDocument = Document & {
+  msExitFullscreen?: () => Promise<void> | void
+  msFullscreenElement?: Element | null
+  mozCancelFullScreen?: () => Promise<void> | void
+  mozFullScreenElement?: Element | null
+  webkitExitFullscreen?: () => Promise<void> | void
+  webkitFullscreenElement?: Element | null
+}
+
+type FullscreenElement = HTMLElement & {
+  msRequestFullscreen?: () => Promise<void> | void
+  mozRequestFullScreen?: () => Promise<void> | void
+  webkitRequestFullscreen?: () => Promise<void> | void
+}
+
+const hasAcceptedAgreement = ref(false)
+const isFullscreen = ref(false)
+const isFullscreenSupported = ref(false)
+const isImmersiveMode = ref(false)
+const isSettingsOpen = ref(false)
+
+const isDisplayExpanded = computed(() => isFullscreen.value || isImmersiveMode.value)
+const fullscreenLabel = computed(() => (isDisplayExpanded.value ? '退出全屏' : '全屏展示'))
+
+const syncViewportSize = () => {
+  const viewport = window.visualViewport
+  const viewportHeight = viewport?.height ?? window.innerHeight
+  const keyboardOffset = Math.max(0, window.innerHeight - viewportHeight - (viewport?.offsetTop ?? 0))
+  const keyboardLift = keyboardOffset > 0 ? Math.min(24, Math.round(keyboardOffset * 0.08)) : 0
+  const rootStyle = document.documentElement.style
+
+  rootStyle.setProperty('--app-height', `${viewportHeight}px`)
+  rootStyle.setProperty('--keyboard-offset', `${keyboardLift}px`)
+  window.scrollTo(0, 0)
+}
+
+const getFullscreenElement = () => {
+  const fullscreenDocument = document as FullscreenDocument
+
+  return (
+    document.fullscreenElement ||
+    fullscreenDocument.webkitFullscreenElement ||
+    fullscreenDocument.mozFullScreenElement ||
+    fullscreenDocument.msFullscreenElement ||
+    null
+  )
+}
+
+const requestPageFullscreen = () => {
+  const pageElement = document.documentElement as FullscreenElement
+
+  return (
+    pageElement.requestFullscreen?.() ||
+    pageElement.webkitRequestFullscreen?.() ||
+    pageElement.mozRequestFullScreen?.() ||
+    pageElement.msRequestFullscreen?.()
+  )
+}
+
+const exitPageFullscreen = () => {
+  const fullscreenDocument = document as FullscreenDocument
+
+  return (
+    document.exitFullscreen?.() ||
+    fullscreenDocument.webkitExitFullscreen?.() ||
+    fullscreenDocument.mozCancelFullScreen?.() ||
+    fullscreenDocument.msExitFullscreen?.()
+  )
+}
+
+const syncFullscreenSupport = () => {
+  const pageElement = document.documentElement as FullscreenElement
+
+  isFullscreenSupported.value = Boolean(
+    pageElement.requestFullscreen ||
+      pageElement.webkitRequestFullscreen ||
+      pageElement.mozRequestFullScreen ||
+      pageElement.msRequestFullscreen,
+  )
+}
+
+const syncFullscreenState = () => {
+  isFullscreen.value = Boolean(getFullscreenElement())
+
+  if (isFullscreen.value) {
+    isImmersiveMode.value = false
+  }
+}
+
+const toggleFullscreen = async () => {
+  isSettingsOpen.value = false
+
+  if (isImmersiveMode.value) {
+    isImmersiveMode.value = false
+    return
+  }
+
+  if (!isFullscreenSupported.value) {
+    isImmersiveMode.value = true
+    return
+  }
+
+  try {
+    await (getFullscreenElement() ? exitPageFullscreen() : requestPageFullscreen())
+    isImmersiveMode.value = false
+  } catch {
+    if (!getFullscreenElement()) {
+      isImmersiveMode.value = true
+    }
+  } finally {
+    syncFullscreenState()
+  }
+}
+
+const toggleSettings = () => {
+  isSettingsOpen.value = !isSettingsOpen.value
+}
+
+onMounted(() => {
+  syncFullscreenSupport()
+  syncFullscreenState()
+  syncViewportSize()
+  document.addEventListener('fullscreenchange', syncFullscreenState)
+  document.addEventListener('webkitfullscreenchange', syncFullscreenState)
+  document.addEventListener('mozfullscreenchange', syncFullscreenState)
+  document.addEventListener('MSFullscreenChange', syncFullscreenState)
+  window.addEventListener('resize', syncViewportSize)
+  window.addEventListener('orientationchange', syncViewportSize)
+  window.addEventListener('focusin', syncViewportSize)
+  window.addEventListener('focusout', syncViewportSize)
+  window.visualViewport?.addEventListener('resize', syncViewportSize)
+  window.visualViewport?.addEventListener('scroll', syncViewportSize)
+})
+
+watch(isImmersiveMode, (enabled) => {
+  document.body.classList.toggle('is-immersive-locked', enabled)
+})
+
+onBeforeUnmount(() => {
+  isImmersiveMode.value = false
+  document.body.classList.remove('is-immersive-locked')
+  document.documentElement.style.removeProperty('--app-height')
+  document.documentElement.style.removeProperty('--keyboard-offset')
+  document.removeEventListener('fullscreenchange', syncFullscreenState)
+  document.removeEventListener('webkitfullscreenchange', syncFullscreenState)
+  document.removeEventListener('mozfullscreenchange', syncFullscreenState)
+  document.removeEventListener('MSFullscreenChange', syncFullscreenState)
+  window.removeEventListener('resize', syncViewportSize)
+  window.removeEventListener('orientationchange', syncViewportSize)
+  window.removeEventListener('focusin', syncViewportSize)
+  window.removeEventListener('focusout', syncViewportSize)
+  window.visualViewport?.removeEventListener('resize', syncViewportSize)
+  window.visualViewport?.removeEventListener('scroll', syncViewportSize)
+})
+</script>
+
+<template>
+  <main class="login-page" :class="{ 'is-immersive': isImmersiveMode }" aria-label="登录">
+    <section class="login-shell" aria-label="SELF SHERO 登录">
+      <div class="soft-shape soft-shape-pink" aria-hidden="true"></div>
+      <div class="soft-shape soft-shape-blue" aria-hidden="true"></div>
+      <div class="line-texture" aria-hidden="true"></div>
+
+      <div class="status-bar" aria-hidden="true">
+        <span>13:51</span>
+        <span class="status-icons">
+          <span class="signal-bars"><span></span><span></span><span></span><span></span></span>
+          <span class="wifi-mark"></span>
+          <span class="battery-mark"><span></span></span>
+        </span>
+      </div>
+
+      <nav class="top-nav" aria-label="登录导航">
+        <button class="skip-button" type="button">跳过，看好货</button>
+
+        <div class="settings-area">
+          <button
+            class="settings-button"
+            type="button"
+            aria-label="设置"
+            :aria-expanded="isSettingsOpen"
+            @click="toggleSettings"
+          >
+            <SettingOutlined />
+          </button>
+
+          <div v-if="isSettingsOpen" class="settings-menu" role="menu">
+            <button
+              class="settings-menu-item"
+              type="button"
+              role="menuitem"
+              :aria-pressed="isDisplayExpanded"
+              @click="toggleFullscreen"
+            >
+              <FullscreenExitOutlined v-if="isDisplayExpanded" class="settings-menu-icon" />
+              <FullscreenOutlined v-else class="settings-menu-icon" />
+              <span>{{ fullscreenLabel }}</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="brand-lockup">
+        <h1>SELF<br />SHERO</h1>
+        <p><span>希乔</span><span>|</span><span>做自己的英雄</span></p>
+      </div>
+
+      <div class="login-actions" aria-label="登录方式">
+        <button class="login-option login-option-wechat" type="button">
+          <WechatOutlined class="login-option-icon" />
+          <span>微信一键登录</span>
+        </button>
+
+        <button class="login-option" type="button">手机号一键登录</button>
+      </div>
+
+      <button class="account-login" type="button">账号登录</button>
+
+      <label class="agreement">
+        <input v-model="hasAcceptedAgreement" type="checkbox" />
+        <span class="agreement-box" aria-hidden="true"></span>
+        <span>
+          我已阅读并同意
+          <a href="#" @click.prevent>《用户注册协议》</a>
+          和
+          <a href="#" @click.prevent>《希乔平台隐私政策》</a>
+        </span>
+      </label>
+
+      <div class="home-indicator" aria-hidden="true"></div>
+    </section>
+  </main>
+</template>
