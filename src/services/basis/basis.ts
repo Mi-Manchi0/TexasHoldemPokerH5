@@ -13842,4 +13842,1193 @@ export const getApiMerchantV1PrintReceiptTemplateFields = /*#__PURE__*/ (
 
 getApiMerchantV1PrintReceiptTemplateFields.requestConfig = getApiMerchantV1PrintReceiptTemplateFieldsRequestConfig
 
+/**
+ * 接口 创建人员邀请 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites`
+ */
+export interface PostApiStaffV1InvitesRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 姓名
+   */
+  name?: string
+  /**
+   * 手机号
+   */
+  phone?: string
+  /**
+   * 任职输入列表
+   */
+  assignments?: {
+    /**
+     * 门店ID，0表示商户级岗位
+     */
+    storeId?: string
+    /**
+     * 商户级岗位可查看门店ID列表，空表示全门店，仅 store_id=0 时允许传入
+     */
+    storeIds?: string[]
+    /**
+     * 岗位角色ID
+     */
+    roleId?: string
+  }[]
+}
+
+/**
+ * 接口 创建人员邀请 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites`
+ */
+export interface PostApiStaffV1InvitesResponse {
+  /**
+   * 人员ID
+   */
+  staffId?: string
+  /**
+   * 邀请ID
+   */
+  inviteId?: string
+  /**
+   * 邀请明文 token，仅创建时返回
+   */
+  token?: string
+  /**
+   * 过期时间
+   */
+  expiresAt?: string
+}
+
+/**
+ * 接口 创建人员邀请 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites`
+ */
+type PostApiStaffV1InvitesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/invites', undefined, string, string, false>
+>
+
+/**
+ * 接口 创建人员邀请 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites`
+ */
+const postApiStaffV1InvitesRequestConfig: PostApiStaffV1InvitesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/invites',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStaffV1Invites',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 创建人员邀请 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites`
+ */
+export const postApiStaffV1Invites = /*#__PURE__*/ (
+  requestData: PostApiStaffV1InvitesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStaffV1InvitesResponse>(prepare(postApiStaffV1InvitesRequestConfig, requestData), ...args)
+}
+
+postApiStaffV1Invites.requestConfig = postApiStaffV1InvitesRequestConfig
+
+/**
+ * 接口 确认人员邀请 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/accept`
+ */
+export interface PostApiStaffV1InvitesAcceptRequest {
+  /**
+   * 邀请 token
+   */
+  token?: string
+  /**
+   * 手机号
+   */
+  phone?: string
+}
+
+/**
+ * 接口 确认人员邀请 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/accept`
+ */
+export interface PostApiStaffV1InvitesAcceptResponse {}
+
+/**
+ * 接口 确认人员邀请 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/accept`
+ */
+type PostApiStaffV1InvitesAcceptRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/invites/accept', undefined, string, string, false>
+>
+
+/**
+ * 接口 确认人员邀请 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/accept`
+ */
+const postApiStaffV1InvitesAcceptRequestConfig: PostApiStaffV1InvitesAcceptRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/invites/accept',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStaffV1InvitesAccept',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 确认人员邀请 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/accept`
+ */
+export const postApiStaffV1InvitesAccept = /*#__PURE__*/ (
+  requestData: PostApiStaffV1InvitesAcceptRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStaffV1InvitesAcceptResponse>(
+    prepare(postApiStaffV1InvitesAcceptRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiStaffV1InvitesAccept.requestConfig = postApiStaffV1InvitesAcceptRequestConfig
+
+/**
+ * 接口 查询人员邀请 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/get`
+ */
+export interface PostApiStaffV1InvitesGetRequest {
+  /**
+   * 邀请 token
+   */
+  token?: string
+  /**
+   * 手机号
+   */
+  phone?: string
+}
+
+/**
+ * 接口 查询人员邀请 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/get`
+ */
+export interface PostApiStaffV1InvitesGetResponse {
+  /**
+   * 邀请ID
+   */
+  inviteId?: string
+  /**
+   * 人员ID
+   */
+  staffId?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 姓名
+   */
+  name?: string
+  /**
+   * 邀请手机号
+   */
+  phone?: string
+  /**
+   * 过期时间
+   */
+  expiresAt?: string
+  /**
+   * 待确认任职列表
+   */
+  assignments?: {
+    /**
+     * 任职ID
+     */
+    id?: string
+    /**
+     * 人员ID
+     */
+    staffId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID，0表示商户级岗位
+     */
+    storeId?: string
+    /**
+     * 商户级岗位可查看门店ID列表，空表示全门店
+     */
+    storeIds?: string[]
+    /**
+     * 岗位角色ID
+     */
+    roleId?: string
+    /**
+     * 状态：pending=待确认，active=有效，disabled=停用，left=离职
+     */
+    status?: string
+    /**
+     * 任职开始时间
+     */
+    joinedAt?: string
+    /**
+     * 任职结束时间
+     */
+    leftAt?: string
+  }[]
+}
+
+/**
+ * 接口 查询人员邀请 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/get`
+ */
+type PostApiStaffV1InvitesGetRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/invites/get', undefined, string, string, false>
+>
+
+/**
+ * 接口 查询人员邀请 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/get`
+ */
+const postApiStaffV1InvitesGetRequestConfig: PostApiStaffV1InvitesGetRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/invites/get',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStaffV1InvitesGet',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询人员邀请 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/get`
+ */
+export const postApiStaffV1InvitesGet = /*#__PURE__*/ (
+  requestData: PostApiStaffV1InvitesGetRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStaffV1InvitesGetResponse>(prepare(postApiStaffV1InvitesGetRequestConfig, requestData), ...args)
+}
+
+postApiStaffV1InvitesGet.requestConfig = postApiStaffV1InvitesGetRequestConfig
+
+/**
+ * 接口 拒绝人员邀请 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/reject`
+ */
+export interface PostApiStaffV1InvitesRejectRequest {
+  /**
+   * 邀请 token
+   */
+  token?: string
+  /**
+   * 手机号
+   */
+  phone?: string
+}
+
+/**
+ * 接口 拒绝人员邀请 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/reject`
+ */
+export interface PostApiStaffV1InvitesRejectResponse {}
+
+/**
+ * 接口 拒绝人员邀请 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/reject`
+ */
+type PostApiStaffV1InvitesRejectRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/invites/reject', undefined, string, string, false>
+>
+
+/**
+ * 接口 拒绝人员邀请 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/reject`
+ */
+const postApiStaffV1InvitesRejectRequestConfig: PostApiStaffV1InvitesRejectRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/invites/reject',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStaffV1InvitesReject',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 拒绝人员邀请 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/invites/reject`
+ */
+export const postApiStaffV1InvitesReject = /*#__PURE__*/ (
+  requestData: PostApiStaffV1InvitesRejectRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStaffV1InvitesRejectResponse>(
+    prepare(postApiStaffV1InvitesRejectRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiStaffV1InvitesReject.requestConfig = postApiStaffV1InvitesRejectRequestConfig
+
+/**
+ * 接口 查询我的人员范围 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/myScopes`
+ */
+export interface GetApiStaffV1MyScopesRequest {}
+
+/**
+ * 接口 查询我的人员范围 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/myScopes`
+ */
+export interface GetApiStaffV1MyScopesResponse {
+  /**
+   * 按商户聚合的可进入门店树
+   */
+  scopes?: {
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 可进入门店列表
+     */
+    stores?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }[]
+  }[]
+}
+
+/**
+ * 接口 查询我的人员范围 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/myScopes`
+ */
+type GetApiStaffV1MyScopesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/myScopes', undefined, string, string, true>
+>
+
+/**
+ * 接口 查询我的人员范围 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/myScopes`
+ */
+const getApiStaffV1MyScopesRequestConfig: GetApiStaffV1MyScopesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/myScopes',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: true,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiStaffV1MyScopes',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询我的人员范围 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/myScopes`
+ */
+export const getApiStaffV1MyScopes = /*#__PURE__*/ (
+  requestData?: GetApiStaffV1MyScopesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiStaffV1MyScopesResponse>(prepare(getApiStaffV1MyScopesRequestConfig, requestData), ...args)
+}
+
+getApiStaffV1MyScopes.requestConfig = getApiStaffV1MyScopesRequestConfig
+
+/**
+ * 接口 查询人员列表 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff`
+ */
+export interface GetApiStaffV1StaffRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID，0表示商户级岗位
+   */
+  storeId?: string
+  /**
+   * 状态：pending=待确认，active=有效，disabled=停用，left=离开
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询人员列表 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff`
+ */
+export interface GetApiStaffV1StaffResponse {
+  /**
+   * 人员列表
+   */
+  staff?: {
+    /**
+     * 人员ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 绑定账号ID，未绑定为0
+     */
+    accountId?: string
+    /**
+     * 姓名
+     */
+    name?: string
+    /**
+     * 手机号
+     */
+    phone?: string
+    /**
+     * 状态：pending=待确认，active=有效，disabled=停用，left=离开
+     */
+    status?: string
+    /**
+     * 加入时间
+     */
+    joinedAt?: string
+    /**
+     * 离开时间
+     */
+    leftAt?: string
+    /**
+     * 任职列表
+     */
+    assignments?: {
+      /**
+       * 任职ID
+       */
+      id?: string
+      /**
+       * 人员ID
+       */
+      staffId?: string
+      /**
+       * 商户ID
+       */
+      merchantId?: string
+      /**
+       * 门店ID，0表示商户级岗位
+       */
+      storeId?: string
+      /**
+       * 商户级岗位可查看门店ID列表，空表示全门店
+       */
+      storeIds?: string[]
+      /**
+       * 岗位角色ID
+       */
+      roleId?: string
+      /**
+       * 状态：pending=待确认，active=有效，disabled=停用，left=离职
+       */
+      status?: string
+      /**
+       * 任职开始时间
+       */
+      joinedAt?: string
+      /**
+       * 任职结束时间
+       */
+      leftAt?: string
+    }[]
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询人员列表 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff`
+ */
+type GetApiStaffV1StaffRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/staff/v1/staff',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询人员列表 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff`
+ */
+const getApiStaffV1StaffRequestConfig: GetApiStaffV1StaffRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/staff',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'status'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiStaffV1Staff',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询人员列表 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff`
+ */
+export const getApiStaffV1Staff = /*#__PURE__*/ (
+  requestData: GetApiStaffV1StaffRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiStaffV1StaffResponse>(prepare(getApiStaffV1StaffRequestConfig, requestData), ...args)
+}
+
+getApiStaffV1Staff.requestConfig = getApiStaffV1StaffRequestConfig
+
+/**
+ * 接口 增加人员任职 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments`
+ */
+export interface PostApiStaffV1StaffAssignmentsRequest {
+  /**
+   * 人员ID
+   */
+  staffId?: string
+  /**
+   * AssignmentInput 任职输入。
+   */
+  assignment?: {
+    /**
+     * 门店ID，0表示商户级岗位
+     */
+    storeId?: string
+    /**
+     * 商户级岗位可查看门店ID列表，空表示全门店，仅 store_id=0 时允许传入
+     */
+    storeIds?: string[]
+    /**
+     * 岗位角色ID
+     */
+    roleId?: string
+  }
+}
+
+/**
+ * 接口 增加人员任职 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments`
+ */
+export interface PostApiStaffV1StaffAssignmentsResponse {
+  /**
+   * 任职ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 增加人员任职 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments`
+ */
+type PostApiStaffV1StaffAssignmentsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/staff/assignments', undefined, string, string, false>
+>
+
+/**
+ * 接口 增加人员任职 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments`
+ */
+const postApiStaffV1StaffAssignmentsRequestConfig: PostApiStaffV1StaffAssignmentsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/staff/assignments',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStaffV1StaffAssignments',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 增加人员任职 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments`
+ */
+export const postApiStaffV1StaffAssignments = /*#__PURE__*/ (
+  requestData: PostApiStaffV1StaffAssignmentsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStaffV1StaffAssignmentsResponse>(
+    prepare(postApiStaffV1StaffAssignmentsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiStaffV1StaffAssignments.requestConfig = postApiStaffV1StaffAssignmentsRequestConfig
+
+/**
+ * 接口 停用人员任职 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments/disable`
+ */
+export interface PostApiStaffV1StaffAssignmentsDisableRequest {
+  /**
+   * 任职ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 停用人员任职 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments/disable`
+ */
+export interface PostApiStaffV1StaffAssignmentsDisableResponse {}
+
+/**
+ * 接口 停用人员任职 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments/disable`
+ */
+type PostApiStaffV1StaffAssignmentsDisableRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/staff/assignments/disable', undefined, string, string, false>
+>
+
+/**
+ * 接口 停用人员任职 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments/disable`
+ */
+const postApiStaffV1StaffAssignmentsDisableRequestConfig: PostApiStaffV1StaffAssignmentsDisableRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/staff/v1/staff/assignments/disable',
+    method: Method.POST,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.json,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'postApiStaffV1StaffAssignmentsDisable',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 停用人员任职 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/assignments/disable`
+ */
+export const postApiStaffV1StaffAssignmentsDisable = /*#__PURE__*/ (
+  requestData: PostApiStaffV1StaffAssignmentsDisableRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStaffV1StaffAssignmentsDisableResponse>(
+    prepare(postApiStaffV1StaffAssignmentsDisableRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiStaffV1StaffAssignmentsDisable.requestConfig = postApiStaffV1StaffAssignmentsDisableRequestConfig
+
+/**
+ * 接口 人员离开商户 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/leave`
+ */
+export interface PostApiStaffV1StaffLeaveRequest {
+  /**
+   * 人员ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 人员离开商户 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/leave`
+ */
+export interface PostApiStaffV1StaffLeaveResponse {}
+
+/**
+ * 接口 人员离开商户 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/leave`
+ */
+type PostApiStaffV1StaffLeaveRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/staff/leave', undefined, string, string, false>
+>
+
+/**
+ * 接口 人员离开商户 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/leave`
+ */
+const postApiStaffV1StaffLeaveRequestConfig: PostApiStaffV1StaffLeaveRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/staff/leave',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStaffV1StaffLeave',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 人员离开商户 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/leave`
+ */
+export const postApiStaffV1StaffLeave = /*#__PURE__*/ (
+  requestData: PostApiStaffV1StaffLeaveRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStaffV1StaffLeaveResponse>(prepare(postApiStaffV1StaffLeaveRequestConfig, requestData), ...args)
+}
+
+postApiStaffV1StaffLeave.requestConfig = postApiStaffV1StaffLeaveRequestConfig
+
+/**
+ * 接口 更新人员资料 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/profile_put`
+ */
+export interface PutApiStaffV1StaffProfileRequest {
+  /**
+   * 人员ID
+   */
+  id?: string
+  /**
+   * 姓名
+   */
+  name?: string
+  /**
+   * 手机号
+   */
+  phone?: string
+}
+
+/**
+ * 接口 更新人员资料 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/profile_put`
+ */
+export interface PutApiStaffV1StaffProfileResponse {}
+
+/**
+ * 接口 更新人员资料 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/profile_put`
+ */
+type PutApiStaffV1StaffProfileRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/staff/profile_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新人员资料 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/profile_put`
+ */
+const putApiStaffV1StaffProfileRequestConfig: PutApiStaffV1StaffProfileRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/staff/profile_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiStaffV1StaffProfile',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新人员资料 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `POST /api/staff/v1/staff/profile_put`
+ */
+export const putApiStaffV1StaffProfile = /*#__PURE__*/ (
+  requestData: PutApiStaffV1StaffProfileRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiStaffV1StaffProfileResponse>(
+    prepare(putApiStaffV1StaffProfileRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiStaffV1StaffProfile.requestConfig = putApiStaffV1StaffProfileRequestConfig
+
+/**
+ * 接口 查询人员详情 的 **请求类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff/{id}`
+ */
+export interface GetApiStaffV1StaffByIdRequest {
+  /**
+   * 人员ID
+   */
+  id: string
+}
+
+/**
+ * 接口 查询人员详情 的 **返回类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff/{id}`
+ */
+export interface GetApiStaffV1StaffByIdResponse {
+  /**
+   * StaffItem 人员信息。
+   */
+  staff?: {
+    /**
+     * 人员ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 绑定账号ID，未绑定为0
+     */
+    accountId?: string
+    /**
+     * 姓名
+     */
+    name?: string
+    /**
+     * 手机号
+     */
+    phone?: string
+    /**
+     * 状态：pending=待确认，active=有效，disabled=停用，left=离开
+     */
+    status?: string
+    /**
+     * 加入时间
+     */
+    joinedAt?: string
+    /**
+     * 离开时间
+     */
+    leftAt?: string
+    /**
+     * 任职列表
+     */
+    assignments?: {
+      /**
+       * 任职ID
+       */
+      id?: string
+      /**
+       * 人员ID
+       */
+      staffId?: string
+      /**
+       * 商户ID
+       */
+      merchantId?: string
+      /**
+       * 门店ID，0表示商户级岗位
+       */
+      storeId?: string
+      /**
+       * 商户级岗位可查看门店ID列表，空表示全门店
+       */
+      storeIds?: string[]
+      /**
+       * 岗位角色ID
+       */
+      roleId?: string
+      /**
+       * 状态：pending=待确认，active=有效，disabled=停用，left=离职
+       */
+      status?: string
+      /**
+       * 任职开始时间
+       */
+      joinedAt?: string
+      /**
+       * 任职结束时间
+       */
+      leftAt?: string
+    }[]
+  }
+}
+
+/**
+ * 接口 查询人员详情 的 **请求配置的类型**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff/{id}`
+ */
+type GetApiStaffV1StaffByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/staff/v1/staff/{id}', undefined, 'id', string, false>
+>
+
+/**
+ * 接口 查询人员详情 的 **请求配置**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff/{id}`
+ */
+const getApiStaffV1StaffByIdRequestConfig: GetApiStaffV1StaffByIdRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/staff/v1/staff/{id}',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: ['id'],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiStaffV1StaffById',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询人员详情 的 **请求函数**
+ *
+ * @分类 StaffService
+ * @请求头 `GET /api/staff/v1/staff/{id}`
+ */
+export const getApiStaffV1StaffById = /*#__PURE__*/ (
+  requestData: GetApiStaffV1StaffByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiStaffV1StaffByIdResponse>(prepare(getApiStaffV1StaffByIdRequestConfig, requestData), ...args)
+}
+
+getApiStaffV1StaffById.requestConfig = getApiStaffV1StaffByIdRequestConfig
+
 /* prettier-ignore-end */

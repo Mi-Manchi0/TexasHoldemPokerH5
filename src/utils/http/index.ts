@@ -17,6 +17,13 @@ export interface RetryRequest {
   waitTime: number
 }
 
+export interface UploadFileParams {
+  file: Blob | string
+  name?: string
+  filename?: string
+  data?: Record<string, unknown>
+}
+
 export interface HttpRequestOptions {
   joinParamsToUrl?: boolean
   formatDate?: boolean
@@ -34,6 +41,7 @@ export interface HttpRequestOptions {
   responseDataKey?: string | string[]
   headers?: AxiosRequestConfig['headers']
   onServerTimeChange?: (time: number) => void
+  withTenant?: boolean
 }
 
 export interface AxiosTransform {
@@ -63,8 +71,11 @@ export interface CreateAxiosOptions extends AxiosRequestConfig {
 
 interface RuntimeHttpConfig {
   apiUrl?: string | (() => string)
+  merchantStorageKey: string
+  storeStorageKey: string
   tokenStorageKey: string
   tokenExpiredCodes: Array<number | string>
+  userInfoStorageKey: string
   showMessageError: (content: string) => void
   showModalError: (arg: { title: string; content: string }) => void
   onTokenExpired: (code?: number | string, detail?: unknown) => void
@@ -85,12 +96,16 @@ const defaultRequestOptions: HttpRequestOptions = {
   messageKey: 'message',
   responseDataKey: 'data',
   withToken: true,
+  withTenant: true,
 }
 
 const runtimeConfig: RuntimeHttpConfig = {
   apiUrl: () => globalThis.location?.origin ?? '',
+  merchantStorageKey: 'MERCHANT_ID',
+  storeStorageKey: 'STORE_ID',
   tokenStorageKey: 'TOKEN_KEY',
   tokenExpiredCodes: [401, '401', '10001000'],
+  userInfoStorageKey: 'USER_INFO',
   showMessageError: (content) => {
     message.error(content)
   },
@@ -185,6 +200,167 @@ const getToken = () => {
   } catch {
     return null
   }
+}
+
+const isBlobValue = (value: unknown): value is Blob =>
+  typeof Blob !== 'undefined' && value instanceof Blob
+
+const appendFormDataValue = (
+  formData: FormData,
+  key: string,
+  value: unknown,
+) => {
+  if (value === undefined || value === null) return
+
+  if (Array.isArray(value)) {
+    value.forEach((item) => appendFormDataValue(formData, key, item))
+    return
+  }
+
+  if (isBlobValue(value)) {
+    formData.append(key, value)
+    return
+  }
+
+  formData.append(key, String(value))
+}
+
+const createUploadFormData = ({ data, file, filename, name = 'file' }: UploadFileParams) => {
+  if (typeof FormData === 'undefined') {
+    throw new Error('当前环境不支持 FormData')
+  }
+
+  const formData = new FormData()
+
+  Object.entries(data ?? {}).forEach(([key, value]) => {
+    appendFormDataValue(formData, key, value)
+  })
+
+  if (isBlobValue(file) && filename) {
+    formData.append(name, file, filename)
+  } else {
+    formData.append(name, file)
+  }
+
+  return formData
+}
+
+const getStorageItem = (key: string) => {
+  try {
+    return globalThis.localStorage?.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+const getStorageJson = (key: string) => {
+  const value = getStorageItem(key)
+  if (!value) return null
+
+  try {
+    return JSON.parse(value)
+  } catch {
+    return null
+  }
+}
+
+const normalizeContextValue = (value: unknown) => {
+  if (value === undefined || value === null) return undefined
+
+  const normalized = String(value).trim()
+  return normalized ? normalized : undefined
+}
+
+const readFirstValue = (source: unknown, keys: string[]) => {
+  if (!isRecord(source)) return undefined
+
+  for (const key of keys) {
+    const value = normalizeContextValue(source[key])
+    if (value !== undefined) return value
+  }
+
+  return undefined
+}
+
+const readRequestContextValue = (
+  config: InternalAxiosRequestConfig,
+  keys: string[],
+) => {
+  const sources = [config.params, config.data]
+
+  for (const source of sources) {
+    const value = readFirstValue(source, keys)
+    if (value !== undefined) return value
+  }
+
+  return undefined
+}
+
+const readUrlQueryValue = (url: string | undefined, keys: string[]) => {
+  if (!url) return undefined
+
+  const query = url.split('?')[1]?.split('#')[0]
+  if (!query) return undefined
+
+  const searchParams = new URLSearchParams(query)
+
+  for (const key of keys) {
+    const value = normalizeContextValue(searchParams.get(key))
+    if (value !== undefined) return value
+  }
+
+  return undefined
+}
+
+const readUserContextValue = (
+  keys: string[],
+  nestedKey?: 'merchant' | 'store',
+) => {
+  const userInfo = getStorageJson(runtimeConfig.userInfoStorageKey)
+
+  return (
+    readFirstValue(userInfo, keys) ??
+    (nestedKey ? readFirstValue(readByPath(userInfo, nestedKey), ['id']) : undefined)
+  )
+}
+
+const readLocalContextValue = (primaryKey: string, fallbackKeys: string[]) => {
+  const stored = normalizeContextValue(getStorageItem(primaryKey))
+  if (stored !== undefined) return stored
+
+  for (const key of fallbackKeys) {
+    const value = normalizeContextValue(getStorageItem(key))
+    if (value !== undefined) return value
+  }
+
+  return undefined
+}
+
+const getRequestTenantContext = (config: InternalAxiosRequestConfig) => {
+  const merchantKeys = ['merchantId', 'merchant_id']
+  const storeKeys = ['storeId', 'store_id']
+
+  const merchantId =
+    readRequestContextValue(config, merchantKeys) ??
+    readUrlQueryValue(config.url, merchantKeys) ??
+    readUserContextValue(merchantKeys, 'merchant') ??
+    readLocalContextValue(runtimeConfig.merchantStorageKey, [
+      'merchantId',
+      'merchant_id',
+      'CURRENT_MERCHANT_ID',
+    ])
+
+  const storeId =
+    readRequestContextValue(config, storeKeys) ??
+    readUrlQueryValue(config.url, storeKeys) ??
+    readUserContextValue(storeKeys, 'store') ??
+    readLocalContextValue(runtimeConfig.storeStorageKey, [
+      'storeId',
+      'store_id',
+      'CURRENT_STORE_ID',
+    ])
+
+  return { merchantId, storeId }
 }
 
 const getBusinessMessage = (data: unknown, options: HttpRequestOptions) => {
@@ -306,11 +482,25 @@ const defaultTransform: AxiosTransform = {
   },
   requestInterceptors(config) {
     const requestOptions = (config as AxiosConfigWithOptions).requestOptions
+    const skipStoreScope = String(config.headers.get('x-skip-store-scope') ?? '') === '1'
+    config.headers.delete('x-skip-store-scope')
 
     if (requestOptions?.withToken !== false) {
       const token = getToken()
       if (token) {
         config.headers.set('Authorization', `Bearer ${token}`)
+      }
+    }
+
+    if (requestOptions?.withTenant !== false) {
+      const { merchantId, storeId } = getRequestTenantContext(config)
+
+      if (!config.headers.has('x-merchant-id') && merchantId) {
+        config.headers.set('x-merchant-id', merchantId)
+      }
+
+      if (!skipStoreScope && !config.headers.has('x-store-id')) {
+        config.headers.set('x-store-id', storeId ?? '0')
       }
     }
 
@@ -394,6 +584,21 @@ export class HttpClient {
 
   delete<T = unknown>(config: AxiosRequestConfig, options?: HttpRequestOptions) {
     return this.request<T>({ ...config, method: 'DELETE' }, options)
+  }
+
+  uploadFile<T = unknown>(
+    config: AxiosRequestConfig,
+    params: UploadFileParams,
+    options?: HttpRequestOptions,
+  ) {
+    return this.request<T>(
+      {
+        ...config,
+        data: createUploadFormData(params),
+        method: config.method ?? 'POST',
+      },
+      options,
+    )
   }
 
   private setupInterceptors() {

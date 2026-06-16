@@ -48,6 +48,13 @@ const getRequestData = (payload: RequestFunctionParams) => {
   return undefined
 }
 
+const getRequestParams = (payload: RequestFunctionParams) => {
+  if (payload.requestBodyType !== RequestBodyType.query) return undefined
+  if (!payload.data || Object.keys(payload.data).length === 0) return undefined
+
+  return payload.data
+}
+
 const getRequestHeaders = (payload: RequestFunctionParams) => {
   const headers: AxiosRequestConfig['headers'] = {
     ...payload.requestHeaders,
@@ -82,6 +89,7 @@ export const createRequestClient =
       data: getRequestData(payload),
       headers: getRequestHeaders(payload),
       method: payload.method,
+      params: getRequestParams(payload),
       url: payload.path,
     }
 

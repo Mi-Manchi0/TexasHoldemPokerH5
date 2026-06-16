@@ -46,8 +46,12 @@ export const saveAuthSession = (loginResult: PostApiAuthV1LoginResponse) => {
 export const clearAuthSession = () => {
   try {
     const storage = globalThis.localStorage
+    const config = getHttpConfig()
+
     storage.removeItem(getHttpConfig().tokenStorageKey)
     storage.removeItem(userInfoStorageKey)
+    storage.removeItem(config.merchantStorageKey)
+    storage.removeItem(config.storeStorageKey)
   } catch {
     // Ignore storage cleanup failures.
   }

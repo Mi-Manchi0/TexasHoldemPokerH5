@@ -1,6 +1,16 @@
 :root {
   --app-height: 100dvh;
   --keyboard-offset: 0px;
+  --page-edge: clamp(14px, 4.8vw, 22px);
+  --page-edge-tight: clamp(7px, 2.8vw, 12px);
+  --page-gap: clamp(10px, 3.4vw, 16px);
+  --tabbar-space: calc(clamp(76px, 16svh, 96px) + max(10px, env(safe-area-inset-bottom)));
+  --touch-size: clamp(30px, 9.6vw, 42px);
+  --icon-size: clamp(24px, 7.4vw, 32px);
+  --profile-avatar: clamp(88px, 28vw, 116px);
+  --menu-rail-width: clamp(68px, 21vw, 86px);
+  --order-time-column: clamp(38px, 12vw, 48px);
+  --fab-size: clamp(44px, 12vw, 54px);
   font-family:
     'Helvetica Neue', Helvetica, Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', sans-serif;
@@ -14,13 +24,21 @@
 
 * {
   box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 html,
 body,
 #app {
   width: 100%;
-  min-width: 320px;
+  min-width: 0;
   height: var(--app-height);
   min-height: var(--app-height);
   overflow: hidden;
@@ -55,6 +73,8 @@ a:focus-visible {
 }
 
 .login-page {
+  position: fixed;
+  inset: 0;
   width: 100vw;
   height: var(--app-height);
   min-height: var(--app-height);
@@ -66,27 +86,21 @@ a:focus-visible {
 }
 
 .login-page.is-immersive {
-  position: fixed;
-  inset: 0;
   z-index: 1000;
-  background: #ffffff;
 }
 
 .login-shell {
   position: relative;
-  width: 100vw;
-  max-width: 430px;
+  width: 100%;
   height: var(--app-height);
   min-height: var(--app-height);
-  margin: 0 auto;
+  margin: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   padding: max(13px, env(safe-area-inset-top)) clamp(28px, 8vw, 42px)
     max(24px, env(safe-area-inset-bottom));
   overflow: hidden;
   background: #ffffff;
-  transform: translateY(calc(var(--keyboard-offset) * -1));
-  transition: transform 180ms ease;
 }
 
 .soft-shape {
@@ -96,10 +110,10 @@ a:focus-visible {
 }
 
 .soft-shape-pink {
-  top: 72px;
-  left: 48px;
-  width: 178px;
-  height: 380px;
+  top: clamp(64px, 9.5svh, 92px);
+  left: clamp(28px, 11vw, 52px);
+  width: clamp(140px, 45vw, 190px);
+  height: clamp(300px, 48svh, 390px);
   border-radius: 52% 48% 46% 54%;
   background:
     radial-gradient(circle at 46% 10%, rgba(255, 214, 224, 0.58), transparent 42%),
@@ -108,10 +122,10 @@ a:focus-visible {
 }
 
 .soft-shape-blue {
-  top: 142px;
-  right: 48px;
-  width: 136px;
-  height: 320px;
+  top: clamp(118px, 19svh, 156px);
+  right: clamp(26px, 11vw, 52px);
+  width: clamp(112px, 34vw, 150px);
+  height: clamp(260px, 42svh, 340px);
   border-radius: 48% 52% 45% 55%;
   background: linear-gradient(178deg, rgba(204, 243, 250, 0.66), rgba(255, 255, 255, 0.02) 72%);
   opacity: 0.72;
@@ -119,10 +133,10 @@ a:focus-visible {
 
 .line-texture {
   position: absolute;
-  right: 36px;
-  bottom: 82px;
-  width: 210px;
-  height: 330px;
+  right: clamp(24px, 9vw, 40px);
+  bottom: clamp(68px, 12svh, 92px);
+  width: clamp(168px, 54vw, 230px);
+  height: clamp(250px, 42svh, 340px);
   pointer-events: none;
   background: repeating-radial-gradient(
     ellipse at 50% 100%,
@@ -246,8 +260,11 @@ a:focus-visible {
 .login-actions {
   align-self: end;
   display: grid;
-  gap: 12px;
+  gap: clamp(10px, 3vw, 14px);
   margin-bottom: clamp(34px, 6.8vh, 58px);
+  transform: translateY(calc(var(--keyboard-offset) * -1));
+  transition: transform 180ms ease;
+  will-change: transform;
 }
 
 .login-option {
@@ -297,20 +314,23 @@ a:focus-visible {
 .account-login {
   justify-self: center;
   align-self: end;
-  margin-bottom: 26px;
+  margin-bottom: clamp(18px, 4.8svh, 28px);
   padding: 0;
   color: #111111;
   background: transparent;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transform: translateY(calc(var(--keyboard-offset) * -1));
+  transition: transform 180ms ease;
+  will-change: transform;
 }
 
 .home-indicator {
   position: absolute;
   left: 50%;
   bottom: max(9px, env(safe-area-inset-bottom));
-  width: 110px;
+  width: clamp(88px, 28vw, 118px);
   height: 4px;
   border-radius: 999px;
   background: #111111;
@@ -322,8 +342,7 @@ a:focus-visible {
   width: 100vw;
   height: var(--app-height);
   min-height: var(--app-height);
-  max-width: 430px;
-  margin: 0 auto;
+  margin: 0;
   overflow: hidden;
   color: #111111;
   background:
@@ -337,16 +356,16 @@ a:focus-visible {
   height: 100%;
   display: grid;
   align-content: start;
-  gap: 14px;
-  padding: max(24px, env(safe-area-inset-top)) 20px
-    calc(88px + max(16px, env(safe-area-inset-bottom)));
+  gap: var(--page-gap);
+  padding: max(clamp(18px, 5.8vw, 26px), env(safe-area-inset-top)) var(--page-edge)
+    calc(var(--tabbar-space) + var(--page-gap));
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .home-page {
-  gap: 10px;
-  padding-inline: 18px;
+  gap: clamp(9px, 3vw, 13px);
+  padding-inline: var(--page-edge);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 247, 248, 0.82) 60%),
     repeating-linear-gradient(
@@ -360,7 +379,7 @@ a:focus-visible {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
+  gap: clamp(12px, 4vw, 18px);
 }
 
 .page-eyebrow {
@@ -399,15 +418,15 @@ a:focus-visible {
 .home-dashboard {
   display: grid;
   align-content: start;
-  gap: 16px;
+  gap: var(--page-gap);
 }
 
 .overview-panel,
 .placeholder-panel,
 .profile-panel {
   display: grid;
-  gap: 10px;
-  padding: 20px;
+  gap: clamp(8px, 2.8vw, 12px);
+  padding: clamp(16px, 5vw, 22px);
   border: 1px solid rgba(17, 17, 17, 0.06);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.76);
@@ -437,7 +456,7 @@ a:focus-visible {
 .quick-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: clamp(10px, 3.2vw, 14px);
 }
 
 .quick-entry,
@@ -470,33 +489,33 @@ a:focus-visible {
 }
 
 .mine-page {
-  --mine-edge: 15px;
+  --mine-edge: var(--page-edge);
   gap: 0;
   padding: max(17px, env(safe-area-inset-top)) var(--mine-edge)
-    calc(98px + max(16px, env(safe-area-inset-bottom)));
+    calc(var(--tabbar-space) + var(--page-gap));
   background:
     linear-gradient(180deg, #ffffff 0%, #ffffff 62%, rgba(249, 250, 250, 0.9) 100%),
     #ffffff;
 }
 
 .mine-hero {
-  min-height: 229px;
+  min-height: clamp(210px, 34svh, 248px);
   display: grid;
   align-content: start;
-  gap: 16px;
-  padding: 0 0 23px;
+  gap: clamp(14px, 4vw, 18px);
+  padding: 0 0 clamp(20px, 5.6vw, 26px);
 }
 
 .mine-hero-row {
   display: grid;
-  grid-template-columns: 104px minmax(0, 1fr);
+  grid-template-columns: var(--profile-avatar) minmax(0, 1fr);
   align-items: start;
-  gap: 18px;
+  gap: clamp(14px, 4.8vw, 20px);
 }
 
 .mine-avatar {
-  width: 104px;
-  height: 104px;
+  width: var(--profile-avatar);
+  height: var(--profile-avatar);
   display: block;
   overflow: hidden;
   border: 0;
@@ -514,13 +533,13 @@ a:focus-visible {
 
 .mine-home-link {
   justify-self: end;
-  min-width: 101px;
-  min-height: 32px;
+  min-width: clamp(92px, 28vw, 112px);
+  min-height: clamp(31px, 8.8vw, 36px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 37px;
-  padding: 0 15px;
+  margin-top: clamp(30px, 9vw, 40px);
+  padding: 0 clamp(12px, 4vw, 16px);
   color: #ffffff;
   background: #151515;
   box-shadow: none;
@@ -532,11 +551,11 @@ a:focus-visible {
 
 .mine-name-block {
   display: grid;
-  gap: 10px;
+  gap: clamp(8px, 2.8vw, 12px);
 }
 
 .mine-name-block h1 {
-  max-width: 240px;
+  max-width: min(100%, 68vw);
   overflow-wrap: anywhere;
   margin: 0;
   color: #111111;
@@ -565,7 +584,7 @@ a:focus-visible {
 .mine-business-strip {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 0 0 31px;
+  margin: 0 0 clamp(24px, 7.6vw, 34px);
   border-block: 1px solid rgba(17, 17, 17, 0.032);
   background:
     linear-gradient(90deg, rgba(255, 255, 255, 0.92), rgba(250, 251, 251, 0.92)),
@@ -578,12 +597,12 @@ a:focus-visible {
 
 .mine-business-link {
   min-width: 0;
-  min-height: 70px;
+  min-height: clamp(66px, 18vw, 78px);
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: clamp(30px, 9vw, 38px) minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: clamp(8px, 2.8vw, 12px);
+  padding: clamp(10px, 3.2vw, 14px) clamp(10px, 4vw, 16px);
   color: #111111;
   text-decoration: none;
 }
@@ -593,8 +612,8 @@ a:focus-visible {
 }
 
 .mine-business-icon {
-  width: 29px;
-  height: 29px;
+  width: clamp(26px, 7.8vw, 32px);
+  height: clamp(26px, 7.8vw, 32px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -646,21 +665,21 @@ a:focus-visible {
 
 .mine-section {
   display: grid;
-  gap: 17px;
-  margin-bottom: 28px;
+  gap: clamp(14px, 4.4vw, 19px);
+  margin-bottom: clamp(24px, 7vw, 30px);
 }
 
 .mine-section-head {
-  min-height: 31px;
+  min-height: clamp(30px, 8.4vw, 36px);
   display: grid;
-  grid-template-columns: 31px minmax(0, 1fr) auto;
+  grid-template-columns: clamp(30px, 8.4vw, 36px) minmax(0, 1fr) auto;
   align-items: center;
-  gap: 9px;
+  gap: clamp(8px, 2.6vw, 11px);
 }
 
 .mine-section-badge {
-  width: 31px;
-  height: 31px;
+  width: clamp(30px, 8.4vw, 36px);
+  height: clamp(30px, 8.4vw, 36px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -695,16 +714,16 @@ a:focus-visible {
 .mine-status-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
+  gap: clamp(4px, 1.8vw, 8px);
 }
 
 .mine-grid-entry {
   min-width: 0;
-  min-height: 64px;
+  min-height: clamp(60px, 17vw, 72px);
   display: grid;
   align-content: start;
   justify-items: center;
-  gap: 9px;
+  gap: clamp(7px, 2.4vw, 10px);
   color: #111111;
   text-align: center;
   text-decoration: none;
@@ -712,8 +731,8 @@ a:focus-visible {
 
 .mine-grid-icon {
   position: relative;
-  width: 27px;
-  height: 27px;
+  width: clamp(25px, 7vw, 30px);
+  height: clamp(25px, 7vw, 30px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -754,7 +773,7 @@ a:focus-visible {
 }
 
 .mine-logout {
-  min-height: 42px;
+  min-height: clamp(40px, 11vw, 46px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -774,11 +793,11 @@ a:focus-visible {
 }
 
 .home-topbar {
-  min-height: 36px;
+  min-height: clamp(34px, 9vw, 40px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: clamp(10px, 3.6vw, 16px);
 }
 
 .home-wordmark {
@@ -815,10 +834,10 @@ a:focus-visible {
 
 .home-hero {
   position: relative;
-  min-height: 210px;
+  min-height: clamp(182px, 33svh, 230px);
   display: grid;
   place-items: center;
-  padding: 10px 18px 12px;
+  padding: clamp(10px, 3vw, 14px) clamp(14px, 4.8vw, 20px) clamp(10px, 3.4vw, 14px);
   overflow: hidden;
 }
 
@@ -826,9 +845,9 @@ a:focus-visible {
   content: 'POKER';
   position: absolute;
   left: 50%;
-  bottom: 16px;
+  bottom: clamp(12px, 4vw, 18px);
   color: rgba(17, 17, 17, 0.035);
-  font-size: 64px;
+  font-size: clamp(52px, 17vw, 72px);
   font-weight: 900;
   letter-spacing: 0;
   line-height: 0.8;
@@ -838,8 +857,8 @@ a:focus-visible {
 
 .home-hero-mark {
   position: relative;
-  width: 108px;
-  height: 126px;
+  width: clamp(94px, 29vw, 122px);
+  height: clamp(110px, 34vw, 142px);
   margin-top: 0;
   overflow: hidden;
   mix-blend-mode: multiply;
@@ -851,7 +870,7 @@ a:focus-visible {
   position: absolute;
   left: 50%;
   top: 52%;
-  width: 156px;
+  width: clamp(134px, 42vw, 172px);
   height: auto;
   filter: grayscale(1) contrast(3.2) brightness(1.22);
   transform: translate(-50%, -50%);
@@ -876,7 +895,7 @@ a:focus-visible {
 }
 
 .home-hero-copy h1 {
-  max-width: 280px;
+  max-width: min(280px, 84vw);
   margin: 0;
   color: #050505;
   font-size: 30px;
@@ -895,7 +914,7 @@ a:focus-visible {
 .home-action-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: clamp(9px, 3vw, 12px);
 }
 
 .home-action-tile,
@@ -914,12 +933,12 @@ a:focus-visible {
 }
 
 .home-action-tile {
-  min-height: 126px;
+  min-height: clamp(118px, 32vw, 144px);
   display: grid;
   align-content: center;
   justify-items: center;
-  gap: 6px;
-  padding: 14px 10px;
+  gap: clamp(5px, 1.8vw, 8px);
+  padding: clamp(12px, 3.8vw, 16px) clamp(9px, 3vw, 12px);
   text-align: center;
 }
 
@@ -929,8 +948,8 @@ a:focus-visible {
 }
 
 .home-action-icon {
-  width: 30px;
-  height: 30px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   margin-bottom: 2px;
   color: #050505;
   font-size: 30px;
@@ -958,22 +977,42 @@ a:focus-visible {
 }
 
 .home-account-card {
-  min-height: 76px;
+  min-height: clamp(72px, 20vw, 84px);
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: clamp(12px, 3.8vw, 16px);
+  padding: clamp(12px, 3.8vw, 16px) clamp(14px, 4.4vw, 18px);
+  text-align: left;
 }
 
 .home-account-avatar {
-  width: 38px;
-  height: 38px;
+  width: clamp(36px, 10vw, 44px);
+  height: clamp(36px, 10vw, 44px);
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.92) 0 18%, transparent 19%),
     radial-gradient(ellipse at 50% 88%, rgba(255, 255, 255, 0.92) 0 30%, transparent 31%),
     rgba(17, 17, 17, 0.055);
+}
+
+.home-scope-card {
+  width: 100%;
+  cursor: pointer;
+}
+
+.home-scope-card[aria-expanded='true'] {
+  border-color: rgba(17, 17, 17, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.home-scope-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #111111;
+  background: rgba(17, 17, 17, 0.055);
+  font-size: 19px;
 }
 
 .home-account-copy {
@@ -1009,16 +1048,16 @@ a:focus-visible {
 .home-mini-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: clamp(9px, 3vw, 12px);
 }
 
 .home-mini-card {
-  min-height: 72px;
+  min-height: clamp(68px, 19vw, 82px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: clamp(8px, 2.8vw, 12px);
+  padding: clamp(10px, 3.2vw, 14px) clamp(12px, 3.8vw, 16px);
 }
 
 .home-mini-card span {
@@ -1042,30 +1081,30 @@ a:focus-visible {
 }
 
 .home-mini-icon {
-  width: 28px;
-  height: 28px;
+  width: clamp(26px, 7.4vw, 32px);
+  height: clamp(26px, 7.4vw, 32px);
   color: #050505;
   font-size: 28px;
 }
 
 .home-gift-card {
   position: relative;
-  min-height: 112px;
+  min-height: clamp(104px, 29vw, 126px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: start;
-  gap: 12px;
-  padding: 16px 16px;
+  gap: clamp(10px, 3.4vw, 14px);
+  padding: clamp(14px, 4.2vw, 18px);
   overflow: hidden;
 }
 
 .home-gift-card::before {
   content: '';
   position: absolute;
-  left: 16px;
-  bottom: 12px;
-  width: 108px;
-  height: 42px;
+  left: clamp(14px, 4.2vw, 18px);
+  bottom: clamp(10px, 3.4vw, 14px);
+  width: clamp(94px, 30vw, 118px);
+  height: clamp(36px, 11vw, 46px);
   border: 1px solid rgba(17, 17, 17, 0.09);
   border-radius: 4px;
   background:
@@ -1088,8 +1127,8 @@ a:focus-visible {
 }
 
 .home-gift-icon {
-  width: 30px;
-  height: 30px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   color: #050505;
   font-size: 30px;
 }
@@ -1100,17 +1139,19 @@ a:focus-visible {
   z-index: 30;
   display: grid;
   align-items: end;
-  padding: 0 calc((100vw - min(430px, 100vw)) / 2);
+  padding: 0 var(--page-edge);
   background: rgba(17, 17, 17, 0.32);
 }
 
 .table-picker-sheet {
-  max-height: min(78vh, 620px);
+  width: 100%;
+  max-height: min(78svh, 620px);
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
-  gap: 12px;
+  gap: clamp(10px, 3vw, 14px);
   overflow: hidden;
-  padding: 18px 18px max(18px, env(safe-area-inset-bottom));
+  padding: clamp(16px, 4.8vw, 20px) clamp(16px, 4.8vw, 20px)
+    max(clamp(16px, 4.8vw, 20px), env(safe-area-inset-bottom));
   border: 1px solid rgba(17, 17, 17, 0.06);
   border-radius: 8px 8px 0 0;
   background:
@@ -1129,7 +1170,7 @@ a:focus-visible {
   display: flex;
   align-items: start;
   justify-content: space-between;
-  gap: 14px;
+  gap: clamp(10px, 3.4vw, 14px);
 }
 
 .table-picker-head div {
@@ -1157,8 +1198,8 @@ a:focus-visible {
 }
 
 .table-picker-close {
-  width: 34px;
-  height: 34px;
+  width: var(--touch-size);
+  height: var(--touch-size);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1173,11 +1214,11 @@ a:focus-visible {
 .table-picker-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
+  gap: clamp(8px, 2.6vw, 11px);
 }
 
 .table-picker-stats span {
-  min-height: 54px;
+  min-height: clamp(52px, 14vw, 62px);
   display: grid;
   align-content: center;
   gap: 4px;
@@ -1413,6 +1454,86 @@ a:focus-visible {
   cursor: default;
 }
 
+.scope-picker-sheet {
+  max-height: min(72svh, 560px);
+}
+
+.scope-group-list {
+  gap: 16px;
+}
+
+.scope-empty-text {
+  margin: clamp(18px, 5vw, 26px) 0;
+  color: rgba(17, 17, 17, 0.48);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.scope-store-list {
+  display: grid;
+  gap: 8px;
+}
+
+.scope-store-card {
+  min-width: 0;
+  min-height: clamp(58px, 16vw, 70px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(11px, 3.3vw, 14px) clamp(12px, 3.8vw, 16px);
+  border: 1px solid rgba(17, 17, 17, 0.045);
+  border-radius: 8px;
+  color: #111111;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 10px 22px rgba(17, 17, 17, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  text-align: left;
+  cursor: pointer;
+}
+
+.scope-store-card.is-selected {
+  border-color: rgba(17, 17, 17, 0.28);
+  background: #111111;
+  color: #ffffff;
+}
+
+.scope-store-copy {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.scope-store-copy strong {
+  overflow: hidden;
+  color: currentColor;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scope-store-copy small {
+  overflow: hidden;
+  color: currentColor;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.58;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scope-store-check {
+  width: 17px;
+  height: 17px;
+  color: currentColor;
+  font-size: 17px;
+}
+
 .menu-page {
   --menu-ink: #111111;
   --menu-muted: rgba(17, 17, 17, 0.42);
@@ -1421,17 +1542,17 @@ a:focus-visible {
   --menu-gold: #d8c786;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 12px;
-  padding: max(16px, env(safe-area-inset-top)) 8px
-    calc(75px + max(10px, env(safe-area-inset-bottom)));
+  gap: clamp(10px, 3vw, 14px);
+  padding: max(14px, env(safe-area-inset-top)) var(--page-edge-tight)
+    calc(var(--tabbar-space) - clamp(6px, 2vw, 12px));
   overflow: hidden;
   background: #ffffff;
 }
 
 .menu-location {
   display: grid;
-  gap: 5px;
-  padding: 0 5px;
+  gap: clamp(4px, 1.5vw, 6px);
+  padding: 0 clamp(4px, 1.6vw, 6px);
 }
 
 .menu-location-main {
@@ -1512,8 +1633,8 @@ a:focus-visible {
 .menu-order-shell {
   min-height: 0;
   display: grid;
-  grid-template-columns: 76px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: var(--menu-rail-width) minmax(0, 1fr);
+  gap: clamp(7px, 2.4vw, 10px);
   overflow: hidden;
 }
 
@@ -1521,8 +1642,8 @@ a:focus-visible {
   min-height: 0;
   display: grid;
   align-content: start;
-  gap: 4px;
-  padding: 15px 0 18px;
+  gap: clamp(3px, 1.2vw, 5px);
+  padding: clamp(12px, 3.8vw, 16px) 0 clamp(14px, 4.6vw, 20px);
   overflow-y: auto;
   border-right: 1px solid rgba(17, 17, 17, 0.035);
   scrollbar-width: none;
@@ -1536,7 +1657,7 @@ a:focus-visible {
 .menu-category {
   position: relative;
   min-width: 0;
-  min-height: 52px;
+  min-height: clamp(49px, 14vw, 58px);
   display: grid;
   align-content: center;
   justify-items: center;
@@ -1576,7 +1697,7 @@ a:focus-visible {
 }
 
 .menu-category small {
-  max-width: 54px;
+  max-width: calc(var(--menu-rail-width) - 18px);
   overflow: hidden;
   color: rgba(17, 17, 17, 0.26);
   font-size: 5px;
@@ -1602,8 +1723,8 @@ a:focus-visible {
   min-height: 0;
   display: grid;
   align-content: start;
-  gap: 12px;
-  padding: 12px 6px 20px 2px;
+  gap: clamp(10px, 3.2vw, 14px);
+  padding: clamp(10px, 3.2vw, 14px) clamp(5px, 1.8vw, 8px) clamp(18px, 5vw, 22px) 2px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -1627,12 +1748,12 @@ a:focus-visible {
 
 .menu-promo {
   position: relative;
-  min-height: 88px;
+  min-height: clamp(84px, 23vw, 104px);
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) 0.95fr;
   align-items: center;
-  gap: 8px;
-  padding: 14px 14px;
+  gap: clamp(7px, 2.2vw, 10px);
+  padding: clamp(12px, 3.8vw, 16px);
   overflow: hidden;
   border-radius: 8px;
   color: #ffffff;
@@ -1684,7 +1805,7 @@ a:focus-visible {
 }
 
 .menu-promo-copy strong {
-  max-width: 132px;
+  max-width: min(100%, 38vw);
   color: rgba(255, 255, 255, 0.66);
   font-size: 5px;
   font-weight: 700;
@@ -1693,8 +1814,8 @@ a:focus-visible {
 
 .menu-promo-copy span {
   width: fit-content;
-  max-width: 112px;
-  height: 15px;
+  max-width: min(100%, 34vw);
+  height: clamp(14px, 4vw, 17px);
   display: inline-flex;
   align-items: center;
   padding: 0 7px;
@@ -1709,16 +1830,16 @@ a:focus-visible {
 .menu-promo-art {
   position: relative;
   z-index: 1;
-  height: 66px;
+  height: clamp(60px, 18vw, 74px);
   min-width: 0;
 }
 
 .promo-plate {
   position: absolute;
-  right: 5px;
-  bottom: 2px;
-  width: 70px;
-  height: 42px;
+  right: clamp(4px, 1.5vw, 7px);
+  bottom: clamp(2px, 0.8vw, 4px);
+  width: clamp(60px, 18vw, 76px);
+  height: clamp(36px, 11vw, 46px);
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 48%, #2b1711 0 18%, #d8ad79 19% 24%, #f6e5cd 25% 40%, #754525 41% 49%, transparent 50%),
@@ -1728,10 +1849,10 @@ a:focus-visible {
 
 .promo-cup {
   position: absolute;
-  right: 22px;
-  bottom: 13px;
-  width: 32px;
-  height: 32px;
+  right: clamp(18px, 6vw, 26px);
+  bottom: clamp(11px, 3.8vw, 15px);
+  width: clamp(28px, 8.6vw, 36px);
+  height: clamp(28px, 8.6vw, 36px);
   border-radius: 50%;
   background:
     radial-gradient(circle at 48% 43%, #3a1c12 0 34%, #bf7438 35% 44%, #f7ead8 45% 62%, #6c381e 63% 72%, transparent 73%),
@@ -1741,8 +1862,8 @@ a:focus-visible {
 
 .promo-bean {
   position: absolute;
-  width: 9px;
-  height: 13px;
+  width: clamp(8px, 2.6vw, 10px);
+  height: clamp(11px, 3.5vw, 14px);
   border-radius: 50%;
   background:
     linear-gradient(90deg, transparent 46%, rgba(255, 255, 255, 0.14) 47% 52%, transparent 53%),
@@ -1751,19 +1872,19 @@ a:focus-visible {
 }
 
 .bean-one {
-  right: 78px;
+  right: clamp(68px, 21vw, 84px);
   top: 4px;
   transform: rotate(28deg);
 }
 
 .bean-two {
-  right: 92px;
+  right: clamp(78px, 24vw, 98px);
   top: 24px;
   transform: rotate(-24deg);
 }
 
 .bean-three {
-  right: 62px;
+  right: clamp(54px, 17vw, 68px);
   top: 15px;
   transform: rotate(54deg);
 }
@@ -1771,16 +1892,16 @@ a:focus-visible {
 .menu-product-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 13px 12px;
+  gap: clamp(11px, 3.4vw, 14px) clamp(9px, 3vw, 13px);
 }
 
 .menu-product-card {
   min-width: 0;
-  min-height: 151px;
+  min-height: clamp(142px, 41vw, 164px);
   display: grid;
-  grid-template-rows: 76px auto auto;
-  gap: 3px;
-  padding: 9px 9px 10px;
+  grid-template-rows: clamp(70px, 21vw, 84px) auto auto;
+  gap: clamp(3px, 1vw, 5px);
+  padding: clamp(8px, 2.6vw, 10px);
   border: 1px solid rgba(17, 17, 17, 0.025);
   border-radius: 4px;
   background: #ffffff;
@@ -1800,8 +1921,8 @@ a:focus-visible {
   position: absolute;
   left: 50%;
   bottom: 5px;
-  width: 42px;
-  height: 8px;
+  width: clamp(36px, 12vw, 46px);
+  height: clamp(7px, 2.2vw, 9px);
   border-radius: 50%;
   background: rgba(17, 17, 17, 0.08);
   filter: blur(4px);
@@ -1810,8 +1931,8 @@ a:focus-visible {
 
 .drink-cup {
   position: relative;
-  width: 32px;
-  height: 53px;
+  width: clamp(30px, 9vw, 36px);
+  height: clamp(50px, 15vw, 58px);
   display: block;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.9);
@@ -1830,8 +1951,8 @@ a:focus-visible {
   position: absolute;
   left: 50%;
   top: -3px;
-  width: 36px;
-  height: 12px;
+  width: clamp(34px, 10vw, 40px);
+  height: clamp(11px, 3.3vw, 14px);
   border-radius: 50%;
   background:
     radial-gradient(circle at 45% 45%, rgba(255, 255, 255, 0.52), transparent 24%),
@@ -1851,8 +1972,8 @@ a:focus-visible {
   left: 50%;
   top: 7px;
   z-index: 1;
-  width: 22px;
-  height: 8px;
+  width: clamp(20px, 6.3vw, 25px);
+  height: clamp(7px, 2.3vw, 9px);
   border-radius: 50%;
   background: rgba(255, 250, 236, 0.72);
   transform: translateX(-50%);
@@ -1924,8 +2045,8 @@ a:focus-visible {
 }
 
 .menu-product-info span {
-  max-width: 58px;
-  height: 13px;
+  max-width: min(64px, 44%);
+  height: clamp(13px, 3.8vw, 16px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1957,8 +2078,8 @@ a:focus-visible {
 }
 
 .menu-add-button {
-  width: 19px;
-  height: 19px;
+  width: clamp(19px, 6vw, 24px);
+  height: clamp(19px, 6vw, 24px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1978,9 +2099,12 @@ a:focus-visible {
 
 .orders-page {
   position: relative;
-  gap: 13px;
-  padding: max(12px, env(safe-area-inset-top)) 14px
-    calc(104px + max(16px, env(safe-area-inset-bottom)));
+  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: clamp(11px, 3.4vw, 15px);
+  padding: max(12px, env(safe-area-inset-top)) var(--page-edge)
+    calc(var(--tabbar-space) + var(--page-gap));
+  overflow: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 246, 0.78) 58%, #ffffff),
     radial-gradient(circle at 12% 14%, rgba(19, 92, 67, 0.12), transparent 25%),
@@ -2000,11 +2124,11 @@ a:focus-visible {
 }
 
 .orders-topbar {
-  min-height: 34px;
+  min-height: var(--touch-size);
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
+  grid-template-columns: var(--touch-size) minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: clamp(7px, 2.4vw, 10px);
 }
 
 .orders-topbar strong {
@@ -2029,8 +2153,8 @@ a:focus-visible {
 }
 
 .orders-icon-button {
-  width: 34px;
-  height: 34px;
+  width: var(--touch-size);
+  height: var(--touch-size);
   border-radius: 50%;
   color: #111111;
   background: rgba(255, 255, 255, 0.72);
@@ -2052,7 +2176,7 @@ a:focus-visible {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: clamp(10px, 3.2vw, 14px);
   padding: 2px 4px 0;
 }
 
@@ -2100,13 +2224,13 @@ a:focus-visible {
 .orders-day-strip {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 2px;
-  padding: 4px 2px 1px;
+  gap: clamp(2px, 0.8vw, 4px);
+  padding: clamp(3px, 1.2vw, 5px) 2px 1px;
 }
 
 .orders-day {
   min-width: 0;
-  min-height: 48px;
+  min-height: clamp(45px, 13vw, 54px);
   display: grid;
   align-content: center;
   justify-items: center;
@@ -2126,8 +2250,8 @@ a:focus-visible {
 }
 
 .orders-day span {
-  width: 25px;
-  height: 25px;
+  width: clamp(24px, 6.8vw, 30px);
+  height: clamp(24px, 6.8vw, 30px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2146,16 +2270,16 @@ a:focus-visible {
 .orders-stat-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: clamp(7px, 2.4vw, 10px);
 }
 
 .orders-stat {
   min-width: 0;
-  min-height: 56px;
+  min-height: clamp(54px, 15vw, 66px);
   display: grid;
   align-content: center;
   gap: 4px;
-  padding: 10px 12px;
+  padding: clamp(9px, 3vw, 12px);
   border: 1px solid rgba(17, 17, 17, 0.045);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.76);
@@ -2178,8 +2302,11 @@ a:focus-visible {
 }
 
 .orders-timeline {
+  min-height: 0;
   display: grid;
-  gap: 9px;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(8px, 2.6vw, 11px);
+  overflow: hidden;
   padding-top: 3px;
 }
 
@@ -2187,7 +2314,7 @@ a:focus-visible {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
+  gap: clamp(8px, 2.8vw, 12px);
   padding: 0 4px;
 }
 
@@ -2210,19 +2337,23 @@ a:focus-visible {
 
 .orders-timeline-list {
   position: relative;
+  min-height: 0;
   display: grid;
-  gap: 12px;
+  align-content: start;
+  gap: clamp(10px, 3.2vw, 14px);
   margin: 0;
-  padding: 0;
+  padding: 0 1px calc(var(--fab-size) + clamp(14px, 4vw, 20px)) 0;
+  overflow-y: auto;
   list-style: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .orders-timeline-list::before {
   content: '';
   position: absolute;
-  top: 20px;
-  bottom: 14px;
-  left: 57px;
+  top: clamp(18px, 5.4vw, 22px);
+  bottom: clamp(12px, 3.8vw, 16px);
+  left: calc(var(--order-time-column) + clamp(13px, 4vw, 18px));
   width: 2px;
   border-radius: 999px;
   background: linear-gradient(180deg, #111111 0 32%, rgba(17, 17, 17, 0.14) 32% 100%);
@@ -2231,8 +2362,8 @@ a:focus-visible {
 .orders-row {
   position: relative;
   display: grid;
-  grid-template-columns: 42px 18px minmax(0, 1fr);
-  gap: 7px;
+  grid-template-columns: var(--order-time-column) clamp(16px, 4.8vw, 20px) minmax(0, 1fr);
+  gap: clamp(6px, 2vw, 8px);
   align-items: start;
 }
 
@@ -2281,8 +2412,8 @@ a:focus-visible {
   position: relative;
   min-width: 0;
   display: grid;
-  gap: 8px;
-  padding: 13px 13px 11px;
+  gap: clamp(7px, 2.3vw, 10px);
+  padding: clamp(12px, 3.6vw, 15px) clamp(12px, 3.6vw, 15px) clamp(10px, 3.2vw, 13px);
   border: 1px solid rgba(17, 17, 17, 0.045);
   border-left: 4px solid #111111;
   border-radius: 8px;
@@ -2308,9 +2439,9 @@ a:focus-visible {
 
 .orders-card-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 24px;
+  grid-template-columns: minmax(0, 1fr) clamp(24px, 7vw, 30px);
   align-items: start;
-  gap: 8px;
+  gap: clamp(7px, 2.4vw, 10px);
 }
 
 .orders-card-head span {
@@ -2340,8 +2471,8 @@ a:focus-visible {
 }
 
 .orders-card-toggle {
-  width: 24px;
-  height: 24px;
+  width: clamp(24px, 7vw, 30px);
+  height: clamp(24px, 7vw, 30px);
   border-radius: 50%;
   color: rgba(17, 17, 17, 0.38);
   background: transparent;
@@ -2408,18 +2539,17 @@ a:focus-visible {
 
 .orders-add-button {
   position: fixed;
-  left: calc(50% + min(159px, 43vw));
-  bottom: calc(84px + max(12px, env(safe-area-inset-bottom)));
+  right: var(--page-edge);
+  bottom: calc(var(--tabbar-space) + clamp(6px, 2vw, 10px));
   z-index: 12;
-  width: 46px;
-  height: 46px;
+  width: var(--fab-size);
+  height: var(--fab-size);
   border: 2px solid #ffffff;
   border-radius: 50%;
   color: #ffffff;
   background: #111111;
   box-shadow: 0 16px 28px rgba(17, 17, 17, 0.22);
   font-size: 20px;
-  transform: translateX(-100%);
 }
 
 .orders-add-button:hover,
@@ -2442,7 +2572,7 @@ a:focus-visible {
   z-index: 10;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: 7px 14px max(9px, env(safe-area-inset-bottom));
+  padding: clamp(6px, 1.8vw, 8px) var(--page-edge) max(9px, env(safe-area-inset-bottom));
   border-top: 1px solid rgba(17, 17, 17, 0.055);
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 -10px 24px rgba(17, 17, 17, 0.045);
@@ -2452,7 +2582,7 @@ a:focus-visible {
 
 .app-tabbar-link {
   min-width: 0;
-  min-height: 58px;
+  min-height: clamp(54px, 14svh, 64px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2471,7 +2601,7 @@ a:focus-visible {
 }
 
 .app-tabbar-sub {
-  max-width: 64px;
+  max-width: min(64px, 18vw);
   overflow: hidden;
   color: rgba(17, 17, 17, 0.34);
   font-size: 7px;
@@ -2500,22 +2630,13 @@ a:focus-visible {
   background: #111111;
 }
 
-@media (min-width: 760px) {
+@media (max-width: 360px) {
   .login-shell {
-    max-width: 390px;
-  }
-
-  .app-layout {
-    max-width: 390px;
-  }
-}
-
-@media (max-width: 360px), (max-height: 620px) {
-  .login-shell {
-    width: 100vw;
+    width: 100%;
     height: var(--app-height);
     min-height: var(--app-height);
-    padding: 14px 24px 22px;
+    padding: max(14px, env(safe-area-inset-top)) clamp(22px, 7vw, 26px)
+      max(22px, env(safe-area-inset-bottom));
   }
 
   .brand-lockup {
@@ -2541,7 +2662,7 @@ a:focus-visible {
   }
 
   .mine-page {
-    --mine-edge: 15px;
+    --mine-edge: var(--page-edge);
   }
 
   .mine-hero {
@@ -2549,12 +2670,12 @@ a:focus-visible {
   }
 
   .mine-hero-row {
-    grid-template-columns: 102px minmax(0, 1fr);
+    grid-template-columns: var(--profile-avatar) minmax(0, 1fr);
   }
 
   .mine-avatar {
-    width: 102px;
-    height: 102px;
+    width: var(--profile-avatar);
+    height: var(--profile-avatar);
   }
 
   .mine-home-link {
@@ -2588,7 +2709,7 @@ a:focus-visible {
   }
 
   .menu-order-shell {
-    grid-template-columns: 70px minmax(0, 1fr);
+    grid-template-columns: var(--menu-rail-width) minmax(0, 1fr);
     gap: 7px;
   }
 

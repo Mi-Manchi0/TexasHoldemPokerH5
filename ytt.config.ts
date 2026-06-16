@@ -37,6 +37,7 @@ const swaggerServices: string[] = [
 	"api.order.v1.OrderService",
 	"api.store.v1.StoreService",
 	"api.merchant.v1.MerchantService",
+	"api.staff.v1.StaffService",
 ]
 
 const genList = (itemList: string[], extraUrl = swaggerServer) =>
