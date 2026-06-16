@@ -15031,4 +15031,3349 @@ export const getApiStaffV1StaffById = /*#__PURE__*/ (
 
 getApiStaffV1StaffById.requestConfig = getApiStaffV1StaffByIdRequestConfig
 
+/**
+ * 接口 查询桌子类型列表 的 **请求类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `GET /api/table/v1/types`
+ */
+export interface GetApiTableV1TypesRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+}
+
+/**
+ * 接口 查询桌子类型列表 的 **返回类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `GET /api/table/v1/types`
+ */
+export interface GetApiTableV1TypesResponse {
+  /**
+   * 桌子类型列表
+   */
+  tableTypes?: {
+    /**
+     * 桌子类型ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 桌子类型名称
+     */
+    name?: string
+    /**
+     * 桌子类型描述
+     */
+    description?: string
+    /**
+     * 排序值
+     */
+    sort?: number
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+  }[]
+}
+
+/**
+ * 接口 查询桌子类型列表 的 **请求配置的类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `GET /api/table/v1/types`
+ */
+type GetApiTableV1TypesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/types', undefined, string, 'merchantId', false>
+>
+
+/**
+ * 接口 查询桌子类型列表 的 **请求配置**
+ *
+ * @分类 TableTypeService
+ * @请求头 `GET /api/table/v1/types`
+ */
+const getApiTableV1TypesRequestConfig: GetApiTableV1TypesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/types',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['merchantId'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1Types',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询桌子类型列表 的 **请求函数**
+ *
+ * @分类 TableTypeService
+ * @请求头 `GET /api/table/v1/types`
+ */
+export const getApiTableV1Types = /*#__PURE__*/ (
+  requestData: GetApiTableV1TypesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1TypesResponse>(prepare(getApiTableV1TypesRequestConfig, requestData), ...args)
+}
+
+getApiTableV1Types.requestConfig = getApiTableV1TypesRequestConfig
+
+/**
+ * 接口 创建桌子类型 的 **请求类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types`
+ */
+export interface PostApiTableV1TypesRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 桌子类型名称
+   */
+  name?: string
+  /**
+   * 桌子类型描述
+   */
+  description?: string
+  /**
+   * 排序值
+   */
+  sort?: number
+}
+
+/**
+ * 接口 创建桌子类型 的 **返回类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types`
+ */
+export interface PostApiTableV1TypesResponse {
+  /**
+   * 桌子类型ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 创建桌子类型 的 **请求配置的类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types`
+ */
+type PostApiTableV1TypesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/types', undefined, string, string, false>
+>
+
+/**
+ * 接口 创建桌子类型 的 **请求配置**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types`
+ */
+const postApiTableV1TypesRequestConfig: PostApiTableV1TypesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/types',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTableV1Types',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 创建桌子类型 的 **请求函数**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types`
+ */
+export const postApiTableV1Types = /*#__PURE__*/ (
+  requestData: PostApiTableV1TypesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTableV1TypesResponse>(prepare(postApiTableV1TypesRequestConfig, requestData), ...args)
+}
+
+postApiTableV1Types.requestConfig = postApiTableV1TypesRequestConfig
+
+/**
+ * 接口 删除桌子类型 的 **请求类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_delete`
+ */
+export interface DeleteApiTableV1TypesRequest {
+  /**
+   * 桌子类型ID
+   */
+  id?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+}
+
+/**
+ * 接口 删除桌子类型 的 **返回类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_delete`
+ */
+export interface DeleteApiTableV1TypesResponse {}
+
+/**
+ * 接口 删除桌子类型 的 **请求配置的类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_delete`
+ */
+type DeleteApiTableV1TypesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/types_delete', undefined, string, string, false>
+>
+
+/**
+ * 接口 删除桌子类型 的 **请求配置**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_delete`
+ */
+const deleteApiTableV1TypesRequestConfig: DeleteApiTableV1TypesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/types_delete',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'deleteApiTableV1Types',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 删除桌子类型 的 **请求函数**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_delete`
+ */
+export const deleteApiTableV1Types = /*#__PURE__*/ (
+  requestData: DeleteApiTableV1TypesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<DeleteApiTableV1TypesResponse>(prepare(deleteApiTableV1TypesRequestConfig, requestData), ...args)
+}
+
+deleteApiTableV1Types.requestConfig = deleteApiTableV1TypesRequestConfig
+
+/**
+ * 接口 更新桌子类型 的 **请求类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_put`
+ */
+export interface PutApiTableV1TypesRequest {
+  /**
+   * 桌子类型ID
+   */
+  id?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 桌子类型名称
+   */
+  name?: string
+  /**
+   * 桌子类型描述
+   */
+  description?: string
+  /**
+   * 排序值
+   */
+  sort?: number
+}
+
+/**
+ * 接口 更新桌子类型 的 **返回类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_put`
+ */
+export interface PutApiTableV1TypesResponse {}
+
+/**
+ * 接口 更新桌子类型 的 **请求配置的类型**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_put`
+ */
+type PutApiTableV1TypesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/types_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新桌子类型 的 **请求配置**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_put`
+ */
+const putApiTableV1TypesRequestConfig: PutApiTableV1TypesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/types_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTableV1Types',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新桌子类型 的 **请求函数**
+ *
+ * @分类 TableTypeService
+ * @请求头 `POST /api/table/v1/types_put`
+ */
+export const putApiTableV1Types = /*#__PURE__*/ (
+  requestData: PutApiTableV1TypesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTableV1TypesResponse>(prepare(putApiTableV1TypesRequestConfig, requestData), ...args)
+}
+
+putApiTableV1Types.requestConfig = putApiTableV1TypesRequestConfig
+
+/**
+ * 接口 查询桌子列表 的 **请求类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `GET /api/table/v1/groups`
+ */
+export interface GetApiTableV1GroupsRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+}
+
+/**
+ * 接口 查询桌子列表 的 **返回类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `GET /api/table/v1/groups`
+ */
+export interface GetApiTableV1GroupsResponse {
+  /**
+   * 桌子列表
+   */
+  tableGroups?: {
+    /**
+     * 桌子ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 桌子类型ID
+     */
+    typeId?: string
+    /**
+     * 桌子名称
+     */
+    name?: string
+    /**
+     * 桌子描述
+     */
+    description?: string
+    /**
+     * 排序值
+     */
+    sort?: number
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * 桌子类型摘要。
+     */
+    type?: {
+      /**
+       * 桌子类型ID
+       */
+      id?: string
+      /**
+       * 桌子类型名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+  }[]
+}
+
+/**
+ * 接口 查询桌子列表 的 **请求配置的类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `GET /api/table/v1/groups`
+ */
+type GetApiTableV1GroupsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/groups', undefined, string, 'merchantId' | 'storeId', false>
+>
+
+/**
+ * 接口 查询桌子列表 的 **请求配置**
+ *
+ * @分类 TableGroupService
+ * @请求头 `GET /api/table/v1/groups`
+ */
+const getApiTableV1GroupsRequestConfig: GetApiTableV1GroupsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/groups',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['merchantId', 'storeId'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1Groups',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询桌子列表 的 **请求函数**
+ *
+ * @分类 TableGroupService
+ * @请求头 `GET /api/table/v1/groups`
+ */
+export const getApiTableV1Groups = /*#__PURE__*/ (
+  requestData: GetApiTableV1GroupsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1GroupsResponse>(prepare(getApiTableV1GroupsRequestConfig, requestData), ...args)
+}
+
+getApiTableV1Groups.requestConfig = getApiTableV1GroupsRequestConfig
+
+/**
+ * 接口 创建桌子 的 **请求类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups`
+ */
+export interface PostApiTableV1GroupsRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子类型ID
+   */
+  typeId?: string
+  /**
+   * 桌子名称
+   */
+  name?: string
+  /**
+   * 桌子描述
+   */
+  description?: string
+  /**
+   * 排序值
+   */
+  sort?: number
+}
+
+/**
+ * 接口 创建桌子 的 **返回类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups`
+ */
+export interface PostApiTableV1GroupsResponse {
+  /**
+   * 桌子ID
+   */
+  id?: string
+  /**
+   * 默认创建的桌位ID
+   */
+  defaultTableId?: string
+}
+
+/**
+ * 接口 创建桌子 的 **请求配置的类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups`
+ */
+type PostApiTableV1GroupsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/groups', undefined, string, string, false>
+>
+
+/**
+ * 接口 创建桌子 的 **请求配置**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups`
+ */
+const postApiTableV1GroupsRequestConfig: PostApiTableV1GroupsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/groups',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTableV1Groups',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 创建桌子 的 **请求函数**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups`
+ */
+export const postApiTableV1Groups = /*#__PURE__*/ (
+  requestData: PostApiTableV1GroupsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTableV1GroupsResponse>(prepare(postApiTableV1GroupsRequestConfig, requestData), ...args)
+}
+
+postApiTableV1Groups.requestConfig = postApiTableV1GroupsRequestConfig
+
+/**
+ * 接口 删除桌子 的 **请求类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_delete`
+ */
+export interface DeleteApiTableV1GroupsRequest {
+  /**
+   * 桌子ID
+   */
+  id?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+}
+
+/**
+ * 接口 删除桌子 的 **返回类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_delete`
+ */
+export interface DeleteApiTableV1GroupsResponse {}
+
+/**
+ * 接口 删除桌子 的 **请求配置的类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_delete`
+ */
+type DeleteApiTableV1GroupsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/groups_delete', undefined, string, string, false>
+>
+
+/**
+ * 接口 删除桌子 的 **请求配置**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_delete`
+ */
+const deleteApiTableV1GroupsRequestConfig: DeleteApiTableV1GroupsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/groups_delete',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'deleteApiTableV1Groups',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 删除桌子 的 **请求函数**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_delete`
+ */
+export const deleteApiTableV1Groups = /*#__PURE__*/ (
+  requestData: DeleteApiTableV1GroupsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<DeleteApiTableV1GroupsResponse>(prepare(deleteApiTableV1GroupsRequestConfig, requestData), ...args)
+}
+
+deleteApiTableV1Groups.requestConfig = deleteApiTableV1GroupsRequestConfig
+
+/**
+ * 接口 更新桌子 的 **请求类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_put`
+ */
+export interface PutApiTableV1GroupsRequest {
+  /**
+   * 桌子ID
+   */
+  id?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子类型ID
+   */
+  typeId?: string
+  /**
+   * 桌子名称
+   */
+  name?: string
+  /**
+   * 桌子描述
+   */
+  description?: string
+  /**
+   * 排序值
+   */
+  sort?: number
+}
+
+/**
+ * 接口 更新桌子 的 **返回类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_put`
+ */
+export interface PutApiTableV1GroupsResponse {}
+
+/**
+ * 接口 更新桌子 的 **请求配置的类型**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_put`
+ */
+type PutApiTableV1GroupsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/groups_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新桌子 的 **请求配置**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_put`
+ */
+const putApiTableV1GroupsRequestConfig: PutApiTableV1GroupsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/groups_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTableV1Groups',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新桌子 的 **请求函数**
+ *
+ * @分类 TableGroupService
+ * @请求头 `POST /api/table/v1/groups_put`
+ */
+export const putApiTableV1Groups = /*#__PURE__*/ (
+  requestData: PutApiTableV1GroupsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTableV1GroupsResponse>(prepare(putApiTableV1GroupsRequestConfig, requestData), ...args)
+}
+
+putApiTableV1Groups.requestConfig = putApiTableV1GroupsRequestConfig
+
+/**
+ * 接口 查询桌位列表 的 **请求类型**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables`
+ */
+export interface GetApiTableV1TablesRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子类型ID，0 表示全部
+   */
+  typeId?: string
+  /**
+   * 桌子ID，0 表示全部
+   */
+  groupId?: string
+  /**
+   * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+   */
+  status?: number
+}
+
+/**
+ * 接口 查询桌位列表 的 **返回类型**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables`
+ */
+export interface GetApiTableV1TablesResponse {
+  /**
+   * 桌位列表
+   */
+  tables?: {
+    /**
+     * 桌位ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 桌子类型摘要。
+     */
+    type?: {
+      /**
+       * 桌子类型ID
+       */
+      id?: string
+      /**
+       * 桌子类型名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 桌子摘要。
+     */
+    group?: {
+      /**
+       * 桌子ID
+       */
+      id?: string
+      /**
+       * 桌子名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 桌位名称
+     */
+    name?: string
+    /**
+     * 桌位描述
+     */
+    description?: string
+    /**
+     * 图片URL列表
+     */
+    imageUrls?: string[]
+    /**
+     * 是否可预约
+     */
+    isReservable?: boolean
+    /**
+     * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+     */
+    status?: number
+    /**
+     * 运行态：idle=空闲，occupied=占用。
+     */
+    occupancyStatus?: string
+    /**
+     * 是否支持后台开单
+     */
+    billingEnabled?: boolean
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询桌位列表 的 **请求配置的类型**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables`
+ */
+type GetApiTableV1TablesRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/table/v1/tables',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'typeId' | 'groupId' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询桌位列表 的 **请求配置**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables`
+ */
+const getApiTableV1TablesRequestConfig: GetApiTableV1TablesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/tables',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'typeId', 'groupId', 'status'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1Tables',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询桌位列表 的 **请求函数**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables`
+ */
+export const getApiTableV1Tables = /*#__PURE__*/ (
+  requestData: GetApiTableV1TablesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1TablesResponse>(prepare(getApiTableV1TablesRequestConfig, requestData), ...args)
+}
+
+getApiTableV1Tables.requestConfig = getApiTableV1TablesRequestConfig
+
+/**
+ * 接口 创建桌位 的 **请求类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables`
+ */
+export interface PostApiTableV1TablesRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子ID
+   */
+  groupId?: string
+  /**
+   * 桌位名称
+   */
+  name?: string
+  /**
+   * 桌位描述
+   */
+  description?: string
+  imageUrls?: string[]
+  /**
+   * 是否可预约
+   */
+  isReservable?: boolean
+  /**
+   * 是否支持后台开单
+   */
+  billingEnabled?: boolean
+  /**
+   * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+   */
+  status?: number
+}
+
+/**
+ * 接口 创建桌位 的 **返回类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables`
+ */
+export interface PostApiTableV1TablesResponse {
+  /**
+   * 桌位ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 创建桌位 的 **请求配置的类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables`
+ */
+type PostApiTableV1TablesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/tables', undefined, string, string, false>
+>
+
+/**
+ * 接口 创建桌位 的 **请求配置**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables`
+ */
+const postApiTableV1TablesRequestConfig: PostApiTableV1TablesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/tables',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTableV1Tables',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 创建桌位 的 **请求函数**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables`
+ */
+export const postApiTableV1Tables = /*#__PURE__*/ (
+  requestData: PostApiTableV1TablesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTableV1TablesResponse>(prepare(postApiTableV1TablesRequestConfig, requestData), ...args)
+}
+
+postApiTableV1Tables.requestConfig = postApiTableV1TablesRequestConfig
+
+/**
+ * 接口 批量创建桌位 的 **请求类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables/batch`
+ */
+export interface PostApiTableV1TablesBatchRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子ID
+   */
+  groupId?: string
+  /**
+   * 批量创建数量
+   */
+  count?: number
+  /**
+   * 桌位描述
+   */
+  description?: string
+  imageUrls?: string[]
+  /**
+   * 是否可预约
+   */
+  isReservable?: boolean
+  /**
+   * 是否支持后台开单
+   */
+  billingEnabled?: boolean
+  /**
+   * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+   */
+  status?: number
+}
+
+/**
+ * 接口 批量创建桌位 的 **返回类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables/batch`
+ */
+export interface PostApiTableV1TablesBatchResponse {
+  /**
+   * 新建桌位ID列表
+   */
+  ids?: string[]
+}
+
+/**
+ * 接口 批量创建桌位 的 **请求配置的类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables/batch`
+ */
+type PostApiTableV1TablesBatchRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/tables/batch', undefined, string, string, false>
+>
+
+/**
+ * 接口 批量创建桌位 的 **请求配置**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables/batch`
+ */
+const postApiTableV1TablesBatchRequestConfig: PostApiTableV1TablesBatchRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/tables/batch',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTableV1TablesBatch',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 批量创建桌位 的 **请求函数**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables/batch`
+ */
+export const postApiTableV1TablesBatch = /*#__PURE__*/ (
+  requestData: PostApiTableV1TablesBatchRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTableV1TablesBatchResponse>(
+    prepare(postApiTableV1TablesBatchRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiTableV1TablesBatch.requestConfig = postApiTableV1TablesBatchRequestConfig
+
+/**
+ * 接口 查询桌位详情 的 **请求类型**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables/{id}`
+ */
+export interface GetApiTableV1TablesByIdRequest {
+  /**
+   * 桌位ID
+   */
+  id: string
+}
+
+/**
+ * 接口 查询桌位详情 的 **返回类型**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables/{id}`
+ */
+export interface GetApiTableV1TablesByIdResponse {
+  /**
+   * 桌位信息。
+   */
+  table?: {
+    /**
+     * 桌位ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 桌子类型摘要。
+     */
+    type?: {
+      /**
+       * 桌子类型ID
+       */
+      id?: string
+      /**
+       * 桌子类型名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 桌子摘要。
+     */
+    group?: {
+      /**
+       * 桌子ID
+       */
+      id?: string
+      /**
+       * 桌子名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 桌位名称
+     */
+    name?: string
+    /**
+     * 桌位描述
+     */
+    description?: string
+    /**
+     * 图片URL列表
+     */
+    imageUrls?: string[]
+    /**
+     * 是否可预约
+     */
+    isReservable?: boolean
+    /**
+     * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+     */
+    status?: number
+    /**
+     * 运行态：idle=空闲，occupied=占用。
+     */
+    occupancyStatus?: string
+    /**
+     * 是否支持后台开单
+     */
+    billingEnabled?: boolean
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+  }
+}
+
+/**
+ * 接口 查询桌位详情 的 **请求配置的类型**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables/{id}`
+ */
+type GetApiTableV1TablesByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/tables/{id}', undefined, 'id', string, false>
+>
+
+/**
+ * 接口 查询桌位详情 的 **请求配置**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables/{id}`
+ */
+const getApiTableV1TablesByIdRequestConfig: GetApiTableV1TablesByIdRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/tables/{id}',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: ['id'],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1TablesById',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询桌位详情 的 **请求函数**
+ *
+ * @分类 TableService
+ * @请求头 `GET /api/table/v1/tables/{id}`
+ */
+export const getApiTableV1TablesById = /*#__PURE__*/ (
+  requestData: GetApiTableV1TablesByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1TablesByIdResponse>(prepare(getApiTableV1TablesByIdRequestConfig, requestData), ...args)
+}
+
+getApiTableV1TablesById.requestConfig = getApiTableV1TablesByIdRequestConfig
+
+/**
+ * 接口 删除桌位 的 **请求类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_delete`
+ */
+export interface DeleteApiTableV1TablesRequest {
+  /**
+   * 桌位ID
+   */
+  id?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+}
+
+/**
+ * 接口 删除桌位 的 **返回类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_delete`
+ */
+export interface DeleteApiTableV1TablesResponse {}
+
+/**
+ * 接口 删除桌位 的 **请求配置的类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_delete`
+ */
+type DeleteApiTableV1TablesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/tables_delete', undefined, string, string, false>
+>
+
+/**
+ * 接口 删除桌位 的 **请求配置**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_delete`
+ */
+const deleteApiTableV1TablesRequestConfig: DeleteApiTableV1TablesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/tables_delete',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'deleteApiTableV1Tables',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 删除桌位 的 **请求函数**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_delete`
+ */
+export const deleteApiTableV1Tables = /*#__PURE__*/ (
+  requestData: DeleteApiTableV1TablesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<DeleteApiTableV1TablesResponse>(prepare(deleteApiTableV1TablesRequestConfig, requestData), ...args)
+}
+
+deleteApiTableV1Tables.requestConfig = deleteApiTableV1TablesRequestConfig
+
+/**
+ * 接口 更新桌位 的 **请求类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_put`
+ */
+export interface PutApiTableV1TablesRequest {
+  /**
+   * 桌位ID
+   */
+  id?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子ID
+   */
+  groupId?: string
+  /**
+   * 桌位名称
+   */
+  name?: string
+  /**
+   * 桌位描述
+   */
+  description?: string
+  imageUrls?: string[]
+  /**
+   * 是否可预约
+   */
+  isReservable?: boolean
+  /**
+   * 是否支持后台开单
+   */
+  billingEnabled?: boolean
+  /**
+   * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+   */
+  status?: number
+}
+
+/**
+ * 接口 更新桌位 的 **返回类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_put`
+ */
+export interface PutApiTableV1TablesResponse {}
+
+/**
+ * 接口 更新桌位 的 **请求配置的类型**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_put`
+ */
+type PutApiTableV1TablesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/tables_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新桌位 的 **请求配置**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_put`
+ */
+const putApiTableV1TablesRequestConfig: PutApiTableV1TablesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/tables_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTableV1Tables',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新桌位 的 **请求函数**
+ *
+ * @分类 TableService
+ * @请求头 `POST /api/table/v1/tables_put`
+ */
+export const putApiTableV1Tables = /*#__PURE__*/ (
+  requestData: PutApiTableV1TablesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTableV1TablesResponse>(prepare(putApiTableV1TablesRequestConfig, requestData), ...args)
+}
+
+putApiTableV1Tables.requestConfig = putApiTableV1TablesRequestConfig
+
+/**
+ * 接口 查询预约准入规则 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/accessRule`
+ */
+export interface GetApiTableV1ReservationAccessRuleRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子类型ID
+   */
+  typeId?: string
+}
+
+/**
+ * 接口 查询预约准入规则 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/accessRule`
+ */
+export interface GetApiTableV1ReservationAccessRuleResponse {
+  /**
+   * 桌子类型预约准入规则。
+   */
+  rule?: {
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 桌子类型ID
+     */
+    typeId?: string
+    /**
+     * 预约所需积分，0 表示不扣积分
+     */
+    requiredPoints?: string
+    /**
+     * 允许预约的会员等级ID列表，空表示不限制
+     */
+    allowedLevelIds?: string[]
+    /**
+     * 是否启用规则，true=启用，false=停用
+     */
+    enabled?: boolean
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * 桌子类型摘要。
+     */
+    type?: {
+      /**
+       * 桌子类型ID
+       */
+      id?: string
+      /**
+       * 桌子类型名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 限定适用的桌子ID列表，空表示该类型下全部桌子生效
+     */
+    groupIds?: string[]
+    /**
+     * 已选择的桌子展示列表，空表示该类型下全部桌子生效
+     */
+    groups?: {
+      /**
+       * 桌子ID
+       */
+      id?: string
+      /**
+       * 桌子名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }[]
+  }
+}
+
+/**
+ * 接口 查询预约准入规则 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/accessRule`
+ */
+type GetApiTableV1ReservationAccessRuleRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/table/v1/reservation/accessRule',
+    undefined,
+    string,
+    'merchantId' | 'storeId' | 'typeId',
+    false
+  >
+>
+
+/**
+ * 接口 查询预约准入规则 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/accessRule`
+ */
+const getApiTableV1ReservationAccessRuleRequestConfig: GetApiTableV1ReservationAccessRuleRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservation/accessRule',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['merchantId', 'storeId', 'typeId'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1ReservationAccessRule',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询预约准入规则 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/accessRule`
+ */
+export const getApiTableV1ReservationAccessRule = /*#__PURE__*/ (
+  requestData: GetApiTableV1ReservationAccessRuleRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1ReservationAccessRuleResponse>(
+    prepare(getApiTableV1ReservationAccessRuleRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiTableV1ReservationAccessRule.requestConfig = getApiTableV1ReservationAccessRuleRequestConfig
+
+/**
+ * 接口 更新预约准入规则 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/accessRule_put`
+ */
+export interface PutApiTableV1ReservationAccessRuleRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 桌子类型ID
+   */
+  typeId?: string
+  /**
+   * 预约所需积分，0 表示不扣积分
+   */
+  requiredPoints?: string
+  /**
+   * 允许预约的会员等级ID列表，空表示不限制
+   */
+  allowedLevelIds?: string[]
+  /**
+   * 是否启用规则，true=启用，false=停用
+   */
+  enabled?: boolean
+  /**
+   * 限定适用的桌子ID列表，空表示该类型下全部桌子生效
+   */
+  groupIds?: string[]
+}
+
+/**
+ * 接口 更新预约准入规则 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/accessRule_put`
+ */
+export interface PutApiTableV1ReservationAccessRuleResponse {
+  /**
+   * 桌子类型预约准入规则。
+   */
+  rule?: {
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 桌子类型ID
+     */
+    typeId?: string
+    /**
+     * 预约所需积分，0 表示不扣积分
+     */
+    requiredPoints?: string
+    /**
+     * 允许预约的会员等级ID列表，空表示不限制
+     */
+    allowedLevelIds?: string[]
+    /**
+     * 是否启用规则，true=启用，false=停用
+     */
+    enabled?: boolean
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * 桌子类型摘要。
+     */
+    type?: {
+      /**
+       * 桌子类型ID
+       */
+      id?: string
+      /**
+       * 桌子类型名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 限定适用的桌子ID列表，空表示该类型下全部桌子生效
+     */
+    groupIds?: string[]
+    /**
+     * 已选择的桌子展示列表，空表示该类型下全部桌子生效
+     */
+    groups?: {
+      /**
+       * 桌子ID
+       */
+      id?: string
+      /**
+       * 桌子名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }[]
+  }
+}
+
+/**
+ * 接口 更新预约准入规则 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/accessRule_put`
+ */
+type PutApiTableV1ReservationAccessRuleRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/reservation/accessRule_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新预约准入规则 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/accessRule_put`
+ */
+const putApiTableV1ReservationAccessRuleRequestConfig: PutApiTableV1ReservationAccessRuleRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservation/accessRule_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTableV1ReservationAccessRule',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新预约准入规则 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/accessRule_put`
+ */
+export const putApiTableV1ReservationAccessRule = /*#__PURE__*/ (
+  requestData: PutApiTableV1ReservationAccessRuleRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTableV1ReservationAccessRuleResponse>(
+    prepare(putApiTableV1ReservationAccessRuleRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiTableV1ReservationAccessRule.requestConfig = putApiTableV1ReservationAccessRuleRequestConfig
+
+/**
+ * 接口 查询预约配置 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/config`
+ */
+export interface GetApiTableV1ReservationConfigRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+}
+
+/**
+ * 接口 查询预约配置 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/config`
+ */
+export interface GetApiTableV1ReservationConfigResponse {
+  /**
+   * 门店预约配置。
+   */
+  config?: {
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 到店后保留分钟数
+     */
+    retainMinutes?: number
+    /**
+     * 当天开放预约开始分钟，从 0 点起算
+     */
+    windowStartMinute?: number
+    /**
+     * 当天停止预约分钟，从 0 点起算；小于开始表示跨日开放窗口
+     */
+    windowEndMinute?: number
+    /**
+     * 是否开启预约，true=开启，false=关闭
+     */
+    reservationEnabled?: boolean
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+  }
+}
+
+/**
+ * 接口 查询预约配置 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/config`
+ */
+type GetApiTableV1ReservationConfigRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/reservation/config', undefined, string, 'merchantId' | 'storeId', false>
+>
+
+/**
+ * 接口 查询预约配置 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/config`
+ */
+const getApiTableV1ReservationConfigRequestConfig: GetApiTableV1ReservationConfigRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservation/config',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['merchantId', 'storeId'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1ReservationConfig',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询预约配置 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservation/config`
+ */
+export const getApiTableV1ReservationConfig = /*#__PURE__*/ (
+  requestData: GetApiTableV1ReservationConfigRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1ReservationConfigResponse>(
+    prepare(getApiTableV1ReservationConfigRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiTableV1ReservationConfig.requestConfig = getApiTableV1ReservationConfigRequestConfig
+
+/**
+ * 接口 更新预约配置 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/config_put`
+ */
+export interface PutApiTableV1ReservationConfigRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 到店后保留分钟数
+   */
+  retainMinutes?: number
+  /**
+   * 当天开放预约开始分钟，从 0 点起算
+   */
+  windowStartMinute?: number
+  /**
+   * 当天停止预约分钟，从 0 点起算；小于开始表示跨日开放窗口
+   */
+  windowEndMinute?: number
+  /**
+   * 是否开启预约，true=开启，false=关闭
+   */
+  reservationEnabled?: boolean
+}
+
+/**
+ * 接口 更新预约配置 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/config_put`
+ */
+export interface PutApiTableV1ReservationConfigResponse {
+  /**
+   * 门店预约配置。
+   */
+  config?: {
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 到店后保留分钟数
+     */
+    retainMinutes?: number
+    /**
+     * 当天开放预约开始分钟，从 0 点起算
+     */
+    windowStartMinute?: number
+    /**
+     * 当天停止预约分钟，从 0 点起算；小于开始表示跨日开放窗口
+     */
+    windowEndMinute?: number
+    /**
+     * 是否开启预约，true=开启，false=关闭
+     */
+    reservationEnabled?: boolean
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+  }
+}
+
+/**
+ * 接口 更新预约配置 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/config_put`
+ */
+type PutApiTableV1ReservationConfigRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/reservation/config_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新预约配置 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/config_put`
+ */
+const putApiTableV1ReservationConfigRequestConfig: PutApiTableV1ReservationConfigRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservation/config_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTableV1ReservationConfig',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新预约配置 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservation/config_put`
+ */
+export const putApiTableV1ReservationConfig = /*#__PURE__*/ (
+  requestData: PutApiTableV1ReservationConfigRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTableV1ReservationConfigResponse>(
+    prepare(putApiTableV1ReservationConfigRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiTableV1ReservationConfig.requestConfig = putApiTableV1ReservationConfigRequestConfig
+
+/**
+ * 接口 查询预约等待队列 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservationWaitlists`
+ */
+export interface GetApiTableV1ReservationWaitlistsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 等待单状态筛选：waiting=等待中，assigned=已排入，cancelled=已取消
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询预约等待队列 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservationWaitlists`
+ */
+export interface GetApiTableV1ReservationWaitlistsResponse {
+  /**
+   * 等待单列表
+   */
+  waitlists?: {
+    /**
+     * 等待单ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 目标桌位ID
+     */
+    targetTableId?: string
+    /**
+     * 目标桌子ID
+     */
+    targetGroupId?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 排队号
+     */
+    queueNo?: string
+    /**
+     * 状态：waiting=等待中，assigned=已排入，cancelled=已取消
+     */
+    status?: string
+    /**
+     * 排入时间
+     */
+    assignedAt?: string
+    /**
+     * 排入后的预约ID
+     */
+    reservationId?: string
+    /**
+     * 取消原因
+     */
+    cancelReason?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * TableDisplayInfo 桌位通用展示信息。
+     */
+    table?: {
+      /**
+       * 桌位ID
+       */
+      id?: string
+      /**
+       * 桌位名称
+       */
+      name?: string
+      /**
+       * 占用状态：idle=空闲，occupied=占用
+       */
+      occupancyStatus?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询预约等待队列 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservationWaitlists`
+ */
+type GetApiTableV1ReservationWaitlistsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/table/v1/reservationWaitlists',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询预约等待队列 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservationWaitlists`
+ */
+const getApiTableV1ReservationWaitlistsRequestConfig: GetApiTableV1ReservationWaitlistsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservationWaitlists',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'status'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1ReservationWaitlists',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询预约等待队列 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservationWaitlists`
+ */
+export const getApiTableV1ReservationWaitlists = /*#__PURE__*/ (
+  requestData: GetApiTableV1ReservationWaitlistsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1ReservationWaitlistsResponse>(
+    prepare(getApiTableV1ReservationWaitlistsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiTableV1ReservationWaitlists.requestConfig = getApiTableV1ReservationWaitlistsRequestConfig
+
+/**
+ * 接口 查询预约列表 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations`
+ */
+export interface GetApiTableV1ReservationsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 查询日期，建议格式 YYYY-MM-DD
+   */
+  reservationDate?: string
+  /**
+   * 预约状态筛选：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询预约列表 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations`
+ */
+export interface GetApiTableV1ReservationsResponse {
+  /**
+   * 预约列表
+   */
+  reservations?: {
+    /**
+     * 预约ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 桌位ID
+     */
+    tableId?: string
+    /**
+     * 桌位名称
+     */
+    tableName?: string
+    /**
+     * 桌子类型摘要。
+     */
+    tableType?: {
+      /**
+       * 桌子类型ID
+       */
+      id?: string
+      /**
+       * 桌子类型名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 桌子摘要。
+     */
+    tableGroup?: {
+      /**
+       * 桌子ID
+       */
+      id?: string
+      /**
+       * 桌子名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 到店时间
+     */
+    arriveAt?: string
+    /**
+     * 保留分钟数
+     */
+    retainMinutes?: number
+    /**
+     * 过期时间
+     */
+    expireAt?: string
+    /**
+     * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+     */
+    status?: string
+    /**
+     * 取消原因
+     */
+    cancelReason?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * TableDisplayInfo 桌位通用展示信息。
+     */
+    table?: {
+      /**
+       * 桌位ID
+       */
+      id?: string
+      /**
+       * 桌位名称
+       */
+      name?: string
+      /**
+       * 占用状态：idle=空闲，occupied=占用
+       */
+      occupancyStatus?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询预约列表 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations`
+ */
+type GetApiTableV1ReservationsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/table/v1/reservations',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'reservationDate' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询预约列表 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations`
+ */
+const getApiTableV1ReservationsRequestConfig: GetApiTableV1ReservationsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservations',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'reservationDate', 'status'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1Reservations',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询预约列表 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations`
+ */
+export const getApiTableV1Reservations = /*#__PURE__*/ (
+  requestData: GetApiTableV1ReservationsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1ReservationsResponse>(
+    prepare(getApiTableV1ReservationsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiTableV1Reservations.requestConfig = getApiTableV1ReservationsRequestConfig
+
+/**
+ * 接口 确认预约到店 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/arrive`
+ */
+export interface PostApiTableV1ReservationsArriveRequest {
+  /**
+   * 预约ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 确认预约到店 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/arrive`
+ */
+export interface PostApiTableV1ReservationsArriveResponse {}
+
+/**
+ * 接口 确认预约到店 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/arrive`
+ */
+type PostApiTableV1ReservationsArriveRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/reservations/arrive', undefined, string, string, false>
+>
+
+/**
+ * 接口 确认预约到店 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/arrive`
+ */
+const postApiTableV1ReservationsArriveRequestConfig: PostApiTableV1ReservationsArriveRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservations/arrive',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTableV1ReservationsArrive',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 确认预约到店 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/arrive`
+ */
+export const postApiTableV1ReservationsArrive = /*#__PURE__*/ (
+  requestData: PostApiTableV1ReservationsArriveRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTableV1ReservationsArriveResponse>(
+    prepare(postApiTableV1ReservationsArriveRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiTableV1ReservationsArrive.requestConfig = postApiTableV1ReservationsArriveRequestConfig
+
+/**
+ * 接口 取消预约 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/cancel`
+ */
+export interface PostApiTableV1ReservationsCancelRequest {
+  /**
+   * 预约ID
+   */
+  id?: string
+  /**
+   * 取消原因
+   */
+  cancelReason?: string
+}
+
+/**
+ * 接口 取消预约 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/cancel`
+ */
+export interface PostApiTableV1ReservationsCancelResponse {}
+
+/**
+ * 接口 取消预约 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/cancel`
+ */
+type PostApiTableV1ReservationsCancelRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/reservations/cancel', undefined, string, string, false>
+>
+
+/**
+ * 接口 取消预约 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/cancel`
+ */
+const postApiTableV1ReservationsCancelRequestConfig: PostApiTableV1ReservationsCancelRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservations/cancel',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTableV1ReservationsCancel',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 取消预约 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/cancel`
+ */
+export const postApiTableV1ReservationsCancel = /*#__PURE__*/ (
+  requestData: PostApiTableV1ReservationsCancelRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTableV1ReservationsCancelResponse>(
+    prepare(postApiTableV1ReservationsCancelRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiTableV1ReservationsCancel.requestConfig = postApiTableV1ReservationsCancelRequestConfig
+
+/**
+ * 接口 完成预约离店 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/complete`
+ */
+export interface PostApiTableV1ReservationsCompleteRequest {
+  /**
+   * 预约ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 完成预约离店 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/complete`
+ */
+export interface PostApiTableV1ReservationsCompleteResponse {}
+
+/**
+ * 接口 完成预约离店 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/complete`
+ */
+type PostApiTableV1ReservationsCompleteRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/reservations/complete', undefined, string, string, false>
+>
+
+/**
+ * 接口 完成预约离店 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/complete`
+ */
+const postApiTableV1ReservationsCompleteRequestConfig: PostApiTableV1ReservationsCompleteRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservations/complete',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTableV1ReservationsComplete',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 完成预约离店 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `POST /api/table/v1/reservations/complete`
+ */
+export const postApiTableV1ReservationsComplete = /*#__PURE__*/ (
+  requestData: PostApiTableV1ReservationsCompleteRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTableV1ReservationsCompleteResponse>(
+    prepare(postApiTableV1ReservationsCompleteRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiTableV1ReservationsComplete.requestConfig = postApiTableV1ReservationsCompleteRequestConfig
+
+/**
+ * 接口 查询预约详情 的 **请求类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations/{id}`
+ */
+export interface GetApiTableV1ReservationsByIdRequest {
+  /**
+   * 预约ID
+   */
+  id: string
+}
+
+/**
+ * 接口 查询预约详情 的 **返回类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations/{id}`
+ */
+export interface GetApiTableV1ReservationsByIdResponse {
+  /**
+   * 桌位预约信息。
+   */
+  reservation?: {
+    /**
+     * 预约ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 桌位ID
+     */
+    tableId?: string
+    /**
+     * 桌位名称
+     */
+    tableName?: string
+    /**
+     * 桌子类型摘要。
+     */
+    tableType?: {
+      /**
+       * 桌子类型ID
+       */
+      id?: string
+      /**
+       * 桌子类型名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 桌子摘要。
+     */
+    tableGroup?: {
+      /**
+       * 桌子ID
+       */
+      id?: string
+      /**
+       * 桌子名称
+       */
+      name?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+    }
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 到店时间
+     */
+    arriveAt?: string
+    /**
+     * 保留分钟数
+     */
+    retainMinutes?: number
+    /**
+     * 过期时间
+     */
+    expireAt?: string
+    /**
+     * 状态：1=启用，2=禁用；预约状态：pending=待到店，arrived=已到店，completed=已完成，cancelled=已取消，expired=已过期。
+     */
+    status?: string
+    /**
+     * 取消原因
+     */
+    cancelReason?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * TableDisplayInfo 桌位通用展示信息。
+     */
+    table?: {
+      /**
+       * 桌位ID
+       */
+      id?: string
+      /**
+       * 桌位名称
+       */
+      name?: string
+      /**
+       * 占用状态：idle=空闲，occupied=占用
+       */
+      occupancyStatus?: string
+    }
+  }
+}
+
+/**
+ * 接口 查询预约详情 的 **请求配置的类型**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations/{id}`
+ */
+type GetApiTableV1ReservationsByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/table/v1/reservations/{id}', undefined, 'id', string, false>
+>
+
+/**
+ * 接口 查询预约详情 的 **请求配置**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations/{id}`
+ */
+const getApiTableV1ReservationsByIdRequestConfig: GetApiTableV1ReservationsByIdRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/table/v1/reservations/{id}',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: ['id'],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTableV1ReservationsById',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询预约详情 的 **请求函数**
+ *
+ * @分类 ReservationAdminService
+ * @请求头 `GET /api/table/v1/reservations/{id}`
+ */
+export const getApiTableV1ReservationsById = /*#__PURE__*/ (
+  requestData: GetApiTableV1ReservationsByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTableV1ReservationsByIdResponse>(
+    prepare(getApiTableV1ReservationsByIdRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiTableV1ReservationsById.requestConfig = getApiTableV1ReservationsByIdRequestConfig
+
 /* prettier-ignore-end */

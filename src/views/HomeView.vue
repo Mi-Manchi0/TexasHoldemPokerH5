@@ -11,9 +11,15 @@ import {
   WalletOutlined,
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import brandMarkUrl from '@/assets/bgc.jpg'
+import {
+  getApiOrderV1TableSessions,
+  getApiTableV1Tables,
+  type GetApiOrderV1TableSessionsResponse,
+  type GetApiTableV1TablesResponse,
+} from '@/services/basis/basis'
 import { useOrgScopeStore } from '@/stores/orgScope'
 import { clearAuthSession, getUserInfo } from '@/utils/auth'
 
@@ -35,13 +41,15 @@ const scopeCardSubtitle = computed(() => {
 })
 
 type SeatStatus = 'available' | 'busy' | 'reserved'
+type ApiTable = NonNullable<GetApiTableV1TablesResponse['tables']>[number]
+type ApiTableSession = NonNullable<GetApiOrderV1TableSessionsResponse['sessions']>[number]
 
 interface TableSeat {
-  capacity: number
   id: string
   name: string
   note: string
   status: SeatStatus
+  statusText: string
 }
 
 interface TableGroup {
@@ -49,68 +57,319 @@ interface TableGroup {
   label: string
   name: string
   seats: TableSeat[]
+  sort: number
 }
 
-const tableGroups: TableGroup[] = [
-  {
-    id: 'main',
-    label: 'MAIN TABLE',
-    name: '主厅桌台',
-    seats: [
-      { capacity: 6, id: 'A-01', name: 'A-01', note: '标准德州桌', status: 'available' },
-      { capacity: 6, id: 'A-02', name: 'A-02', note: '近吧台', status: 'busy' },
-      { capacity: 8, id: 'A-03', name: 'A-03', note: '长局优先', status: 'available' },
-    ],
-  },
-  {
-    id: 'vip',
-    label: 'PRIVATE TABLE',
-    name: '包厢桌台',
-    seats: [
-      { capacity: 8, id: 'V-01', name: 'V-01', note: '安静包厢', status: 'reserved' },
-      { capacity: 10, id: 'V-02', name: 'V-02', note: '高额桌', status: 'available' },
-    ],
-  },
-  {
-    id: 'bar',
-    label: 'BAR TABLE',
-    name: '吧台桌台',
-    seats: [
-      { capacity: 4, id: 'B-01', name: 'B-01', note: '短局快开', status: 'available' },
-      { capacity: 4, id: 'B-02', name: 'B-02', note: '观赛位', status: 'busy' },
-    ],
-  },
-]
-
-const seatStatusText: Record<SeatStatus, string> = {
-  available: '可开台',
-  busy: '使用中',
-  reserved: '已预留',
+type ActiveScope = {
+  merchantId: string
+  storeId: string
 }
+
+const TABLE_PAGE_SIZE = 200
+const SESSION_PAGE_SIZE = 200
 
 const isTablePickerOpen = ref(false)
 const isScopePickerOpen = ref(false)
 const selectedSeatId = ref('')
+const tableGroups = ref<TableGroup[]>([])
+const tablePickerError = ref('')
+const tablePickerLoading = ref(false)
+
+let tablePickerRequestId = 0
 
 const selectedSeat = computed(() => {
-  for (const group of tableGroups) {
+  for (const group of tableGroups.value) {
     const seat = group.seats.find((item) => item.id === selectedSeatId.value)
 
-    if (seat) return seat
+    if (seat?.status === 'available') return seat
   }
 
   return null
 })
 
+const totalTableSeats = computed(() =>
+  tableGroups.value.reduce((total, group) => total + group.seats.length, 0),
+)
+
 const totalAvailableSeats = computed(() =>
-  tableGroups.reduce(
+  tableGroups.value.reduce(
     (total, group) => total + group.seats.filter((seat) => seat.status === 'available').length,
     0,
   ),
 )
 
+const tablePickerFootText = computed(() => {
+  if (tablePickerLoading.value) return '正在同步桌位状态'
+  if (selectedSeat.value) return `${selectedSeat.value.name} 桌位`
+  if (tablePickerError.value) return tablePickerError.value
+
+  return '请选择一个可开桌位'
+})
+
+const normalizeText = (value: unknown) => {
+  if (value === undefined || value === null) return ''
+
+  return String(value).trim()
+}
+
+const getSortValue = (value: unknown) => {
+  const sort = Number(value)
+
+  return Number.isFinite(sort) ? sort : Number.MAX_SAFE_INTEGER
+}
+
+const compareText = (first: string, second: string) =>
+  first.localeCompare(second, 'zh-Hans-CN', { numeric: true, sensitivity: 'base' })
+
+const formatOpenedAt = (value?: string) => {
+  if (!value) return ''
+
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+
+  return date.toLocaleTimeString('zh-CN', {
+    hour: '2-digit',
+    hour12: false,
+    minute: '2-digit',
+  })
+}
+
+const getOpenSessionMap = (sessions: ApiTableSession[]) =>
+  sessions.reduce((sessionMap, session) => {
+    const status = normalizeText(session.status).toLowerCase()
+    const tableId = normalizeText(session.tableId || session.table?.id)
+
+    if (tableId && (!status || status === 'open')) {
+      sessionMap.set(tableId, session)
+    }
+
+    return sessionMap
+  }, new Map<string, ApiTableSession>())
+
+const getTableStatus = (
+  table: ApiTable,
+  openSession?: ApiTableSession,
+): Pick<TableSeat, 'status' | 'statusText'> => {
+  const occupancyStatus = normalizeText(table.occupancyStatus).toLowerCase()
+  const tableStatus = table.status === undefined ? 1 : Number(table.status)
+
+  if (openSession) {
+    return {
+      status: 'busy',
+      statusText: '已开台',
+    }
+  }
+
+  if (occupancyStatus === 'occupied') {
+    return {
+      status: 'busy',
+      statusText: '使用中',
+    }
+  }
+
+  if (table.billingEnabled === false) {
+    return {
+      status: 'reserved',
+      statusText: '不可开',
+    }
+  }
+
+  if (tableStatus !== 1) {
+    return {
+      status: 'reserved',
+      statusText: '已停用',
+    }
+  }
+
+  return {
+    status: 'available',
+    statusText: '可开台',
+  }
+}
+
+const getTableNote = (table: ApiTable, openSession?: ApiTableSession) => {
+  if (openSession) {
+    const guestCount = Number(openSession.guestCount ?? 0)
+    const openedAt = formatOpenedAt(openSession.openedAt)
+    const parts = [
+      guestCount > 0 ? `${guestCount}人` : '',
+      openedAt ? `${openedAt}开台` : '',
+    ].filter(Boolean)
+
+    return parts.join(' · ') || '开台中'
+  }
+
+  if (normalizeText(table.occupancyStatus).toLowerCase() === 'occupied') {
+    return '桌位已占用'
+  }
+
+  if (table.billingEnabled === false) {
+    return '不支持后台开单'
+  }
+
+  if (table.status !== undefined && Number(table.status) !== 1) {
+    return '桌位已停用'
+  }
+
+  return (
+    normalizeText(table.description) ||
+    normalizeText(table.type?.name) ||
+    normalizeText(table.group?.name) ||
+    '可后台开单'
+  )
+}
+
+const createTableGroups = (tables: ApiTable[], sessions: ApiTableSession[]) => {
+  const openSessionMap = getOpenSessionMap(sessions)
+  const groupMap = new Map<string, TableGroup>()
+
+  tables.forEach((table) => {
+    const tableId = normalizeText(table.id)
+    if (!tableId) return
+
+    const groupName = normalizeText(table.group?.name) || '未分组桌台'
+    const groupId = normalizeText(table.group?.id) || `ungrouped:${groupName}`
+    const tableTypeName = normalizeText(table.type?.name)
+    const currentGroup =
+      groupMap.get(groupId) ??
+      ({
+        id: groupId,
+        label: tableTypeName ? tableTypeName.toUpperCase() : 'TABLE GROUP',
+        name: groupName,
+        seats: [],
+        sort: getSortValue(table.group?.sort),
+      } satisfies TableGroup)
+    const openSession = openSessionMap.get(tableId)
+    const status = getTableStatus(table, openSession)
+
+    currentGroup.seats.push({
+      id: tableId,
+      name: normalizeText(table.name) || `桌位 ${tableId}`,
+      note: getTableNote(table, openSession),
+      ...status,
+    })
+
+    groupMap.set(groupId, currentGroup)
+  })
+
+  return [...groupMap.values()]
+    .map((group) => ({
+      ...group,
+      seats: [...group.seats].sort((first, second) => compareText(first.name, second.name)),
+    }))
+    .sort(
+      (first, second) =>
+        first.sort - second.sort ||
+        compareText(first.name, second.name) ||
+        compareText(first.id, second.id),
+    )
+}
+
+const loadTableList = async (scope: ActiveScope) => {
+  const firstPage = await getApiTableV1Tables({
+    'pageRequest.page': 1,
+    'pageRequest.pageSize': TABLE_PAGE_SIZE,
+    merchantId: scope.merchantId,
+    storeId: scope.storeId,
+  })
+  const tables = [...(firstPage.tables ?? [])]
+  const total = Number(firstPage.pageReply?.total ?? tables.length)
+  const pageCount = Math.ceil(total / TABLE_PAGE_SIZE)
+
+  for (let page = 2; page <= pageCount; page += 1) {
+    const result = await getApiTableV1Tables({
+      'pageRequest.page': page,
+      'pageRequest.pageSize': TABLE_PAGE_SIZE,
+      merchantId: scope.merchantId,
+      storeId: scope.storeId,
+    })
+    tables.push(...(result.tables ?? []))
+  }
+
+  return tables
+}
+
+const loadOpenTableSessions = async (scope: ActiveScope) => {
+  const firstPage = await getApiOrderV1TableSessions({
+    'pageRequest.page': 1,
+    'pageRequest.pageSize': SESSION_PAGE_SIZE,
+    merchantId: scope.merchantId,
+    status: 'open',
+    storeId: scope.storeId,
+  })
+  const sessions = [...(firstPage.sessions ?? [])]
+  const total = Number(firstPage.pageReply?.total ?? sessions.length)
+  const pageCount = Math.ceil(total / SESSION_PAGE_SIZE)
+
+  for (let page = 2; page <= pageCount; page += 1) {
+    const result = await getApiOrderV1TableSessions({
+      'pageRequest.page': page,
+      'pageRequest.pageSize': SESSION_PAGE_SIZE,
+      merchantId: scope.merchantId,
+      status: 'open',
+      storeId: scope.storeId,
+    })
+    sessions.push(...(result.sessions ?? []))
+  }
+
+  return sessions
+}
+
+const clearUnavailableSelection = () => {
+  if (!selectedSeatId.value) return
+
+  const hasAvailableSeat = tableGroups.value.some((group) =>
+    group.seats.some((seat) => seat.id === selectedSeatId.value && seat.status === 'available'),
+  )
+
+  if (!hasAvailableSeat) {
+    selectedSeatId.value = ''
+  }
+}
+
+const loadTablePickerData = async () => {
+  const requestId = ++tablePickerRequestId
+
+  tablePickerLoading.value = true
+  tablePickerError.value = ''
+  tableGroups.value = []
+  selectedSeatId.value = ''
+
+  try {
+    if (!selectedScope.value && !orgScopeStore.loaded && !orgScopeStore.loading) {
+      await orgScopeStore.loadMyScopes()
+    }
+
+    const scope = selectedScope.value
+    if (!scope) {
+      tablePickerError.value = '请先选择组织'
+      return
+    }
+
+    const [tables, sessions] = await Promise.all([
+      loadTableList(scope),
+      loadOpenTableSessions(scope),
+    ])
+
+    if (requestId !== tablePickerRequestId) return
+
+    tableGroups.value = createTableGroups(tables, sessions)
+    clearUnavailableSelection()
+  } catch {
+    if (requestId !== tablePickerRequestId) return
+
+    tableGroups.value = []
+    tablePickerError.value = '桌位数据加载失败，请稍后重试'
+  } finally {
+    if (requestId === tablePickerRequestId) {
+      tablePickerLoading.value = false
+    }
+  }
+}
+
 const openTablePicker = () => {
   isTablePickerOpen.value = true
+  void loadTablePickerData()
 }
 
 const closeTablePicker = () => {
@@ -157,6 +416,24 @@ const selectScope = (merchantId?: string, storeId?: string) => {
   message.success(`已切换至 ${selection.merchantName} / ${selection.storeName}`)
   closeScopePicker()
 }
+
+watch(
+  () => [selectedScope.value?.merchantId, selectedScope.value?.storeId],
+  ([merchantId, storeId], [previousMerchantId, previousStoreId]) => {
+    selectedSeatId.value = ''
+    tableGroups.value = []
+    tablePickerError.value = ''
+
+    if (
+      isTablePickerOpen.value &&
+      merchantId &&
+      storeId &&
+      (merchantId !== previousMerchantId || storeId !== previousStoreId)
+    ) {
+      void loadTablePickerData()
+    }
+  },
+)
 
 const handleLogout = async () => {
   orgScopeStore.resetSession()
@@ -289,7 +566,11 @@ const handleLogout = async () => {
         </div>
 
         <div class="table-group-list">
-          <section v-for="group in tableGroups" :key="group.id" class="table-group">
+          <p v-if="tablePickerLoading" class="scope-empty-text">正在加载桌位</p>
+          <p v-else-if="tablePickerError" class="scope-empty-text">{{ tablePickerError }}</p>
+          <p v-else-if="!totalTableSeats" class="scope-empty-text">暂无可开台桌位</p>
+
+          <section v-for="group in tableGroups" v-else :key="group.id" class="table-group">
             <header class="table-group-head">
               <div>
                 <span>{{ group.label }}</span>
@@ -305,13 +586,13 @@ const handleLogout = async () => {
                 class="table-seat-card"
                 :class="[`is-${seat.status}`, { 'is-selected': selectedSeatId === seat.id }]"
                 type="button"
-                :disabled="seat.status !== 'available'"
+                :disabled="seat.status !== 'available' || tablePickerLoading"
                 :aria-pressed="selectedSeatId === seat.id"
                 @click="selectSeat(seat)"
               >
-                <span class="table-seat-status">{{ seatStatusText[seat.status] }}</span>
+                <span class="table-seat-status">{{ seat.statusText }}</span>
                 <strong>{{ seat.name }}</strong>
-                <small>{{ seat.capacity }}人 · {{ seat.note }}</small>
+                <small>{{ seat.note }}</small>
                 <CheckCircleFilled v-if="selectedSeatId === seat.id" class="table-seat-check" />
               </button>
             </div>
@@ -319,11 +600,11 @@ const handleLogout = async () => {
         </div>
 
         <footer class="table-picker-foot">
-          <span>{{ selectedSeat ? `${selectedSeat.name} 桌位` : '请选择一个可开桌位' }}</span>
+          <span>{{ tablePickerFootText }}</span>
           <button
             class="table-picker-confirm"
             type="button"
-            :disabled="!selectedSeat"
+            :disabled="!selectedSeat || tablePickerLoading"
             @click="confirmTableSeat"
           >
             确认开台
