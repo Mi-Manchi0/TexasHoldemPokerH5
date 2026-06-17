@@ -130,23 +130,19 @@ const syncViewportSize = () => {
 	const viewportWidth = viewport?.width ?? window.innerWidth
 	const layoutHeight = window.innerHeight
 	const layoutWidth = window.innerWidth
-	const viewportOffsetTop = viewport?.offsetTop ?? 0
-	const keyboardThreshold = 80
-	const previousKeyboardOffset = Math.max(
-		0,
-		stableAppHeight - viewportHeight - viewportOffsetTop,
-	)
-	const isKeyboardOpen = previousKeyboardOffset > keyboardThreshold
 	const widthChanged =
 		stableAppWidth > 0 && Math.abs(layoutWidth - stableAppWidth) > 40
 	const rootStyle = document.documentElement.style
+	const hasFocusedInput = Boolean(
+		document.activeElement?.matches("input, textarea, select"),
+	)
 
-	if (!stableAppHeight || (!isKeyboardOpen && widthChanged)) {
+	if (!stableAppHeight || widthChanged) {
 		stableAppHeight = Math.round(
 			Math.max(layoutHeight, viewportHeight),
 		)
 		stableAppWidth = Math.round(Math.max(layoutWidth, viewportWidth))
-	} else if (!isKeyboardOpen) {
+	} else if (!hasFocusedInput) {
 		stableAppHeight = Math.max(
 			stableAppHeight,
 			Math.round(layoutHeight),
@@ -155,20 +151,10 @@ const syncViewportSize = () => {
 		stableAppWidth = Math.round(Math.max(layoutWidth, viewportWidth))
 	}
 
-	const keyboardOffset = Math.max(
-		0,
-		stableAppHeight - viewportHeight - viewportOffsetTop,
-	)
-	const keyboardLift =
-		keyboardOffset > keyboardThreshold
-			? Math.round(keyboardOffset)
-			: 0
-
 	rootStyle.setProperty(
 		"--app-height",
 		`${stableAppHeight || layoutHeight}px`,
 	)
-	rootStyle.setProperty("--keyboard-offset", `${keyboardLift}px`)
 	window.scrollTo(0, 0)
 }
 
@@ -286,7 +272,6 @@ onBeforeUnmount(() => {
 	isImmersiveMode.value = false
 	document.body.classList.remove("is-immersive-locked")
 	document.documentElement.style.removeProperty("--app-height")
-	document.documentElement.style.removeProperty("--keyboard-offset")
 	document.removeEventListener(
 		"fullscreenchange",
 		syncFullscreenState,
@@ -382,36 +367,35 @@ onBeforeUnmount(() => {
 				</p>
 			</div>
 
-			<div class="login-actions" aria-label="账号密码登录">
-				<input
-					v-model="loginAccount"
-					class="login-option login-input"
-					type="text"
-					placeholder="请输入账号"
-					autocomplete="username"
-					:disabled="isLoginSubmitting"
-					@keyup.enter="handleLogin"
-				/>
+			<form class="login-form" aria-label="账号密码登录" @submit.prevent="handleLogin">
+				<div class="login-actions">
+					<input
+						v-model="loginAccount"
+						class="login-option login-input"
+						type="text"
+						placeholder="请输入账号"
+						autocomplete="username"
+						:disabled="isLoginSubmitting"
+					/>
 
-				<input
-					v-model="loginPassword"
-					class="login-option login-input"
-					type="password"
-					placeholder="请输入密码"
-					autocomplete="current-password"
-					:disabled="isLoginSubmitting"
-					@keyup.enter="handleLogin"
-				/>
-			</div>
+					<input
+						v-model="loginPassword"
+						class="login-option login-input"
+						type="password"
+						placeholder="请输入密码"
+						autocomplete="current-password"
+						:disabled="isLoginSubmitting"
+					/>
+				</div>
 
-			<button
-				class="account-login"
-				type="button"
-				:disabled="isLoginSubmitting"
-				@click="handleLogin"
-			>
-				{{ isLoginSubmitting ? "登录中..." : "登录" }}
-			</button>
+				<button
+					class="account-login"
+					type="submit"
+					:disabled="isLoginSubmitting"
+				>
+					{{ isLoginSubmitting ? "登录中..." : "登录" }}
+				</button>
+			</form>
 
 			<div class="home-indicator" aria-hidden="true"></div>
 		</section>

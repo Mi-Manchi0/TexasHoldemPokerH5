@@ -1,13 +1,16 @@
 import { defineStore } from 'pinia'
 import {
   getApiStaffV1MyScopes,
+  postApiStoreV1BusinessCurrent,
   type GetApiStaffV1MyScopesResponse,
+  type PostApiStoreV1BusinessCurrentResponse,
 } from '@/services/basis/basis'
 import { getLastLoginCredentials, getUserInfo } from '@/utils/auth'
 import { getHttpConfig } from '@/utils/http'
 
 type StaffScopeMerchant = NonNullable<GetApiStaffV1MyScopesResponse['scopes']>[number]
 type StaffScopeStore = NonNullable<StaffScopeMerchant['stores']>[number]
+type CurrentBusiness = NonNullable<PostApiStoreV1BusinessCurrentResponse['business']>
 
 export interface OrgScopeSelection {
   merchantId: string
@@ -19,6 +22,10 @@ export interface OrgScopeSelection {
 
 interface OrgScopeState {
   accountKey: string
+  currentBusiness: CurrentBusiness | null
+  currentBusinessErrorMessage: string
+  currentBusinessLoaded: boolean
+  currentBusinessLoading: boolean
   errorMessage: string
   loaded: boolean
   loading: boolean
@@ -27,6 +34,7 @@ interface OrgScopeState {
 }
 
 const selectionStoragePrefix = 'ORG_SCOPE_SELECTION:'
+let currentBusinessRequestId = 0
 
 const normalizeText = (value: unknown) => {
   if (value === undefined || value === null) return ''
@@ -131,6 +139,10 @@ const cacheAccountSelection = (accountKey: string, selection: OrgScopeSelection)
 export const useOrgScopeStore = defineStore('orgScope', {
   state: (): OrgScopeState => ({
     accountKey: '',
+    currentBusiness: null,
+    currentBusinessErrorMessage: '',
+    currentBusinessLoaded: false,
+    currentBusinessLoading: false,
     errorMessage: '',
     loaded: false,
     loading: false,
@@ -147,16 +159,69 @@ export const useOrgScopeStore = defineStore('orgScope', {
       this.selected = selection
       writeActiveSelection(selection)
       cacheAccountSelection(this.accountKey, selection)
+      void this.loadCurrentBusiness(selection).catch(() => {
+        // The store keeps the failure state for pages that need to render it.
+      })
     },
     clearActiveSelection() {
       this.selected = null
+      this.clearCurrentBusiness()
       clearActiveSelectionStorage()
+    },
+    clearCurrentBusiness() {
+      currentBusinessRequestId += 1
+      this.currentBusiness = null
+      this.currentBusinessErrorMessage = ''
+      this.currentBusinessLoaded = false
+      this.currentBusinessLoading = false
     },
     findSelection(merchantId: string, storeId: string) {
       return this.availableSelections.find(
         (selection) =>
           selection.merchantId === merchantId && selection.storeId === storeId,
       )
+    },
+    async loadCurrentBusiness(selection?: OrgScopeSelection | null) {
+      const requestId = ++currentBusinessRequestId
+      const targetSelection = selection ?? this.selected
+      const merchantId = normalizeText(targetSelection?.merchantId)
+      const storeId = normalizeText(targetSelection?.storeId)
+
+      if (!storeId) {
+        this.clearCurrentBusiness()
+        return null
+      }
+
+      this.currentBusinessErrorMessage = ''
+      this.currentBusinessLoading = true
+
+      try {
+        const result = await postApiStoreV1BusinessCurrent({ storeId })
+
+        if (
+          requestId !== currentBusinessRequestId ||
+          this.selected?.merchantId !== merchantId ||
+          this.selected?.storeId !== storeId
+        ) {
+          return this.currentBusiness
+        }
+
+        this.currentBusiness = result.business ?? null
+        this.currentBusinessLoaded = true
+        return this.currentBusiness
+      } catch (error) {
+        if (requestId === currentBusinessRequestId) {
+          this.currentBusiness = null
+          this.currentBusinessErrorMessage = '当前营业记录加载失败'
+          this.currentBusinessLoaded = false
+        }
+
+        throw error
+      } finally {
+        if (requestId === currentBusinessRequestId) {
+          this.currentBusinessLoading = false
+        }
+      }
     },
     async loadMyScopes(accountHint?: string) {
       const accountKey = getAccountKey(accountHint)

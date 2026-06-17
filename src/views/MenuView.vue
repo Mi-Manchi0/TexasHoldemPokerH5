@@ -296,7 +296,9 @@ const parseDateText = (value?: string) => {
   const text = normalizeText(value)
   if (!text) return null
 
-  const date = new Date(text)
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(text)
+  const normalizedText = isDateOnly ? `${text}T00:00:00` : text.replace(' ', 'T')
+  const date = new Date(normalizedText)
   if (Number.isNaN(date.getTime())) return null
 
   return date

@@ -28,6 +28,7 @@ interface TableSeat {
   id: string
   name: string
   note: string
+  selectable: boolean
   status: SeatStatus
   statusText: string
 }
@@ -62,7 +63,7 @@ const selectedSeat = computed(() => {
   for (const group of tableGroups.value) {
     const seat = group.seats.find((item) => item.id === selectedSeatId.value)
 
-    if (seat?.status === 'available') return seat
+    if (seat?.selectable) return seat
   }
 
   return null
@@ -72,19 +73,19 @@ const totalTableSeats = computed(() =>
   tableGroups.value.reduce((total, group) => total + group.seats.length, 0),
 )
 
-const totalAvailableSeats = computed(() =>
+const totalSelectableSeats = computed(() =>
   tableGroups.value.reduce(
-    (total, group) => total + group.seats.filter((seat) => seat.status === 'available').length,
+    (total, group) => total + group.seats.filter((seat) => seat.selectable).length,
     0,
   ),
 )
 
 const tablePickerFootText = computed(() => {
   if (tablePickerLoading.value) return '正在同步桌位状态'
-  if (selectedSeat.value) return `${selectedSeat.value.name} 桌位`
+  if (selectedSeat.value) return `${selectedSeat.value.name} · ${selectedSeat.value.statusText}`
   if (tablePickerError.value) return tablePickerError.value
 
-  return '请选择一个可开桌位'
+  return '请选择一个桌位'
 })
 
 const normalizeText = (value: unknown) => {
@@ -130,12 +131,13 @@ const getOpenSessionMap = (sessions: ApiTableSession[]) =>
 const getTableStatus = (
   table: ApiTable,
   openSession?: ApiTableSession,
-): Pick<TableSeat, 'status' | 'statusText'> => {
+): Pick<TableSeat, 'selectable' | 'status' | 'statusText'> => {
   const occupancyStatus = normalizeText(table.occupancyStatus).toLowerCase()
   const tableStatus = table.status === undefined ? 1 : Number(table.status)
 
   if (openSession) {
     return {
+      selectable: true,
       status: 'busy',
       statusText: '已开台',
     }
@@ -143,6 +145,7 @@ const getTableStatus = (
 
   if (occupancyStatus === 'occupied') {
     return {
+      selectable: false,
       status: 'busy',
       statusText: '使用中',
     }
@@ -150,6 +153,7 @@ const getTableStatus = (
 
   if (table.billingEnabled === false) {
     return {
+      selectable: false,
       status: 'reserved',
       statusText: '不可开',
     }
@@ -157,12 +161,14 @@ const getTableStatus = (
 
   if (tableStatus !== 1) {
     return {
+      selectable: false,
       status: 'reserved',
       statusText: '已停用',
     }
   }
 
   return {
+    selectable: true,
     status: 'available',
     statusText: '可开台',
   }
@@ -296,14 +302,14 @@ const loadOpenTableSessions = async (scope: ActiveScope) => {
   return sessions
 }
 
-const clearUnavailableSelection = () => {
+const clearUnselectableSelection = () => {
   if (!selectedSeatId.value) return
 
-  const hasAvailableSeat = tableGroups.value.some((group) =>
-    group.seats.some((seat) => seat.id === selectedSeatId.value && seat.status === 'available'),
+  const hasSelectableSeat = tableGroups.value.some((group) =>
+    group.seats.some((seat) => seat.id === selectedSeatId.value && seat.selectable),
   )
 
-  if (!hasAvailableSeat) {
+  if (!hasSelectableSeat) {
     selectedSeatId.value = ''
   }
 }
@@ -338,7 +344,7 @@ const loadTablePickerData = async () => {
     if (tableSeatStore.isSelectedSeatForScope(scope)) {
       selectedSeatId.value = tableSeatStore.selected?.id ?? ''
     }
-    clearUnavailableSelection()
+    clearUnselectableSelection()
   } catch {
     if (requestId !== tablePickerRequestId) return
 
@@ -356,7 +362,7 @@ const closeTablePicker = () => {
 }
 
 const selectSeat = (seat: TableSeat) => {
-  if (seat.status !== 'available') return
+  if (!seat.selectable) return
 
   selectedSeatId.value = seat.id
 }
@@ -441,15 +447,15 @@ watch(
           <small>桌台</small>
         </span>
         <span>
-          <strong>{{ totalAvailableSeats }}</strong>
-          <small>可开</small>
+          <strong>{{ totalSelectableSeats }}</strong>
+          <small>可选</small>
         </span>
       </div>
 
       <div class="table-group-list">
         <p v-if="tablePickerLoading" class="scope-empty-text">正在加载桌位</p>
         <p v-else-if="tablePickerError" class="scope-empty-text">{{ tablePickerError }}</p>
-        <p v-else-if="!totalTableSeats" class="scope-empty-text">暂无可开台桌位</p>
+        <p v-else-if="!totalTableSeats" class="scope-empty-text">暂无桌位</p>
 
         <section v-for="group in tableGroups" v-else :key="group.id" class="table-group">
           <header class="table-group-head">
@@ -465,9 +471,12 @@ watch(
               v-for="seat in group.seats"
               :key="seat.id"
               class="table-seat-card"
-              :class="[`is-${seat.status}`, { 'is-selected': selectedSeatId === seat.id }]"
+              :class="[
+                `is-${seat.status}`,
+                { 'is-selected': selectedSeatId === seat.id, 'is-selectable': seat.selectable },
+              ]"
               type="button"
-              :disabled="seat.status !== 'available' || tablePickerLoading"
+              :disabled="!seat.selectable || tablePickerLoading"
               :aria-pressed="selectedSeatId === seat.id"
               @click="selectSeat(seat)"
             >
@@ -488,7 +497,7 @@ watch(
           :disabled="!selectedSeat || tablePickerLoading"
           @click="confirmTableSeat"
         >
-          确认开台
+          确认选择
         </button>
       </footer>
     </div>

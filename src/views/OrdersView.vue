@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import {
   ArrowLeftOutlined,
-  CalendarOutlined,
   CheckCircleFilled,
   CreditCardOutlined,
   DownOutlined,
-  PlusOutlined,
+  VerticalAlignTopOutlined,
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { computed, nextTick, onMounted, ref, watch, type Component } from 'vue'
@@ -83,17 +82,6 @@ const selectedScopeKey = computed(() => {
   if (!scope) return ''
 
   return `${scope.merchantId}:${scope.storeId}`
-})
-
-const orderDays = Array.from({ length: 7 }, (_, index) => {
-  const date = new Date(today)
-  date.setDate(today.getDate() + index - 2)
-
-  return {
-    active: date.toDateString() === today.toDateString(),
-    date: String(date.getDate()).padStart(2, '0'),
-    label: date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
-  }
 })
 
 const heroDateLabel = today
@@ -616,6 +604,13 @@ const handleOrderListScroll = () => {
   }
 }
 
+const scrollOrdersToTop = () => {
+  orderListRef.value?.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}
+
 const handleBack = async () => {
   if (window.history.length > 1) {
     router.back()
@@ -653,24 +648,6 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
         <p>CONSUME {{ heroDateLabel }}</p>
         <h1>消费订单</h1>
       </div>
-
-      <div class="orders-shift-pill">
-        <CalendarOutlined />
-        <span>{{ selectedScope?.storeName || '当前门店' }}</span>
-      </div>
-    </section>
-
-    <section class="orders-day-strip" aria-label="订单日期">
-      <button
-        v-for="day in orderDays"
-        :key="day.date"
-        class="orders-day"
-        :class="{ 'is-active': day.active }"
-        type="button"
-      >
-        <small>{{ day.label }}</small>
-        <span>{{ day.date }}</span>
-      </button>
     </section>
 
     <section class="orders-stat-strip" aria-label="订单状态">
@@ -812,8 +789,13 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
       </ol>
     </section>
 
-    <button class="orders-add-button" type="button" aria-label="新增订单">
-      <PlusOutlined />
+    <button
+      class="orders-scroll-top-button"
+      type="button"
+      aria-label="回到顶部"
+      @click="scrollOrdersToTop"
+    >
+      <VerticalAlignTopOutlined />
     </button>
   </main>
 </template>
