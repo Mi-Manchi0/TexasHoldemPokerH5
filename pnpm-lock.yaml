@@ -13,6 +13,7 @@ specifiers:
   axios: ^1.18.0
   json-schema: ^0.4.0
   lodash-es: ^4.18.1
+  lucide-vue-next: ^1.0.0
   pinia: ^3.0.4
   qs: ^6.15.2
   ts-node: ^10.9.2
@@ -30,6 +31,7 @@ dependencies:
   axios: 1.18.0
   json-schema: 0.4.0
   lodash-es: 4.18.1
+  lucide-vue-next: 1.0.0_vue@3.5.38
   pinia: 3.0.4_d3tkq2jhv3vwsefbnyqnx6geje
   qs: 6.15.2
   vue: 3.5.38_typescript@6.0.3
@@ -3249,6 +3251,14 @@ packages:
     resolution: {integrity: sha512-BpdYkt9EvGl8OfWHDQPISVpcl5xZthb+XPsbELj5AQXxIC8IriDZIQYjBJPEm5rS420sjZ0TLEzRcq5KdBhYrQ==}
     dependencies:
       es5-ext: 0.10.64
+    dev: false
+
+  /lucide-vue-next/1.0.0_vue@3.5.38:
+    resolution: {integrity: sha512-V6SPvx1IHTj/UY+FrIYWV5faISsPSb8BnWSFDxAtezWKvWc9ZZ40PDrdu1/Qb5vg4lHWr1hs1BAMGVGm6V1Xdg==}
+    peerDependencies:
+      vue: '>=3.0.1'
+    dependencies:
+      vue: 3.5.38_typescript@6.0.3
     dev: false
 
   /magic-string/0.30.21:

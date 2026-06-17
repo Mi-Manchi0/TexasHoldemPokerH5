@@ -18376,4 +18376,4399 @@ export const getApiTableV1ReservationsById = /*#__PURE__*/ (
 
 getApiTableV1ReservationsById.requestConfig = getApiTableV1ReservationsByIdRequestConfig
 
+/**
+ * 接口 打烊 的 **请求类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/close`
+ */
+export interface PostApiStoreV1BusinessCloseRequest {
+  /**
+   * 门店ID
+   */
+  storeId?: string
+}
+
+/**
+ * 接口 打烊 的 **返回类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/close`
+ */
+export interface PostApiStoreV1BusinessCloseResponse {}
+
+/**
+ * 接口 打烊 的 **请求配置的类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/close`
+ */
+type PostApiStoreV1BusinessCloseRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/store/v1/business/close', undefined, string, string, false>
+>
+
+/**
+ * 接口 打烊 的 **请求配置**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/close`
+ */
+const postApiStoreV1BusinessCloseRequestConfig: PostApiStoreV1BusinessCloseRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/store/v1/business/close',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStoreV1BusinessClose',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 打烊 的 **请求函数**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/close`
+ */
+export const postApiStoreV1BusinessClose = /*#__PURE__*/ (
+  requestData: PostApiStoreV1BusinessCloseRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStoreV1BusinessCloseResponse>(
+    prepare(postApiStoreV1BusinessCloseRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiStoreV1BusinessClose.requestConfig = postApiStoreV1BusinessCloseRequestConfig
+
+/**
+ * 接口 查询当前营业记录 的 **请求类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/current`
+ */
+export interface PostApiStoreV1BusinessCurrentRequest {
+  /**
+   * 门店ID
+   */
+  storeId?: string
+}
+
+/**
+ * 接口 查询当前营业记录 的 **返回类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/current`
+ */
+export interface PostApiStoreV1BusinessCurrentResponse {
+  /**
+   * BusinessInfo 营业记录信息。
+   */
+  business?: {
+    /**
+     * 营业记录ID
+     */
+    id?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 状态：1=启用，2=禁用；0=默认或全部（按接口语义）。
+     */
+    status?: string
+    /**
+     * 开市时间
+     */
+    openedAt?: string
+    /**
+     * 打烊时间
+     */
+    closedAt?: string
+    /**
+     * 当前流水号
+     */
+    dailySeq?: string
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+  }
+}
+
+/**
+ * 接口 查询当前营业记录 的 **请求配置的类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/current`
+ */
+type PostApiStoreV1BusinessCurrentRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/store/v1/business/current', undefined, string, string, false>
+>
+
+/**
+ * 接口 查询当前营业记录 的 **请求配置**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/current`
+ */
+const postApiStoreV1BusinessCurrentRequestConfig: PostApiStoreV1BusinessCurrentRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/store/v1/business/current',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStoreV1BusinessCurrent',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询当前营业记录 的 **请求函数**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/current`
+ */
+export const postApiStoreV1BusinessCurrent = /*#__PURE__*/ (
+  requestData: PostApiStoreV1BusinessCurrentRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStoreV1BusinessCurrentResponse>(
+    prepare(postApiStoreV1BusinessCurrentRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiStoreV1BusinessCurrent.requestConfig = postApiStoreV1BusinessCurrentRequestConfig
+
+/**
+ * 接口 开市 的 **请求类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/open`
+ */
+export interface PostApiStoreV1BusinessOpenRequest {
+  /**
+   * 门店ID
+   */
+  storeId?: string
+}
+
+/**
+ * 接口 开市 的 **返回类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/open`
+ */
+export interface PostApiStoreV1BusinessOpenResponse {
+  /**
+   * BusinessInfo 营业记录信息。
+   */
+  business?: {
+    /**
+     * 营业记录ID
+     */
+    id?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 状态：1=启用，2=禁用；0=默认或全部（按接口语义）。
+     */
+    status?: string
+    /**
+     * 开市时间
+     */
+    openedAt?: string
+    /**
+     * 打烊时间
+     */
+    closedAt?: string
+    /**
+     * 当前流水号
+     */
+    dailySeq?: string
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+  }
+}
+
+/**
+ * 接口 开市 的 **请求配置的类型**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/open`
+ */
+type PostApiStoreV1BusinessOpenRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/store/v1/business/open', undefined, string, string, false>
+>
+
+/**
+ * 接口 开市 的 **请求配置**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/open`
+ */
+const postApiStoreV1BusinessOpenRequestConfig: PostApiStoreV1BusinessOpenRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/store/v1/business/open',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiStoreV1BusinessOpen',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 开市 的 **请求函数**
+ *
+ * @分类 BusinessService
+ * @请求头 `POST /api/store/v1/business/open`
+ */
+export const postApiStoreV1BusinessOpen = /*#__PURE__*/ (
+  requestData: PostApiStoreV1BusinessOpenRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiStoreV1BusinessOpenResponse>(
+    prepare(postApiStoreV1BusinessOpenRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiStoreV1BusinessOpen.requestConfig = postApiStoreV1BusinessOpenRequestConfig
+
+/**
+ * 接口 查询邀请关系 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/relations`
+ */
+export interface GetApiMemberV1InviteRelationsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID，可为空并由后台登录范围注入
+   */
+  merchantId?: string
+  /**
+   * 邀请人会员ID筛选
+   */
+  inviterMemberId?: string
+  /**
+   * 被邀请人会员ID筛选
+   */
+  inviteeMemberId?: string
+  /**
+   * 关系状态筛选：registered=已注册，pending_qualification=待达成消费，qualified=已达成，invalid=无效
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询邀请关系 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/relations`
+ */
+export interface GetApiMemberV1InviteRelationsResponse {
+  /**
+   * 邀请关系列表
+   */
+  relations?: {
+    /**
+     * 邀请关系ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 邀请人会员ID
+     */
+    inviterMemberId?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    inviterMember?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * 被邀请人会员ID
+     */
+    inviteeMemberId?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    inviteeMember?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * 被邀请会员当前状态：1=启用，2=禁用
+     */
+    inviteeMemberStatus?: number
+    /**
+     * 绑定时使用的邀请码
+     */
+    inviteCode?: string
+    /**
+     * 关系状态：registered=已注册，pending_qualification=待达成消费，qualified=已达成，invalid=无效
+     */
+    status?: string
+    /**
+     * 达成条件快照：register=注册即达成，first_completed_order=首笔完成消费订单达成
+     */
+    qualificationCondition?: string
+    /**
+     * 达成订单号
+     */
+    qualifiedOrderNo?: string
+    /**
+     * 达成订单金额，单位分
+     */
+    qualifiedAmount?: string
+    /**
+     * 达成时间
+     */
+    qualifiedAt?: string
+    /**
+     * 邀请人奖励状态
+     */
+    inviterRewardStatus?: string
+    /**
+     * 被邀请人奖励状态
+     */
+    inviteeRewardStatus?: string
+    /**
+     * 绑定时间
+     */
+    createdAt?: string
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询邀请关系 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/relations`
+ */
+type GetApiMemberV1InviteRelationsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/member/v1/invite/relations',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'inviterMemberId' | 'inviteeMemberId' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询邀请关系 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/relations`
+ */
+const getApiMemberV1InviteRelationsRequestConfig: GetApiMemberV1InviteRelationsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/invite/relations',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [
+    'pageRequest.page',
+    'pageRequest.pageSize',
+    'merchantId',
+    'inviterMemberId',
+    'inviteeMemberId',
+    'status',
+  ],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiMemberV1InviteRelations',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询邀请关系 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/relations`
+ */
+export const getApiMemberV1InviteRelations = /*#__PURE__*/ (
+  requestData: GetApiMemberV1InviteRelationsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1InviteRelationsResponse>(
+    prepare(getApiMemberV1InviteRelationsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiMemberV1InviteRelations.requestConfig = getApiMemberV1InviteRelationsRequestConfig
+
+/**
+ * 接口 查询邀请奖励配置列表 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs`
+ */
+export interface GetApiMemberV1InviteRewardConfigsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID，可为空并由后台登录范围注入
+   */
+  merchantId?: string
+  /**
+   * 奖励接收方筛选：inviter=邀请人，invitee=被邀请人
+   */
+  receiverRole?: string
+  /**
+   * 奖励阶段筛选：base=基础奖励，tier=梯度奖励
+   */
+  rewardStage?: string
+  /**
+   * 状态筛选：enabled=启用，disabled=禁用
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询邀请奖励配置列表 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs`
+ */
+export interface GetApiMemberV1InviteRewardConfigsResponse {
+  /**
+   * 邀请奖励配置列表
+   */
+  configs?: {
+    /**
+     * 配置ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 内部营销规则ID
+     */
+    ruleId?: string
+    /**
+     * 奖励配置名称
+     */
+    name?: string
+    /**
+     * 奖励配置说明
+     */
+    description?: string
+    /**
+     * 奖励接收方：inviter=邀请人，invitee=被邀请人
+     */
+    receiverRole?: string
+    /**
+     * 奖励阶段：base=基础奖励，tier=梯度奖励
+     */
+    rewardStage?: string
+    /**
+     * 状态：enabled=启用，disabled=禁用
+     */
+    status?: string
+    /**
+     * 最小达成订单金额，单位分
+     */
+    minQualifiedOrderAmount?: string
+    /**
+     * 达成邀请人数
+     */
+    qualifiedInviteCount?: string
+    /**
+     * 固定发放积分
+     */
+    fixedPoints?: string
+    /**
+     * 优惠券模板ID
+     */
+    couponTemplateId?: string
+    /**
+     * 发券数量
+     */
+    couponQuantity?: number
+    /**
+     * 通知场景
+     */
+    notificationScene?: string
+    /**
+     * 内部规则优先级
+     */
+    priority?: number
+    /**
+     * 叠加策略：stackable=可叠加，exclusive=命中后排他
+     */
+    stackPolicy?: string
+    /**
+     * 排序值
+     */
+    sort?: number
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询邀请奖励配置列表 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs`
+ */
+type GetApiMemberV1InviteRewardConfigsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/member/v1/invite/rewardConfigs',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'receiverRole' | 'rewardStage' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询邀请奖励配置列表 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs`
+ */
+const getApiMemberV1InviteRewardConfigsRequestConfig: GetApiMemberV1InviteRewardConfigsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/invite/rewardConfigs',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'receiverRole', 'rewardStage', 'status'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiMemberV1InviteRewardConfigs',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询邀请奖励配置列表 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs`
+ */
+export const getApiMemberV1InviteRewardConfigs = /*#__PURE__*/ (
+  requestData: GetApiMemberV1InviteRewardConfigsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1InviteRewardConfigsResponse>(
+    prepare(getApiMemberV1InviteRewardConfigsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiMemberV1InviteRewardConfigs.requestConfig = getApiMemberV1InviteRewardConfigsRequestConfig
+
+/**
+ * 接口 创建邀请奖励配置 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs`
+ */
+export interface PostApiMemberV1InviteRewardConfigsRequest {
+  /**
+   * InviteRewardConfigInput 请求参数。
+   */
+  config?: {
+    /**
+     * 商户ID，可为空并由后台登录范围注入
+     */
+    merchantId?: string
+    /**
+     * 奖励配置名称
+     */
+    name?: string
+    /**
+     * 奖励配置说明
+     */
+    description?: string
+    /**
+     * 奖励接收方：inviter=邀请人，invitee=被邀请人
+     */
+    receiverRole?: string
+    /**
+     * 奖励阶段：base=基础奖励，tier=梯度奖励
+     */
+    rewardStage?: string
+    /**
+     * 最小达成订单金额，单位分；0 表示不限制
+     */
+    minQualifiedOrderAmount?: string
+    /**
+     * 达成邀请人数；梯度奖励用于配置第N个达成邀请
+     */
+    qualifiedInviteCount?: string
+    /**
+     * 固定发放积分；0 表示不发积分
+     */
+    fixedPoints?: string
+    /**
+     * 优惠券模板ID；0 表示不发券
+     */
+    couponTemplateId?: string
+    /**
+     * 发券数量；0 表示不发券
+     */
+    couponQuantity?: number
+    /**
+     * 通知场景；为空表示不发送通知
+     */
+    notificationScene?: string
+    /**
+     * 内部规则优先级
+     */
+    priority?: number
+    /**
+     * 叠加策略：stackable=可叠加，exclusive=命中后排他
+     */
+    stackPolicy?: string
+    /**
+     * 排序值，越小越靠前
+     */
+    sort?: number
+  }
+}
+
+/**
+ * 接口 创建邀请奖励配置 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs`
+ */
+export interface PostApiMemberV1InviteRewardConfigsResponse {
+  /**
+   * 配置ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 创建邀请奖励配置 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs`
+ */
+type PostApiMemberV1InviteRewardConfigsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/invite/rewardConfigs', undefined, string, string, false>
+>
+
+/**
+ * 接口 创建邀请奖励配置 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs`
+ */
+const postApiMemberV1InviteRewardConfigsRequestConfig: PostApiMemberV1InviteRewardConfigsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/invite/rewardConfigs',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiMemberV1InviteRewardConfigs',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 创建邀请奖励配置 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs`
+ */
+export const postApiMemberV1InviteRewardConfigs = /*#__PURE__*/ (
+  requestData: PostApiMemberV1InviteRewardConfigsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiMemberV1InviteRewardConfigsResponse>(
+    prepare(postApiMemberV1InviteRewardConfigsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiMemberV1InviteRewardConfigs.requestConfig = postApiMemberV1InviteRewardConfigsRequestConfig
+
+/**
+ * 接口 禁用邀请奖励配置 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/disable`
+ */
+export interface PostApiMemberV1InviteRewardConfigsDisableRequest {
+  /**
+   * 配置ID
+   */
+  id?: string
+  /**
+   * 商户ID，可为空并由后台登录范围注入
+   */
+  merchantId?: string
+}
+
+/**
+ * 接口 禁用邀请奖励配置 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/disable`
+ */
+export interface PostApiMemberV1InviteRewardConfigsDisableResponse {}
+
+/**
+ * 接口 禁用邀请奖励配置 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/disable`
+ */
+type PostApiMemberV1InviteRewardConfigsDisableRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/invite/rewardConfigs/disable', undefined, string, string, false>
+>
+
+/**
+ * 接口 禁用邀请奖励配置 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/disable`
+ */
+const postApiMemberV1InviteRewardConfigsDisableRequestConfig: PostApiMemberV1InviteRewardConfigsDisableRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/member/v1/invite/rewardConfigs/disable',
+    method: Method.POST,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.json,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'postApiMemberV1InviteRewardConfigsDisable',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 禁用邀请奖励配置 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/disable`
+ */
+export const postApiMemberV1InviteRewardConfigsDisable = /*#__PURE__*/ (
+  requestData: PostApiMemberV1InviteRewardConfigsDisableRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiMemberV1InviteRewardConfigsDisableResponse>(
+    prepare(postApiMemberV1InviteRewardConfigsDisableRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiMemberV1InviteRewardConfigsDisable.requestConfig = postApiMemberV1InviteRewardConfigsDisableRequestConfig
+
+/**
+ * 接口 启用邀请奖励配置 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/enable`
+ */
+export interface PostApiMemberV1InviteRewardConfigsEnableRequest {
+  /**
+   * 配置ID
+   */
+  id?: string
+  /**
+   * 商户ID，可为空并由后台登录范围注入
+   */
+  merchantId?: string
+}
+
+/**
+ * 接口 启用邀请奖励配置 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/enable`
+ */
+export interface PostApiMemberV1InviteRewardConfigsEnableResponse {}
+
+/**
+ * 接口 启用邀请奖励配置 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/enable`
+ */
+type PostApiMemberV1InviteRewardConfigsEnableRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/invite/rewardConfigs/enable', undefined, string, string, false>
+>
+
+/**
+ * 接口 启用邀请奖励配置 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/enable`
+ */
+const postApiMemberV1InviteRewardConfigsEnableRequestConfig: PostApiMemberV1InviteRewardConfigsEnableRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/member/v1/invite/rewardConfigs/enable',
+    method: Method.POST,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.json,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'postApiMemberV1InviteRewardConfigsEnable',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 启用邀请奖励配置 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs/enable`
+ */
+export const postApiMemberV1InviteRewardConfigsEnable = /*#__PURE__*/ (
+  requestData: PostApiMemberV1InviteRewardConfigsEnableRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiMemberV1InviteRewardConfigsEnableResponse>(
+    prepare(postApiMemberV1InviteRewardConfigsEnableRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiMemberV1InviteRewardConfigsEnable.requestConfig = postApiMemberV1InviteRewardConfigsEnableRequestConfig
+
+/**
+ * 接口 查询邀请奖励配置详情 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs/{id}`
+ */
+export interface GetApiMemberV1InviteRewardConfigsByIdRequest {
+  /**
+   * 商户ID，可为空并由后台登录范围注入
+   */
+  merchantId?: string
+  /**
+   * 配置ID
+   */
+  id: string
+}
+
+/**
+ * 接口 查询邀请奖励配置详情 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs/{id}`
+ */
+export interface GetApiMemberV1InviteRewardConfigsByIdResponse {
+  /**
+   * InviteRewardConfig 响应数据。
+   */
+  config?: {
+    /**
+     * 配置ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 内部营销规则ID
+     */
+    ruleId?: string
+    /**
+     * 奖励配置名称
+     */
+    name?: string
+    /**
+     * 奖励配置说明
+     */
+    description?: string
+    /**
+     * 奖励接收方：inviter=邀请人，invitee=被邀请人
+     */
+    receiverRole?: string
+    /**
+     * 奖励阶段：base=基础奖励，tier=梯度奖励
+     */
+    rewardStage?: string
+    /**
+     * 状态：enabled=启用，disabled=禁用
+     */
+    status?: string
+    /**
+     * 最小达成订单金额，单位分
+     */
+    minQualifiedOrderAmount?: string
+    /**
+     * 达成邀请人数
+     */
+    qualifiedInviteCount?: string
+    /**
+     * 固定发放积分
+     */
+    fixedPoints?: string
+    /**
+     * 优惠券模板ID
+     */
+    couponTemplateId?: string
+    /**
+     * 发券数量
+     */
+    couponQuantity?: number
+    /**
+     * 通知场景
+     */
+    notificationScene?: string
+    /**
+     * 内部规则优先级
+     */
+    priority?: number
+    /**
+     * 叠加策略：stackable=可叠加，exclusive=命中后排他
+     */
+    stackPolicy?: string
+    /**
+     * 排序值
+     */
+    sort?: number
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+  }
+}
+
+/**
+ * 接口 查询邀请奖励配置详情 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs/{id}`
+ */
+type GetApiMemberV1InviteRewardConfigsByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/invite/rewardConfigs/{id}', undefined, 'id', 'merchantId', false>
+>
+
+/**
+ * 接口 查询邀请奖励配置详情 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs/{id}`
+ */
+const getApiMemberV1InviteRewardConfigsByIdRequestConfig: GetApiMemberV1InviteRewardConfigsByIdRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/member/v1/invite/rewardConfigs/{id}',
+    method: Method.GET,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.query,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: ['id'],
+    queryNames: ['merchantId'],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'getApiMemberV1InviteRewardConfigsById',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 查询邀请奖励配置详情 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardConfigs/{id}`
+ */
+export const getApiMemberV1InviteRewardConfigsById = /*#__PURE__*/ (
+  requestData: GetApiMemberV1InviteRewardConfigsByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1InviteRewardConfigsByIdResponse>(
+    prepare(getApiMemberV1InviteRewardConfigsByIdRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiMemberV1InviteRewardConfigsById.requestConfig = getApiMemberV1InviteRewardConfigsByIdRequestConfig
+
+/**
+ * 接口 更新邀请奖励配置 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs_put`
+ */
+export interface PutApiMemberV1InviteRewardConfigsRequest {
+  /**
+   * 配置ID
+   */
+  id?: string
+  /**
+   * InviteRewardConfigInput 请求参数。
+   */
+  config?: {
+    /**
+     * 商户ID，可为空并由后台登录范围注入
+     */
+    merchantId?: string
+    /**
+     * 奖励配置名称
+     */
+    name?: string
+    /**
+     * 奖励配置说明
+     */
+    description?: string
+    /**
+     * 奖励接收方：inviter=邀请人，invitee=被邀请人
+     */
+    receiverRole?: string
+    /**
+     * 奖励阶段：base=基础奖励，tier=梯度奖励
+     */
+    rewardStage?: string
+    /**
+     * 最小达成订单金额，单位分；0 表示不限制
+     */
+    minQualifiedOrderAmount?: string
+    /**
+     * 达成邀请人数；梯度奖励用于配置第N个达成邀请
+     */
+    qualifiedInviteCount?: string
+    /**
+     * 固定发放积分；0 表示不发积分
+     */
+    fixedPoints?: string
+    /**
+     * 优惠券模板ID；0 表示不发券
+     */
+    couponTemplateId?: string
+    /**
+     * 发券数量；0 表示不发券
+     */
+    couponQuantity?: number
+    /**
+     * 通知场景；为空表示不发送通知
+     */
+    notificationScene?: string
+    /**
+     * 内部规则优先级
+     */
+    priority?: number
+    /**
+     * 叠加策略：stackable=可叠加，exclusive=命中后排他
+     */
+    stackPolicy?: string
+    /**
+     * 排序值，越小越靠前
+     */
+    sort?: number
+  }
+}
+
+/**
+ * 接口 更新邀请奖励配置 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs_put`
+ */
+export interface PutApiMemberV1InviteRewardConfigsResponse {
+  /**
+   * InviteRewardConfig 响应数据。
+   */
+  config?: {
+    /**
+     * 配置ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 内部营销规则ID
+     */
+    ruleId?: string
+    /**
+     * 奖励配置名称
+     */
+    name?: string
+    /**
+     * 奖励配置说明
+     */
+    description?: string
+    /**
+     * 奖励接收方：inviter=邀请人，invitee=被邀请人
+     */
+    receiverRole?: string
+    /**
+     * 奖励阶段：base=基础奖励，tier=梯度奖励
+     */
+    rewardStage?: string
+    /**
+     * 状态：enabled=启用，disabled=禁用
+     */
+    status?: string
+    /**
+     * 最小达成订单金额，单位分
+     */
+    minQualifiedOrderAmount?: string
+    /**
+     * 达成邀请人数
+     */
+    qualifiedInviteCount?: string
+    /**
+     * 固定发放积分
+     */
+    fixedPoints?: string
+    /**
+     * 优惠券模板ID
+     */
+    couponTemplateId?: string
+    /**
+     * 发券数量
+     */
+    couponQuantity?: number
+    /**
+     * 通知场景
+     */
+    notificationScene?: string
+    /**
+     * 内部规则优先级
+     */
+    priority?: number
+    /**
+     * 叠加策略：stackable=可叠加，exclusive=命中后排他
+     */
+    stackPolicy?: string
+    /**
+     * 排序值
+     */
+    sort?: number
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+  }
+}
+
+/**
+ * 接口 更新邀请奖励配置 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs_put`
+ */
+type PutApiMemberV1InviteRewardConfigsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/invite/rewardConfigs_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新邀请奖励配置 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs_put`
+ */
+const putApiMemberV1InviteRewardConfigsRequestConfig: PutApiMemberV1InviteRewardConfigsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/invite/rewardConfigs_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiMemberV1InviteRewardConfigs',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新邀请奖励配置 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/invite/rewardConfigs_put`
+ */
+export const putApiMemberV1InviteRewardConfigs = /*#__PURE__*/ (
+  requestData: PutApiMemberV1InviteRewardConfigsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiMemberV1InviteRewardConfigsResponse>(
+    prepare(putApiMemberV1InviteRewardConfigsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiMemberV1InviteRewardConfigs.requestConfig = putApiMemberV1InviteRewardConfigsRequestConfig
+
+/**
+ * 接口 查询邀请奖励执行记录 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardExecutions`
+ */
+export interface GetApiMemberV1InviteRewardExecutionsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID，可为空并由后台登录范围注入
+   */
+  merchantId?: string
+  /**
+   * 内部规则ID筛选
+   */
+  ruleId?: string
+  /**
+   * 邀请关系ID筛选
+   */
+  relationId?: string
+  /**
+   * 奖励接收会员ID筛选
+   */
+  memberId?: string
+  /**
+   * 执行状态筛选：pending=发放中，succeeded=已发放，failed=失败，skipped=未命中规则
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询邀请奖励执行记录 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardExecutions`
+ */
+export interface GetApiMemberV1InviteRewardExecutionsResponse {
+  /**
+   * 执行记录列表
+   */
+  items?: {
+    /**
+     * 执行记录ID
+     */
+    id?: string
+    /**
+     * 内部规则ID
+     */
+    ruleId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 业务编码
+     */
+    businessCode?: string
+    /**
+     * 业务对象ID
+     */
+    bizId?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 幂等键
+     */
+    idempotencyKey?: string
+    /**
+     * 执行状态
+     */
+    status?: string
+    /**
+     * 上下文快照 JSON
+     */
+    contextSnapshot?: string
+    /**
+     * 结果快照 JSON
+     */
+    resultSnapshot?: string
+    /**
+     * 错误信息
+     */
+    errorMessage?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 动作记录
+     */
+    actions?: {
+      /**
+       * 动作记录ID
+       */
+      id?: string
+      /**
+       * 执行记录ID
+       */
+      executionId?: string
+      /**
+       * 内部规则ID
+       */
+      ruleId?: string
+      /**
+       * 动作类型
+       */
+      actionType?: string
+      /**
+       * 动作产物类型
+       */
+      targetType?: string
+      /**
+       * 动作产物ID
+       */
+      targetId?: string
+      /**
+       * 动作关联数值
+       */
+      amount?: string
+      /**
+       * 动作状态
+       */
+      status?: string
+      /**
+       * 请求 JSON
+       */
+      requestJson?: string
+      /**
+       * 响应 JSON
+       */
+      responseJson?: string
+      /**
+       * 错误信息
+       */
+      errorMessage?: string
+      /**
+       * 创建时间
+       */
+      createdAt?: string
+    }[]
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询邀请奖励执行记录 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardExecutions`
+ */
+type GetApiMemberV1InviteRewardExecutionsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/member/v1/invite/rewardExecutions',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'ruleId' | 'relationId' | 'memberId' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询邀请奖励执行记录 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardExecutions`
+ */
+const getApiMemberV1InviteRewardExecutionsRequestConfig: GetApiMemberV1InviteRewardExecutionsRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/member/v1/invite/rewardExecutions',
+    method: Method.GET,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.query,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [
+      'pageRequest.page',
+      'pageRequest.pageSize',
+      'merchantId',
+      'ruleId',
+      'relationId',
+      'memberId',
+      'status',
+    ],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'getApiMemberV1InviteRewardExecutions',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 查询邀请奖励执行记录 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/invite/rewardExecutions`
+ */
+export const getApiMemberV1InviteRewardExecutions = /*#__PURE__*/ (
+  requestData: GetApiMemberV1InviteRewardExecutionsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1InviteRewardExecutionsResponse>(
+    prepare(getApiMemberV1InviteRewardExecutionsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiMemberV1InviteRewardExecutions.requestConfig = getApiMemberV1InviteRewardExecutionsRequestConfig
+
+/**
+ * 接口 查询会员列表 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members`
+ */
+export interface GetApiMemberV1MembersRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 会员状态筛选：0=不过滤，1=启用，2=禁用
+   */
+  status?: number
+  /**
+   * 手机号搜索关键字，可输入完整手机号或部分手机号
+   */
+  phone?: string
+}
+
+/**
+ * 接口 查询会员列表 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members`
+ */
+export interface GetApiMemberV1MembersResponse {
+  /**
+   * 会员列表
+   */
+  members?: {
+    /**
+     * 会员ID
+     */
+    id?: string
+    /**
+     * OpenID
+     */
+    openid?: string
+    /**
+     * UnionID（可选，可能为空）
+     */
+    unionid?: string
+    /**
+     * 昵称
+     */
+    nickname?: string
+    /**
+     * 头像URL
+     */
+    avatarUrl?: string
+    /**
+     * 手机号
+     */
+    phone?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 状态：active=可取，finished=已取完，expired=已过期，cancelled=已取消，pending=待审核，approved=已通过，rejected=已驳回，completed=已完成。
+     */
+    status?: number
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 会员创建时间
+     */
+    createdAt?: string
+    /**
+     * 当前可用积分
+     */
+    currentPoints?: string
+    /**
+     * 累计成长值
+     */
+    totalGrowth?: string
+    /**
+     * 会员等级ID，无匹配等级时为0
+     */
+    levelId?: string
+    /**
+     * LevelConfig 等级配置数据。
+     */
+    level?: {
+      /**
+       * 等级ID
+       */
+      id?: string
+      /**
+       * 商户ID
+       */
+      merchantId?: string
+      /**
+       * 等级名称
+       */
+      levelName?: string
+      /**
+       * 成长值门槛
+       */
+      growthThreshold?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+      /**
+       * 创建时间
+       */
+      createdAt?: string
+      /**
+       * 更新时间
+       */
+      updatedAt?: string
+      /**
+       * MerchantDisplayInfo 商户通用展示信息。
+       */
+      merchant?: {
+        /**
+         * 商户ID
+         */
+        id?: string
+        /**
+         * 商户名称
+         */
+        name?: string
+        /**
+         * 商户logo URL
+         */
+        logo?: string
+      }
+    }
+    /**
+     * 邀请人会员ID；没有邀请人时为0
+     */
+    inviterMemberId?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    inviterMember?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * 被邀请关系状态：registered=已注册，pending_qualification=待达成消费，qualified=已达成，invalid=无效
+     */
+    inviteRelationStatus?: string
+    /**
+     * 被邀请人奖励状态：not_triggered=未触发，pending=发放中，succeeded=已发放，failed=发放失败，partial_failed=部分失败，skipped=未命中规则
+     */
+    inviteeRewardStatus?: string
+    /**
+     * 该会员邀请的新会员总数
+     */
+    invitedCount?: string
+    /**
+     * 该会员邀请且已达成条件的人数
+     */
+    qualifiedInvitedCount?: string
+    /**
+     * 该会员获得邀请奖励次数
+     */
+    inviteRewardCount?: string
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询会员列表 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members`
+ */
+type GetApiMemberV1MembersRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/member/v1/members',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'status' | 'phone',
+    false
+  >
+>
+
+/**
+ * 接口 查询会员列表 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members`
+ */
+const getApiMemberV1MembersRequestConfig: GetApiMemberV1MembersRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/members',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'status', 'phone'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiMemberV1Members',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询会员列表 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members`
+ */
+export const getApiMemberV1Members = /*#__PURE__*/ (
+  requestData: GetApiMemberV1MembersRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1MembersResponse>(prepare(getApiMemberV1MembersRequestConfig, requestData), ...args)
+}
+
+getApiMemberV1Members.requestConfig = getApiMemberV1MembersRequestConfig
+
+/**
+ * 接口 禁用会员 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/disable`
+ */
+export interface PostApiMemberV1MembersDisableRequest {
+  /**
+   * 会员ID（路径参数）
+   */
+  id?: string
+}
+
+/**
+ * 接口 禁用会员 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/disable`
+ */
+export interface PostApiMemberV1MembersDisableResponse {}
+
+/**
+ * 接口 禁用会员 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/disable`
+ */
+type PostApiMemberV1MembersDisableRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/members/disable', undefined, string, string, false>
+>
+
+/**
+ * 接口 禁用会员 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/disable`
+ */
+const postApiMemberV1MembersDisableRequestConfig: PostApiMemberV1MembersDisableRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/members/disable',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiMemberV1MembersDisable',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 禁用会员 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/disable`
+ */
+export const postApiMemberV1MembersDisable = /*#__PURE__*/ (
+  requestData: PostApiMemberV1MembersDisableRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiMemberV1MembersDisableResponse>(
+    prepare(postApiMemberV1MembersDisableRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiMemberV1MembersDisable.requestConfig = postApiMemberV1MembersDisableRequestConfig
+
+/**
+ * 接口 启用会员 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/enable`
+ */
+export interface PostApiMemberV1MembersEnableRequest {
+  /**
+   * 会员ID（路径参数）
+   */
+  id?: string
+}
+
+/**
+ * 接口 启用会员 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/enable`
+ */
+export interface PostApiMemberV1MembersEnableResponse {}
+
+/**
+ * 接口 启用会员 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/enable`
+ */
+type PostApiMemberV1MembersEnableRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/members/enable', undefined, string, string, false>
+>
+
+/**
+ * 接口 启用会员 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/enable`
+ */
+const postApiMemberV1MembersEnableRequestConfig: PostApiMemberV1MembersEnableRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/members/enable',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiMemberV1MembersEnable',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 启用会员 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members/enable`
+ */
+export const postApiMemberV1MembersEnable = /*#__PURE__*/ (
+  requestData: PostApiMemberV1MembersEnableRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiMemberV1MembersEnableResponse>(
+    prepare(postApiMemberV1MembersEnableRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiMemberV1MembersEnable.requestConfig = postApiMemberV1MembersEnableRequestConfig
+
+/**
+ * 接口 查询会员详情 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members/{id}`
+ */
+export interface GetApiMemberV1MembersByIdRequest {
+  /**
+   * 会员ID
+   */
+  id: string
+}
+
+/**
+ * 接口 查询会员详情 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members/{id}`
+ */
+export interface GetApiMemberV1MembersByIdResponse {
+  member?: {
+    /**
+     * 会员ID
+     */
+    id?: string
+    /**
+     * OpenID
+     */
+    openid?: string
+    /**
+     * UnionID（可选，可能为空）
+     */
+    unionid?: string
+    /**
+     * 昵称
+     */
+    nickname?: string
+    /**
+     * 头像URL
+     */
+    avatarUrl?: string
+    /**
+     * 手机号
+     */
+    phone?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 状态：active=可取，finished=已取完，expired=已过期，cancelled=已取消，pending=待审核，approved=已通过，rejected=已驳回，completed=已完成。
+     */
+    status?: number
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 会员创建时间
+     */
+    createdAt?: string
+    /**
+     * 当前可用积分
+     */
+    currentPoints?: string
+    /**
+     * 累计成长值
+     */
+    totalGrowth?: string
+    /**
+     * 会员等级ID，无匹配等级时为0
+     */
+    levelId?: string
+    /**
+     * LevelConfig 等级配置数据。
+     */
+    level?: {
+      /**
+       * 等级ID
+       */
+      id?: string
+      /**
+       * 商户ID
+       */
+      merchantId?: string
+      /**
+       * 等级名称
+       */
+      levelName?: string
+      /**
+       * 成长值门槛
+       */
+      growthThreshold?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+      /**
+       * 创建时间
+       */
+      createdAt?: string
+      /**
+       * 更新时间
+       */
+      updatedAt?: string
+      /**
+       * MerchantDisplayInfo 商户通用展示信息。
+       */
+      merchant?: {
+        /**
+         * 商户ID
+         */
+        id?: string
+        /**
+         * 商户名称
+         */
+        name?: string
+        /**
+         * 商户logo URL
+         */
+        logo?: string
+      }
+    }
+    /**
+     * 邀请人会员ID；没有邀请人时为0
+     */
+    inviterMemberId?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    inviterMember?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * 被邀请关系状态：registered=已注册，pending_qualification=待达成消费，qualified=已达成，invalid=无效
+     */
+    inviteRelationStatus?: string
+    /**
+     * 被邀请人奖励状态：not_triggered=未触发，pending=发放中，succeeded=已发放，failed=发放失败，partial_failed=部分失败，skipped=未命中规则
+     */
+    inviteeRewardStatus?: string
+    /**
+     * 该会员邀请的新会员总数
+     */
+    invitedCount?: string
+    /**
+     * 该会员邀请且已达成条件的人数
+     */
+    qualifiedInvitedCount?: string
+    /**
+     * 该会员获得邀请奖励次数
+     */
+    inviteRewardCount?: string
+  }
+}
+
+/**
+ * 接口 查询会员详情 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members/{id}`
+ */
+type GetApiMemberV1MembersByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/members/{id}', undefined, 'id', string, false>
+>
+
+/**
+ * 接口 查询会员详情 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members/{id}`
+ */
+const getApiMemberV1MembersByIdRequestConfig: GetApiMemberV1MembersByIdRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/members/{id}',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: ['id'],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiMemberV1MembersById',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询会员详情 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/members/{id}`
+ */
+export const getApiMemberV1MembersById = /*#__PURE__*/ (
+  requestData: GetApiMemberV1MembersByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1MembersByIdResponse>(
+    prepare(getApiMemberV1MembersByIdRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiMemberV1MembersById.requestConfig = getApiMemberV1MembersByIdRequestConfig
+
+/**
+ * 接口 查询会员存酒流水 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storageFlows`
+ */
+export interface GetApiMemberV1StorageFlowsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 会员ID
+   */
+  memberId?: string
+  /**
+   * 菜品ID
+   */
+  dishId?: string
+  /**
+   * 存酒流水类型：deposit=存酒申请，withdraw=取酒。
+   */
+  type?: string
+  /**
+   * 状态：active=可取，finished=已取完，expired=已过期，cancelled=已取消，pending=待审核，approved=已通过，rejected=已驳回，completed=已完成。
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询会员存酒流水 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storageFlows`
+ */
+export interface GetApiMemberV1StorageFlowsResponse {
+  /**
+   * 流水列表
+   */
+  flows?: {
+    /**
+     * 流水ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 业务发生门店ID
+     */
+    storeId?: string
+    /**
+     * 业务发生门店名称
+     */
+    storeName?: string
+    /**
+     * 原存酒门店ID
+     */
+    storageStoreId?: string
+    /**
+     * 原存酒门店名称
+     */
+    storageStoreName?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 会员名称
+     */
+    memberName?: string
+    /**
+     * 菜品ID
+     */
+    dishId?: string
+    /**
+     * 菜品名称
+     */
+    dishName?: string
+    /**
+     * 菜品图片URL
+     */
+    dishImageUrl?: string
+    /**
+     * 存酒记录ID
+     */
+    storageRecordId?: string
+    /**
+     * 工单ID
+     */
+    ticketId?: string
+    /**
+     * 存酒流水类型：deposit=存酒申请，withdraw=取酒。
+     */
+    type?: string
+    /**
+     * 数量
+     */
+    quantity?: number
+    /**
+     * 状态：active=可取，finished=已取完，expired=已过期，cancelled=已取消，pending=待审核，approved=已通过，rejected=已驳回，completed=已完成。
+     */
+    status?: string
+    /**
+     * 操作后剩余数量
+     */
+    balanceAfter?: number
+    /**
+     * 备注
+     */
+    remark?: string
+    /**
+     * 审核人ID
+     */
+    reviewerId?: string
+    /**
+     * 审核备注
+     */
+    reviewRemark?: string
+    /**
+     * 审核时间
+     */
+    reviewedAt?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    storageStore?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * DishDisplayInfo 菜品通用展示信息。
+     */
+    dish?: {
+      /**
+       * 菜品ID
+       */
+      id?: string
+      /**
+       * 菜品名称
+       */
+      name?: string
+      /**
+       * 菜品首图URL
+       */
+      imageUrl?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    reviewer?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * StorageRecordDisplayInfo 存酒记录通用展示信息。
+     */
+    storageRecord?: {
+      /**
+       * 存酒记录ID
+       */
+      id?: string
+      /**
+       * 存酒记录状态
+       */
+      status?: string
+      /**
+       * 剩余可取数量
+       */
+      remainingQuantity?: number
+    }
+    /**
+     * TicketDisplayInfo 工单通用展示信息。
+     */
+    ticket?: {
+      /**
+       * 工单ID
+       */
+      id?: string
+      /**
+       * 工单类型
+       */
+      type?: string
+      /**
+       * 工单状态
+       */
+      status?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询会员存酒流水 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storageFlows`
+ */
+type GetApiMemberV1StorageFlowsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/member/v1/storageFlows',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'memberId' | 'dishId' | 'type' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询会员存酒流水 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storageFlows`
+ */
+const getApiMemberV1StorageFlowsRequestConfig: GetApiMemberV1StorageFlowsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/storageFlows',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [
+    'pageRequest.page',
+    'pageRequest.pageSize',
+    'merchantId',
+    'storeId',
+    'memberId',
+    'dishId',
+    'type',
+    'status',
+  ],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiMemberV1StorageFlows',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询会员存酒流水 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storageFlows`
+ */
+export const getApiMemberV1StorageFlows = /*#__PURE__*/ (
+  requestData: GetApiMemberV1StorageFlowsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1StorageFlowsResponse>(
+    prepare(getApiMemberV1StorageFlowsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiMemberV1StorageFlows.requestConfig = getApiMemberV1StorageFlowsRequestConfig
+
+/**
+ * 接口 查询会员存酒记录 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storedWines`
+ */
+export interface GetApiMemberV1StoredWinesRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 当前门店ID
+   */
+  storeId?: string
+  /**
+   * 原存酒门店ID
+   */
+  storageStoreId?: string
+  /**
+   * 会员ID
+   */
+  memberId?: string
+  /**
+   * 菜品ID
+   */
+  dishId?: string
+  /**
+   * 状态：active=可取，finished=已取完，expired=已过期，cancelled=已取消，pending=待审核，approved=已通过，rejected=已驳回，completed=已完成。
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询会员存酒记录 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storedWines`
+ */
+export interface GetApiMemberV1StoredWinesResponse {
+  /**
+   * 存酒记录
+   */
+  wines?: {
+    /**
+     * 存酒记录ID
+     */
+    id?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 原存酒门店ID
+     */
+    storeId?: string
+    /**
+     * 原存酒门店名称
+     */
+    storeName?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 会员名称
+     */
+    memberName?: string
+    /**
+     * 菜品ID
+     */
+    dishId?: string
+    /**
+     * 菜品名称
+     */
+    dishName?: string
+    /**
+     * 菜品图片URL
+     */
+    dishImageUrl?: string
+    /**
+     * 存入总数量
+     */
+    totalQuantity?: number
+    /**
+     * 剩余可取数量
+     */
+    remainingQuantity?: number
+    /**
+     * 过期时间，空表示不过期
+     */
+    expireAt?: string
+    /**
+     * 状态：active=可取，finished=已取完，expired=已过期，cancelled=已取消，pending=待审核，approved=已通过，rejected=已驳回，completed=已完成。
+     */
+    status?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * DishDisplayInfo 菜品通用展示信息。
+     */
+    dish?: {
+      /**
+       * 菜品ID
+       */
+      id?: string
+      /**
+       * 菜品名称
+       */
+      name?: string
+      /**
+       * 菜品首图URL
+       */
+      imageUrl?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询会员存酒记录 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storedWines`
+ */
+type GetApiMemberV1StoredWinesRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/member/v1/storedWines',
+    undefined,
+    string,
+    | 'pageRequest.page'
+    | 'pageRequest.pageSize'
+    | 'merchantId'
+    | 'storeId'
+    | 'storageStoreId'
+    | 'memberId'
+    | 'dishId'
+    | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询会员存酒记录 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storedWines`
+ */
+const getApiMemberV1StoredWinesRequestConfig: GetApiMemberV1StoredWinesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/storedWines',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [
+    'pageRequest.page',
+    'pageRequest.pageSize',
+    'merchantId',
+    'storeId',
+    'storageStoreId',
+    'memberId',
+    'dishId',
+    'status',
+  ],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiMemberV1StoredWines',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询会员存酒记录 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `GET /api/member/v1/storedWines`
+ */
+export const getApiMemberV1StoredWines = /*#__PURE__*/ (
+  requestData: GetApiMemberV1StoredWinesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiMemberV1StoredWinesResponse>(
+    prepare(getApiMemberV1StoredWinesRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiMemberV1StoredWines.requestConfig = getApiMemberV1StoredWinesRequestConfig
+
+/**
+ * 接口 查询工单列表 的 **请求类型**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets`
+ */
+export interface GetApiTicketV1TicketsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 工单状态筛选：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已取消
+   */
+  status?: string
+  /**
+   * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+   */
+  type?: string
+}
+
+/**
+ * 接口 查询工单列表 的 **返回类型**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets`
+ */
+export interface GetApiTicketV1TicketsResponse {
+  /**
+   * 工单列表
+   */
+  tickets?: {
+    /**
+     * 工单ID
+     */
+    id?: string
+    /**
+     * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    type?: string
+    /**
+     * 工单状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已取消。
+     */
+    status?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请人ID
+     */
+    applicantId?: string
+    /**
+     * 关联业务实体ID
+     */
+    targetId?: string
+    /**
+     * 关联实体类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    targetType?: string
+    /**
+     * 工单创建载荷JSON
+     */
+    payload?: string
+    /**
+     * 关联业务实体数据JSON
+     */
+    entityJson?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    applicant?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * TicketTargetDisplayInfo 工单目标通用展示信息。
+     */
+    target?: {
+      /**
+       * 目标实体ID
+       */
+      id?: string
+      /**
+       * 目标实体类型
+       */
+      type?: string
+      /**
+       * 目标展示名称
+       */
+      name?: string
+      /**
+       * 目标状态
+       */
+      status?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询工单列表 的 **请求配置的类型**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets`
+ */
+type GetApiTicketV1TicketsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/ticket/v1/tickets',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'status' | 'type',
+    false
+  >
+>
+
+/**
+ * 接口 查询工单列表 的 **请求配置**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets`
+ */
+const getApiTicketV1TicketsRequestConfig: GetApiTicketV1TicketsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/ticket/v1/tickets',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'status', 'type'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTicketV1Tickets',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询工单列表 的 **请求函数**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets`
+ */
+export const getApiTicketV1Tickets = /*#__PURE__*/ (
+  requestData: GetApiTicketV1TicketsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTicketV1TicketsResponse>(prepare(getApiTicketV1TicketsRequestConfig, requestData), ...args)
+}
+
+getApiTicketV1Tickets.requestConfig = getApiTicketV1TicketsRequestConfig
+
+/**
+ * 接口 创建工单 的 **请求类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets`
+ */
+export interface PostApiTicketV1TicketsRequest {
+  /**
+   * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+   */
+  type?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 申请人ID
+   */
+  applicantId?: string
+  /**
+   * 工单载荷JSON
+   */
+  payload?: string
+}
+
+/**
+ * 接口 创建工单 的 **返回类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets`
+ */
+export interface PostApiTicketV1TicketsResponse {
+  /**
+   * TicketInfo 工单数据。
+   */
+  ticket?: {
+    /**
+     * 工单ID
+     */
+    id?: string
+    /**
+     * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    type?: string
+    /**
+     * 工单状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已取消。
+     */
+    status?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请人ID
+     */
+    applicantId?: string
+    /**
+     * 关联业务实体ID
+     */
+    targetId?: string
+    /**
+     * 关联实体类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    targetType?: string
+    /**
+     * 工单创建载荷JSON
+     */
+    payload?: string
+    /**
+     * 关联业务实体数据JSON
+     */
+    entityJson?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    applicant?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * TicketTargetDisplayInfo 工单目标通用展示信息。
+     */
+    target?: {
+      /**
+       * 目标实体ID
+       */
+      id?: string
+      /**
+       * 目标实体类型
+       */
+      type?: string
+      /**
+       * 目标展示名称
+       */
+      name?: string
+      /**
+       * 目标状态
+       */
+      status?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+  }
+}
+
+/**
+ * 接口 创建工单 的 **请求配置的类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets`
+ */
+type PostApiTicketV1TicketsRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/ticket/v1/tickets', undefined, string, string, false>
+>
+
+/**
+ * 接口 创建工单 的 **请求配置**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets`
+ */
+const postApiTicketV1TicketsRequestConfig: PostApiTicketV1TicketsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/ticket/v1/tickets',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTicketV1Tickets',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 创建工单 的 **请求函数**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets`
+ */
+export const postApiTicketV1Tickets = /*#__PURE__*/ (
+  requestData: PostApiTicketV1TicketsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTicketV1TicketsResponse>(prepare(postApiTicketV1TicketsRequestConfig, requestData), ...args)
+}
+
+postApiTicketV1Tickets.requestConfig = postApiTicketV1TicketsRequestConfig
+
+/**
+ * 接口 审核通过工单 的 **请求类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/approve_put`
+ */
+export interface PutApiTicketV1TicketsApproveRequest {
+  /**
+   * 工单ID
+   */
+  id?: string
+  /**
+   * 审核备注
+   */
+  reviewRemark?: string
+}
+
+/**
+ * 接口 审核通过工单 的 **返回类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/approve_put`
+ */
+export interface PutApiTicketV1TicketsApproveResponse {
+  /**
+   * TicketInfo 工单数据。
+   */
+  ticket?: {
+    /**
+     * 工单ID
+     */
+    id?: string
+    /**
+     * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    type?: string
+    /**
+     * 工单状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已取消。
+     */
+    status?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请人ID
+     */
+    applicantId?: string
+    /**
+     * 关联业务实体ID
+     */
+    targetId?: string
+    /**
+     * 关联实体类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    targetType?: string
+    /**
+     * 工单创建载荷JSON
+     */
+    payload?: string
+    /**
+     * 关联业务实体数据JSON
+     */
+    entityJson?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    applicant?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * TicketTargetDisplayInfo 工单目标通用展示信息。
+     */
+    target?: {
+      /**
+       * 目标实体ID
+       */
+      id?: string
+      /**
+       * 目标实体类型
+       */
+      type?: string
+      /**
+       * 目标展示名称
+       */
+      name?: string
+      /**
+       * 目标状态
+       */
+      status?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+  }
+}
+
+/**
+ * 接口 审核通过工单 的 **请求配置的类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/approve_put`
+ */
+type PutApiTicketV1TicketsApproveRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/ticket/v1/tickets/approve_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 审核通过工单 的 **请求配置**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/approve_put`
+ */
+const putApiTicketV1TicketsApproveRequestConfig: PutApiTicketV1TicketsApproveRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/ticket/v1/tickets/approve_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTicketV1TicketsApprove',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 审核通过工单 的 **请求函数**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/approve_put`
+ */
+export const putApiTicketV1TicketsApprove = /*#__PURE__*/ (
+  requestData: PutApiTicketV1TicketsApproveRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTicketV1TicketsApproveResponse>(
+    prepare(putApiTicketV1TicketsApproveRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiTicketV1TicketsApprove.requestConfig = putApiTicketV1TicketsApproveRequestConfig
+
+/**
+ * 接口 批量完成工单 的 **请求类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/batchComplete_put`
+ */
+export interface PutApiTicketV1TicketsBatchCompleteRequest {
+  /**
+   * 工单ID列表
+   */
+  ids?: string[]
+  /**
+   * 批量完成备注
+   */
+  reviewRemark?: string
+}
+
+/**
+ * 接口 批量完成工单 的 **返回类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/batchComplete_put`
+ */
+export interface PutApiTicketV1TicketsBatchCompleteResponse {
+  /**
+   * 本次成功完成的工单数量
+   */
+  successCount?: number
+  /**
+   * 本次成功完成的工单ID列表
+   */
+  completedIds?: string[]
+}
+
+/**
+ * 接口 批量完成工单 的 **请求配置的类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/batchComplete_put`
+ */
+type PutApiTicketV1TicketsBatchCompleteRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/ticket/v1/tickets/batchComplete_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 批量完成工单 的 **请求配置**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/batchComplete_put`
+ */
+const putApiTicketV1TicketsBatchCompleteRequestConfig: PutApiTicketV1TicketsBatchCompleteRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/ticket/v1/tickets/batchComplete_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTicketV1TicketsBatchComplete',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 批量完成工单 的 **请求函数**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/batchComplete_put`
+ */
+export const putApiTicketV1TicketsBatchComplete = /*#__PURE__*/ (
+  requestData: PutApiTicketV1TicketsBatchCompleteRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTicketV1TicketsBatchCompleteResponse>(
+    prepare(putApiTicketV1TicketsBatchCompleteRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiTicketV1TicketsBatchComplete.requestConfig = putApiTicketV1TicketsBatchCompleteRequestConfig
+
+/**
+ * 接口 手动打印工单小票 的 **请求类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/print`
+ */
+export interface PostApiTicketV1TicketsPrintRequest {
+  /**
+   * 工单ID
+   */
+  id?: string
+  /**
+   * 小票类型列表：points_deposit_ticket=积分存入工单小票，points_withdraw_ticket=积分提取工单小票，wine_deposit_ticket=会员存酒工单小票，wine_withdraw_ticket=会员取酒工单小票；不传则打印该工单可配置的小票类型
+   */
+  receiptTypes?: string[]
+}
+
+/**
+ * 接口 手动打印工单小票 的 **返回类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/print`
+ */
+export interface PostApiTicketV1TicketsPrintResponse {
+  /**
+   * 成功提交打印的小票数量
+   */
+  printedCount?: number
+}
+
+/**
+ * 接口 手动打印工单小票 的 **请求配置的类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/print`
+ */
+type PostApiTicketV1TicketsPrintRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/ticket/v1/tickets/print', undefined, string, string, false>
+>
+
+/**
+ * 接口 手动打印工单小票 的 **请求配置**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/print`
+ */
+const postApiTicketV1TicketsPrintRequestConfig: PostApiTicketV1TicketsPrintRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/ticket/v1/tickets/print',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiTicketV1TicketsPrint',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 手动打印工单小票 的 **请求函数**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/print`
+ */
+export const postApiTicketV1TicketsPrint = /*#__PURE__*/ (
+  requestData: PostApiTicketV1TicketsPrintRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiTicketV1TicketsPrintResponse>(
+    prepare(postApiTicketV1TicketsPrintRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiTicketV1TicketsPrint.requestConfig = postApiTicketV1TicketsPrintRequestConfig
+
+/**
+ * 接口 审核驳回工单 的 **请求类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/reject_put`
+ */
+export interface PutApiTicketV1TicketsRejectRequest {
+  /**
+   * 工单ID
+   */
+  id?: string
+  /**
+   * 驳回原因
+   */
+  reviewRemark?: string
+}
+
+/**
+ * 接口 审核驳回工单 的 **返回类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/reject_put`
+ */
+export interface PutApiTicketV1TicketsRejectResponse {
+  /**
+   * TicketInfo 工单数据。
+   */
+  ticket?: {
+    /**
+     * 工单ID
+     */
+    id?: string
+    /**
+     * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    type?: string
+    /**
+     * 工单状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已取消。
+     */
+    status?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请人ID
+     */
+    applicantId?: string
+    /**
+     * 关联业务实体ID
+     */
+    targetId?: string
+    /**
+     * 关联实体类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    targetType?: string
+    /**
+     * 工单创建载荷JSON
+     */
+    payload?: string
+    /**
+     * 关联业务实体数据JSON
+     */
+    entityJson?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    applicant?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * TicketTargetDisplayInfo 工单目标通用展示信息。
+     */
+    target?: {
+      /**
+       * 目标实体ID
+       */
+      id?: string
+      /**
+       * 目标实体类型
+       */
+      type?: string
+      /**
+       * 目标展示名称
+       */
+      name?: string
+      /**
+       * 目标状态
+       */
+      status?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+  }
+}
+
+/**
+ * 接口 审核驳回工单 的 **请求配置的类型**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/reject_put`
+ */
+type PutApiTicketV1TicketsRejectRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/ticket/v1/tickets/reject_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 审核驳回工单 的 **请求配置**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/reject_put`
+ */
+const putApiTicketV1TicketsRejectRequestConfig: PutApiTicketV1TicketsRejectRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/ticket/v1/tickets/reject_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiTicketV1TicketsReject',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 审核驳回工单 的 **请求函数**
+ *
+ * @分类 TicketService
+ * @请求头 `POST /api/ticket/v1/tickets/reject_put`
+ */
+export const putApiTicketV1TicketsReject = /*#__PURE__*/ (
+  requestData: PutApiTicketV1TicketsRejectRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiTicketV1TicketsRejectResponse>(
+    prepare(putApiTicketV1TicketsRejectRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiTicketV1TicketsReject.requestConfig = putApiTicketV1TicketsRejectRequestConfig
+
+/**
+ * 接口 查询工单详情 的 **请求类型**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets/{id}`
+ */
+export interface GetApiTicketV1TicketsByIdRequest {
+  /**
+   * 工单ID
+   */
+  id: string
+}
+
+/**
+ * 接口 查询工单详情 的 **返回类型**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets/{id}`
+ */
+export interface GetApiTicketV1TicketsByIdResponse {
+  /**
+   * TicketInfo 工单数据。
+   */
+  ticket?: {
+    /**
+     * 工单ID
+     */
+    id?: string
+    /**
+     * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    type?: string
+    /**
+     * 工单状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已取消。
+     */
+    status?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请人ID
+     */
+    applicantId?: string
+    /**
+     * 关联业务实体ID
+     */
+    targetId?: string
+    /**
+     * 关联实体类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
+     */
+    targetType?: string
+    /**
+     * 工单创建载荷JSON
+     */
+    payload?: string
+    /**
+     * 关联业务实体数据JSON
+     */
+    entityJson?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    applicant?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * TicketTargetDisplayInfo 工单目标通用展示信息。
+     */
+    target?: {
+      /**
+       * 目标实体ID
+       */
+      id?: string
+      /**
+       * 目标实体类型
+       */
+      type?: string
+      /**
+       * 目标展示名称
+       */
+      name?: string
+      /**
+       * 目标状态
+       */
+      status?: string
+    }
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+  }
+}
+
+/**
+ * 接口 查询工单详情 的 **请求配置的类型**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets/{id}`
+ */
+type GetApiTicketV1TicketsByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/ticket/v1/tickets/{id}', undefined, 'id', string, false>
+>
+
+/**
+ * 接口 查询工单详情 的 **请求配置**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets/{id}`
+ */
+const getApiTicketV1TicketsByIdRequestConfig: GetApiTicketV1TicketsByIdRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/ticket/v1/tickets/{id}',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: ['id'],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiTicketV1TicketsById',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询工单详情 的 **请求函数**
+ *
+ * @分类 TicketService
+ * @请求头 `GET /api/ticket/v1/tickets/{id}`
+ */
+export const getApiTicketV1TicketsById = /*#__PURE__*/ (
+  requestData: GetApiTicketV1TicketsByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiTicketV1TicketsByIdResponse>(
+    prepare(getApiTicketV1TicketsByIdRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiTicketV1TicketsById.requestConfig = getApiTicketV1TicketsByIdRequestConfig
+
 /* prettier-ignore-end */
