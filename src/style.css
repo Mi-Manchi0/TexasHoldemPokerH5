@@ -3373,7 +3373,7 @@ a:focus-visible {
 
 .orders-page {
   position: relative;
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto minmax(0, 1fr);
   align-content: stretch;
   gap: clamp(11px, 3.4vw, 15px);
   padding: max(12px, env(safe-area-inset-top)) var(--page-edge)
@@ -3388,6 +3388,7 @@ a:focus-visible {
 .orders-topbar,
 .orders-hero,
 .orders-stat-strip,
+.orders-filter-strip,
 .orders-section-heading,
 .orders-row,
 .orders-card-head,
@@ -3499,6 +3500,40 @@ a:focus-visible {
   color: rgba(17, 17, 17, 0.44);
   font-size: 11px;
   font-weight: 800;
+}
+
+.orders-filter-strip {
+  display: flex;
+  gap: 7px;
+  padding: 0 4px 2px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.orders-filter-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.orders-filter-button {
+  min-width: max-content;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: rgba(17, 17, 17, 0.5);
+  background: rgba(17, 17, 17, 0.055);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.orders-filter-button.is-active {
+  color: #ffffff;
+  background: #111111;
 }
 
 .orders-timeline {
@@ -3775,10 +3810,18 @@ a:focus-visible {
 .orders-item-quantity,
 .orders-item-unit,
 .orders-item-total {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.orders-item-unit {
+  max-width: min(28vw, 124px);
+}
+
 .orders-item-total {
+  max-width: min(34vw, 160px);
   color: #050505;
   font-weight: 900;
 }
@@ -3970,6 +4013,750 @@ a:focus-visible {
 .orders-scroll-top-button:hover {
   color: #ffffff;
   background-color: #135c43;
+}
+
+.points-deposit-page {
+  position: relative;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: clamp(9px, 2.8vw, 12px);
+  padding: max(12px, env(safe-area-inset-top)) var(--page-edge)
+    calc(var(--tabbar-space) + var(--page-gap));
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 246, 0.78) 58%, #ffffff),
+    radial-gradient(circle at 12% 14%, rgba(19, 92, 67, 0.12), transparent 25%),
+    radial-gradient(circle at 94% 18%, rgba(186, 30, 53, 0.1), transparent 20%);
+}
+
+.points-deposit-page.has-ticket-card .points-deposit-shell {
+  padding-bottom: clamp(228px, 55vw, 276px);
+}
+
+.points-deposit-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(10px, 3vw, 14px);
+  padding-top: 0;
+}
+
+.points-deposit-hero span {
+  max-width: min(46vw, 190px);
+  overflow: hidden;
+  color: rgba(17, 17, 17, 0.42);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.3;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-stepper {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(7px, 2.4vw, 10px);
+}
+
+.points-step-button {
+  min-width: 0;
+  min-height: clamp(48px, 13vw, 58px);
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+  border: 1px solid rgba(17, 17, 17, 0.045);
+  border-radius: 8px;
+  color: #111111;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow:
+    0 10px 22px rgba(17, 17, 17, 0.038),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+}
+
+.points-step-button:disabled {
+  cursor: default;
+  opacity: 0.56;
+}
+
+.points-step-button.is-active {
+  border-color: rgba(17, 17, 17, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.points-step-button.is-complete .points-step-index {
+  color: #ffffff;
+  background: #135c43;
+}
+
+.points-step-index {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: rgba(17, 17, 17, 0.72);
+  background: rgba(17, 17, 17, 0.07);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.points-step-button.is-active .points-step-index {
+  color: #ffffff;
+  background: #111111;
+}
+
+.points-step-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  text-align: left;
+}
+
+.points-step-copy strong,
+.points-step-copy small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-step-copy strong {
+  color: #050505;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.points-step-copy small {
+  color: rgba(17, 17, 17, 0.42);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.points-deposit-shell {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  gap: clamp(10px, 3.2vw, 14px);
+  overflow: hidden;
+  padding: 2px 1px calc(var(--fab-size) + clamp(4px, 1.4vw, 8px));
+}
+
+.points-deposit-panel {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  gap: clamp(10px, 3vw, 13px);
+  padding: clamp(12px, 3.6vw, 15px);
+  border: 1px solid rgba(17, 17, 17, 0.045);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 14px 28px rgba(17, 17, 17, 0.052),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+.points-member-panel {
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+.points-panel-head,
+.points-selected-member,
+.points-member-card,
+.points-preview-card header,
+.points-segment-card,
+.points-ticket-head,
+.points-ticket-actions {
+  min-width: 0;
+}
+
+.points-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(8px, 2.8vw, 12px);
+}
+
+.points-panel-head div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.points-panel-head span,
+.points-amount-field span,
+.points-preview-card header span,
+.points-ticket-head small {
+  overflow: hidden;
+  color: rgba(17, 17, 17, 0.44);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-panel-head h2 {
+  margin: 0;
+  overflow: hidden;
+  color: #050505;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-panel-head > svg {
+  width: 20px;
+  height: 20px;
+  color: rgba(17, 17, 17, 0.44);
+  flex: 0 0 auto;
+}
+
+.points-search-field {
+  min-height: 42px;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid rgba(17, 17, 17, 0.065);
+  border-radius: 8px;
+  background: rgba(247, 247, 248, 0.88);
+}
+
+.points-search-field svg {
+  width: 15px;
+  height: 15px;
+  color: rgba(17, 17, 17, 0.38);
+}
+
+.points-search-field input,
+.points-amount-field input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: #111111;
+  background: transparent;
+  font-weight: 800;
+}
+
+.points-search-field input {
+  font-size: 13px;
+}
+
+.points-search-field input::placeholder,
+.points-amount-field input::placeholder,
+.points-ticket-remark::placeholder {
+  color: rgba(17, 17, 17, 0.34);
+}
+
+.points-selected-member {
+  min-height: 68px;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(19, 92, 67, 0.12);
+  border-radius: 8px;
+  background: rgba(19, 92, 67, 0.075);
+}
+
+.points-selected-member.is-empty {
+  border-color: rgba(17, 17, 17, 0.05);
+  background: rgba(17, 17, 17, 0.035);
+}
+
+.points-selected-avatar,
+.points-member-avatar,
+.points-ticket-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(17, 17, 17, 0.07);
+  color: #111111;
+}
+
+.points-selected-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 17px;
+}
+
+.points-selected-member div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.points-selected-member strong,
+.points-member-copy strong,
+.points-preview-card header strong,
+.points-segment-card strong,
+.points-ticket-head h2 {
+  min-width: 0;
+  overflow: hidden;
+  color: #050505;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-selected-member strong {
+  font-size: 15px;
+}
+
+.points-selected-member small,
+.points-member-copy small,
+.points-segment-card span,
+.points-segment-card small,
+.points-preview-empty,
+.points-ticket-empty {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(17, 17, 17, 0.48);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-member-list {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 1px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.points-member-card {
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border: 1px solid rgba(17, 17, 17, 0.045);
+  border-radius: 8px;
+  color: #111111;
+  background: rgba(250, 250, 251, 0.86);
+  cursor: pointer;
+}
+
+.points-member-card.is-selected {
+  border-color: rgba(19, 92, 67, 0.24);
+  background: rgba(19, 92, 67, 0.08);
+}
+
+.points-member-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+
+.points-member-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.points-member-copy {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  text-align: left;
+}
+
+.points-member-copy strong {
+  font-size: 13px;
+}
+
+.points-member-check {
+  color: #135c43;
+  font-size: 15px;
+}
+
+.points-list-state {
+  min-height: 96px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 9px;
+  margin: 0;
+  color: rgba(17, 17, 17, 0.42);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.points-list-state.is-error {
+  color: rgba(186, 30, 53, 0.82);
+}
+
+.points-list-state button,
+.points-ticket-error button {
+  min-height: 28px;
+  padding: 0 11px;
+  border-radius: 999px;
+  color: #111111;
+  background: rgba(17, 17, 17, 0.07);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.points-action-panel {
+  grid-template-rows: auto auto auto auto minmax(0, auto) auto;
+  align-content: stretch;
+}
+
+.points-deposit-member {
+  min-height: 60px;
+}
+
+.points-amount-field {
+  display: grid;
+  gap: 8px;
+}
+
+.points-amount-field input {
+  height: clamp(58px, 16vw, 70px);
+  padding: 0 12px;
+  border: 1px solid rgba(17, 17, 17, 0.065);
+  border-radius: 8px;
+  background: rgba(247, 247, 248, 0.88);
+  font-size: clamp(26px, 8vw, 36px);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.points-primary-button,
+.points-submit-button,
+.points-ticket-reject,
+.points-ticket-approve {
+  min-width: 0;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.points-primary-button {
+  color: #111111;
+  background: rgba(17, 17, 17, 0.065);
+}
+
+.points-submit-button,
+.points-ticket-approve {
+  color: #ffffff;
+  background: #111111;
+}
+
+.points-ticket-reject {
+  color: #ba1e35;
+  background: rgba(186, 30, 53, 0.09);
+}
+
+.points-primary-button:disabled,
+.points-submit-button:disabled,
+.points-ticket-reject:disabled,
+.points-ticket-approve:disabled {
+  cursor: default;
+  opacity: 0.52;
+}
+
+.points-preview-card {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid rgba(17, 17, 17, 0.045);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.points-preview-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.points-preview-card header strong {
+  font-size: 14px;
+}
+
+.points-preview-card header span {
+  min-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 7px;
+  border-radius: 4px;
+  color: #ffffff;
+  background: #111111;
+}
+
+.points-preview-card header span.is-ready {
+  background: #135c43;
+}
+
+.points-preview-card header span.is-blocked {
+  background: #ba1e35;
+}
+
+.points-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.points-preview-stat {
+  min-width: 0;
+  min-height: 54px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: rgba(17, 17, 17, 0.045);
+}
+
+.points-preview-stat.is-good {
+  background: rgba(19, 92, 67, 0.09);
+}
+
+.points-preview-stat.is-warning {
+  background: rgba(186, 30, 53, 0.08);
+}
+
+.points-preview-stat span {
+  color: rgba(17, 17, 17, 0.44);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.points-preview-stat strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #050505;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-segment-list {
+  min-height: 0;
+  max-height: clamp(86px, 18svh, 148px);
+  display: grid;
+  gap: 7px;
+  overflow-y: auto;
+  padding-top: 2px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.points-segment-card {
+  display: grid;
+  gap: 5px;
+  padding: 9px 10px;
+  border-top: 1px solid rgba(17, 17, 17, 0.07);
+}
+
+.points-segment-card div {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.points-segment-card strong {
+  font-size: 12px;
+}
+
+.points-preview-empty {
+  margin: 0;
+  padding: 4px 0;
+}
+
+.points-ticket-float {
+  position: fixed;
+  left: var(--page-edge);
+  right: var(--page-edge);
+  bottom: calc(var(--tabbar-space) + clamp(6px, 2vw, 10px));
+  z-index: 13;
+}
+
+.points-ticket-card {
+  display: grid;
+  gap: clamp(9px, 2.8vw, 12px);
+  padding: clamp(12px, 3.6vw, 15px);
+  border: 1px solid rgba(17, 17, 17, 0.06);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 247, 248, 0.94)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(17, 17, 17, 0.018) 0 1px,
+      transparent 1px 9px
+    );
+  box-shadow: 0 18px 40px rgba(17, 17, 17, 0.18);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
+}
+
+.points-ticket-head {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.points-ticket-icon {
+  width: 38px;
+  height: 38px;
+  background: #111111;
+  color: #ffffff;
+  font-size: 17px;
+}
+
+.points-ticket-head div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.points-ticket-head h2 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.15;
+}
+
+.points-ticket-head > strong {
+  min-height: 22px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: #ffffff;
+  background: #111111;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.points-ticket-head > strong.is-pending {
+  background: #ba1e35;
+}
+
+.points-ticket-head > strong.is-done {
+  color: rgba(17, 17, 17, 0.62);
+  background: rgba(17, 17, 17, 0.08);
+}
+
+.points-ticket-head > strong.is-rejected {
+  color: #ba1e35;
+  background: rgba(186, 30, 53, 0.09);
+}
+
+.points-ticket-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 10px;
+  margin: 0;
+}
+
+.points-ticket-details div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.points-ticket-details dt {
+  color: rgba(17, 17, 17, 0.42);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.points-ticket-details dd {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: rgba(17, 17, 17, 0.72);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-ticket-error {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin: 0;
+  color: rgba(186, 30, 53, 0.82);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.points-ticket-empty {
+  margin: 0;
+}
+
+.points-ticket-remark {
+  width: 100%;
+  min-height: 58px;
+  resize: none;
+  padding: 9px 10px;
+  border: 1px solid rgba(17, 17, 17, 0.07);
+  border-radius: 8px;
+  color: #111111;
+  background: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.points-ticket-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.points-ticket-actions svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
 }
 
 .app-tabbar {

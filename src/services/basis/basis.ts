@@ -22771,4 +22771,2586 @@ export const getApiTicketV1TicketsById = /*#__PURE__*/ (
 
 getApiTicketV1TicketsById.requestConfig = getApiTicketV1TicketsByIdRequestConfig
 
+/**
+ * 接口 查询会员钱包列表 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts`
+ */
+export interface GetApiWalletV1AccountsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 会员ID（可选）
+   */
+  memberId?: string
+}
+
+/**
+ * 接口 查询会员钱包列表 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts`
+ */
+export interface GetApiWalletV1AccountsResponse {
+  /**
+   * 钱包列表
+   */
+  wallets?: {
+    /**
+     * 账户ID
+     */
+    id?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 可用积分余额
+     */
+    pointsBalance?: string
+    /**
+     * 冻结积分
+     */
+    pointsFrozen?: string
+    /**
+     * 累计获得积分
+     */
+    pointsTotalEarned?: string
+    /**
+     * 累计使用积分
+     */
+    pointsTotalUsed?: string
+    /**
+     * 最近过期时间
+     */
+    pointsLastExpiredAt?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 可用金币余额
+     */
+    goldBalance?: string
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询会员钱包列表 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts`
+ */
+type GetApiWalletV1AccountsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/wallet/v1/accounts',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'memberId',
+    false
+  >
+>
+
+/**
+ * 接口 查询会员钱包列表 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts`
+ */
+const getApiWalletV1AccountsRequestConfig: GetApiWalletV1AccountsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/accounts',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'memberId'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiWalletV1Accounts',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询会员钱包列表 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts`
+ */
+export const getApiWalletV1Accounts = /*#__PURE__*/ (
+  requestData: GetApiWalletV1AccountsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiWalletV1AccountsResponse>(prepare(getApiWalletV1AccountsRequestConfig, requestData), ...args)
+}
+
+getApiWalletV1Accounts.requestConfig = getApiWalletV1AccountsRequestConfig
+
+/**
+ * 接口 后台提交积分存入申请 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit`
+ */
+export interface PostApiWalletV1AccountsDepositRequest {
+  /**
+   * 会员ID
+   */
+  memberId?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 申请存入积分数量
+   */
+  points?: string
+}
+
+/**
+ * 接口 后台提交积分存入申请 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit`
+ */
+export interface PostApiWalletV1AccountsDepositResponse {
+  /**
+   * DepositRequestInfo 积分存入申请数据；points 为历史字段名，表示实际可存入积分数量。
+   */
+  request?: {
+    /**
+     * 申请ID
+     */
+    id?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请存入积分数量，保留 points 历史字段名
+     */
+    points?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 审核人ID
+     */
+    reviewerId?: string
+    /**
+     * 审核备注
+     */
+    reviewRemark?: string
+    /**
+     * 审核时间
+     */
+    reviewedAt?: string
+    /**
+     * 撤回时间
+     */
+    cancelledAt?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    reviewer?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * 原始提交积分数量
+     */
+    originalPoints?: string
+    /**
+     * 实际可存入积分数量，与 points 一致
+     */
+    depositPoints?: string
+    /**
+     * 未进入积分钱包的积分数量，计算方式为 originalPoints - depositPoints
+     */
+    undepositedPoints?: string
+    /**
+     * 按梯度预计兑换的抽奖次数，审核通过后到账
+     */
+    drawChanceCount?: string
+    /**
+     * 参与兑换抽奖次数的原始积分数量
+     */
+    drawSourcePoints?: string
+    /**
+     * 没有被任何存入梯度覆盖、无法转换的积分数量
+     */
+    unconvertedPoints?: string
+    /**
+     * 积分存入梯度拆分明细
+     */
+    exchangeSegments?: {
+      /**
+       * 积分区间起点，包含该值
+       */
+      minPoints?: string
+      /**
+       * 积分区间终点，不包含该值；0 表示无上限
+       */
+      maxPoints?: string
+      /**
+       * 本段参与计算的原始积分数量
+       */
+      sourcePoints?: string
+      /**
+       * 本段多少原始积分折算 1 个实际存入积分
+       */
+      depositExchangePoints?: string
+      /**
+       * 本段实际可存入积分数量
+       */
+      depositPoints?: string
+      /**
+       * 本段按存入折算后不足 1 个存入积分的余数
+       */
+      depositRemainderPoints?: string
+      /**
+       * 本段多少原始积分折算 1 次抽奖次数；0 表示不兑换
+       */
+      drawExchangePoints?: string
+      /**
+       * 本段兑换的抽奖次数
+       */
+      drawChanceCount?: string
+      /**
+       * 本段参与兑换抽奖次数的原始积分数量
+       */
+      drawSourcePoints?: string
+      /**
+       * 本段按抽奖折算后不足 1 次抽奖的余数
+       */
+      drawRemainderPoints?: string
+    }[]
+  }
+  /**
+   * WalletLedgerItem 钱包流水数据。
+   */
+  ledger?: {
+    /**
+     * 流水ID
+     */
+    id?: string
+    /**
+     * 账户ID
+     */
+    accountId?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 流水类型：earn=消费获得积分，payment=订单扣减金币，refund=退款返还金币，order_refund=订单退款扣回积分，recharge=充值获得金币，reward=规则奖励获得积分，expire=积分过期扣减，adjust=人工调整积分，deposit=会员申请存入积分，withdraw=会员提取积分，checkin=签到获得积分。
+     */
+    type?: string
+    /**
+     * 资产类型：points=积分，gold=金币。
+     */
+    assetType?: string
+    /**
+     * 变动数量。earn/order_refund/deposit/withdraw 表示积分变动值，payment/refund 表示金币变动值，扣减时可为负数。
+     */
+    amount?: string
+    /**
+     * 变动后余额。按 asset_type 表示积分或金币余额。
+     */
+    balanceAfter?: string
+    /**
+     * 关联订单号
+     */
+    orderNo?: string
+    /**
+     * 描述
+     */
+    description?: string
+    /**
+     * 过期时间
+     */
+    expireAt?: string
+    /**
+     * 是否已过期
+     */
+    expired?: boolean
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 关联存入申请ID
+     */
+    requestId?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * WalletRequestDisplayInfo 积分存入申请通用展示信息；points 为存入申请历史字段名，表示申请存入积分数量。
+     */
+    request?: {
+      /**
+       * 积分存入申请ID
+       */
+      id?: string
+      /**
+       * 申请状态
+       */
+      status?: string
+      /**
+       * 申请存入积分数量，保留 points 历史字段名
+       */
+      points?: string
+    }
+    /**
+     * WalletDisplayInfo 钱包通用展示信息；points_balance 为积分余额，gold_balance 为金币余额。
+     */
+    account?: {
+      /**
+       * 钱包ID
+       */
+      id?: string
+      /**
+       * 可用积分余额
+       */
+      pointsBalance?: string
+      /**
+       * 冻结积分
+       */
+      pointsFrozen?: string
+      /**
+       * 可用金币余额
+       */
+      goldBalance?: string
+    }
+  }
+  /**
+   * TicketDisplayInfo 工单通用展示信息。
+   */
+  ticket?: {
+    /**
+     * 工单ID
+     */
+    id?: string
+    /**
+     * 工单类型
+     */
+    type?: string
+    /**
+     * 工单状态
+     */
+    status?: string
+  }
+}
+
+/**
+ * 接口 后台提交积分存入申请 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit`
+ */
+type PostApiWalletV1AccountsDepositRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/wallet/v1/accounts/deposit', undefined, string, string, false>
+>
+
+/**
+ * 接口 后台提交积分存入申请 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit`
+ */
+const postApiWalletV1AccountsDepositRequestConfig: PostApiWalletV1AccountsDepositRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/accounts/deposit',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiWalletV1AccountsDeposit',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 后台提交积分存入申请 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit`
+ */
+export const postApiWalletV1AccountsDeposit = /*#__PURE__*/ (
+  requestData: PostApiWalletV1AccountsDepositRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiWalletV1AccountsDepositResponse>(
+    prepare(postApiWalletV1AccountsDepositRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiWalletV1AccountsDeposit.requestConfig = postApiWalletV1AccountsDepositRequestConfig
+
+/**
+ * 接口 预览后台积分存入申请 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit/preview`
+ */
+export interface PostApiWalletV1AccountsDepositPreviewRequest {
+  /**
+   * 会员ID
+   */
+  memberId?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 拟提交存入的原始积分数量
+   */
+  points?: string
+}
+
+/**
+ * 接口 预览后台积分存入申请 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit/preview`
+ */
+export interface PostApiWalletV1AccountsDepositPreviewResponse {
+  /**
+   * 原始提交积分数量
+   */
+  originalPoints?: string
+  /**
+   * 预计实际可存入积分数量
+   */
+  depositPoints?: string
+  /**
+   * 预计未进入积分钱包的积分数量，计算方式为 originalPoints - depositPoints
+   */
+  undepositedPoints?: string
+  /**
+   * 预计兑换抽奖次数
+   */
+  drawChanceCount?: string
+  /**
+   * 预计参与兑换抽奖次数的原始积分数量
+   */
+  drawSourcePoints?: string
+  /**
+   * 没有被任何存入梯度覆盖、无法转换的积分数量
+   */
+  unconvertedPoints?: string
+  /**
+   * 是否可以继续正式提交；必须在梯度范围内且有可存入积分或抽奖次数
+   */
+  canSubmit?: boolean
+  /**
+   * 积分存入梯度拆分明细
+   */
+  exchangeSegments?: {
+    /**
+     * 积分区间起点，包含该值
+     */
+    minPoints?: string
+    /**
+     * 积分区间终点，不包含该值；0 表示无上限
+     */
+    maxPoints?: string
+    /**
+     * 本段参与计算的原始积分数量
+     */
+    sourcePoints?: string
+    /**
+     * 本段多少原始积分折算 1 个实际存入积分
+     */
+    depositExchangePoints?: string
+    /**
+     * 本段实际可存入积分数量
+     */
+    depositPoints?: string
+    /**
+     * 本段按存入折算后不足 1 个存入积分的余数
+     */
+    depositRemainderPoints?: string
+    /**
+     * 本段多少原始积分折算 1 次抽奖次数；0 表示不兑换
+     */
+    drawExchangePoints?: string
+    /**
+     * 本段兑换的抽奖次数
+     */
+    drawChanceCount?: string
+    /**
+     * 本段参与兑换抽奖次数的原始积分数量
+     */
+    drawSourcePoints?: string
+    /**
+     * 本段按抽奖折算后不足 1 次抽奖的余数
+     */
+    drawRemainderPoints?: string
+  }[]
+}
+
+/**
+ * 接口 预览后台积分存入申请 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit/preview`
+ */
+type PostApiWalletV1AccountsDepositPreviewRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/wallet/v1/accounts/deposit/preview', undefined, string, string, false>
+>
+
+/**
+ * 接口 预览后台积分存入申请 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit/preview`
+ */
+const postApiWalletV1AccountsDepositPreviewRequestConfig: PostApiWalletV1AccountsDepositPreviewRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/wallet/v1/accounts/deposit/preview',
+    method: Method.POST,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.json,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'postApiWalletV1AccountsDepositPreview',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 预览后台积分存入申请 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/deposit/preview`
+ */
+export const postApiWalletV1AccountsDepositPreview = /*#__PURE__*/ (
+  requestData: PostApiWalletV1AccountsDepositPreviewRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiWalletV1AccountsDepositPreviewResponse>(
+    prepare(postApiWalletV1AccountsDepositPreviewRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiWalletV1AccountsDepositPreview.requestConfig = postApiWalletV1AccountsDepositPreviewRequestConfig
+
+/**
+ * 接口 后台划账扣减金豆 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/transfer`
+ */
+export interface PostApiWalletV1AccountsTransferRequest {
+  /**
+   * 会员ID
+   */
+  memberId?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID
+   */
+  storeId?: string
+  /**
+   * 扣减金豆数量
+   */
+  gold?: string
+  /**
+   * 划账说明
+   */
+  description?: string
+}
+
+/**
+ * 接口 后台划账扣减金豆 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/transfer`
+ */
+export interface PostApiWalletV1AccountsTransferResponse {
+  /**
+   * WalletLedgerItem 钱包流水数据。
+   */
+  ledger?: {
+    /**
+     * 流水ID
+     */
+    id?: string
+    /**
+     * 账户ID
+     */
+    accountId?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 流水类型：earn=消费获得积分，payment=订单扣减金币，refund=退款返还金币，order_refund=订单退款扣回积分，recharge=充值获得金币，reward=规则奖励获得积分，expire=积分过期扣减，adjust=人工调整积分，deposit=会员申请存入积分，withdraw=会员提取积分，checkin=签到获得积分。
+     */
+    type?: string
+    /**
+     * 资产类型：points=积分，gold=金币。
+     */
+    assetType?: string
+    /**
+     * 变动数量。earn/order_refund/deposit/withdraw 表示积分变动值，payment/refund 表示金币变动值，扣减时可为负数。
+     */
+    amount?: string
+    /**
+     * 变动后余额。按 asset_type 表示积分或金币余额。
+     */
+    balanceAfter?: string
+    /**
+     * 关联订单号
+     */
+    orderNo?: string
+    /**
+     * 描述
+     */
+    description?: string
+    /**
+     * 过期时间
+     */
+    expireAt?: string
+    /**
+     * 是否已过期
+     */
+    expired?: boolean
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 关联存入申请ID
+     */
+    requestId?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * WalletRequestDisplayInfo 积分存入申请通用展示信息；points 为存入申请历史字段名，表示申请存入积分数量。
+     */
+    request?: {
+      /**
+       * 积分存入申请ID
+       */
+      id?: string
+      /**
+       * 申请状态
+       */
+      status?: string
+      /**
+       * 申请存入积分数量，保留 points 历史字段名
+       */
+      points?: string
+    }
+    /**
+     * WalletDisplayInfo 钱包通用展示信息；points_balance 为积分余额，gold_balance 为金币余额。
+     */
+    account?: {
+      /**
+       * 钱包ID
+       */
+      id?: string
+      /**
+       * 可用积分余额
+       */
+      pointsBalance?: string
+      /**
+       * 冻结积分
+       */
+      pointsFrozen?: string
+      /**
+       * 可用金币余额
+       */
+      goldBalance?: string
+    }
+  }
+}
+
+/**
+ * 接口 后台划账扣减金豆 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/transfer`
+ */
+type PostApiWalletV1AccountsTransferRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/wallet/v1/accounts/transfer', undefined, string, string, false>
+>
+
+/**
+ * 接口 后台划账扣减金豆 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/transfer`
+ */
+const postApiWalletV1AccountsTransferRequestConfig: PostApiWalletV1AccountsTransferRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/accounts/transfer',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiWalletV1AccountsTransfer',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 后台划账扣减金豆 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/transfer`
+ */
+export const postApiWalletV1AccountsTransfer = /*#__PURE__*/ (
+  requestData: PostApiWalletV1AccountsTransferRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiWalletV1AccountsTransferResponse>(
+    prepare(postApiWalletV1AccountsTransferRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiWalletV1AccountsTransfer.requestConfig = postApiWalletV1AccountsTransferRequestConfig
+
+/**
+ * 接口 查询会员钱包 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts/{memberId}`
+ */
+export interface GetApiWalletV1AccountsByMemberIdRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 会员ID
+   */
+  memberId: string
+}
+
+/**
+ * 接口 查询会员钱包 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts/{memberId}`
+ */
+export interface GetApiWalletV1AccountsByMemberIdResponse {
+  /**
+   * Wallet 会员账户数据；points_balance 为积分余额，gold_balance 为金币余额。
+   */
+  wallet?: {
+    /**
+     * 账户ID
+     */
+    id?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 可用积分余额
+     */
+    pointsBalance?: string
+    /**
+     * 冻结积分
+     */
+    pointsFrozen?: string
+    /**
+     * 累计获得积分
+     */
+    pointsTotalEarned?: string
+    /**
+     * 累计使用积分
+     */
+    pointsTotalUsed?: string
+    /**
+     * 最近过期时间
+     */
+    pointsLastExpiredAt?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 可用金币余额
+     */
+    goldBalance?: string
+  }
+}
+
+/**
+ * 接口 查询会员钱包 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts/{memberId}`
+ */
+type GetApiWalletV1AccountsByMemberIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/wallet/v1/accounts/{memberId}', undefined, 'memberId', 'merchantId', false>
+>
+
+/**
+ * 接口 查询会员钱包 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts/{memberId}`
+ */
+const getApiWalletV1AccountsByMemberIdRequestConfig: GetApiWalletV1AccountsByMemberIdRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/accounts/{memberId}',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: ['memberId'],
+  queryNames: ['merchantId'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiWalletV1AccountsByMemberId',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询会员钱包 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/accounts/{memberId}`
+ */
+export const getApiWalletV1AccountsByMemberId = /*#__PURE__*/ (
+  requestData: GetApiWalletV1AccountsByMemberIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiWalletV1AccountsByMemberIdResponse>(
+    prepare(getApiWalletV1AccountsByMemberIdRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiWalletV1AccountsByMemberId.requestConfig = getApiWalletV1AccountsByMemberIdRequestConfig
+
+/**
+ * 接口 手工调整积分 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/{memberId}/adjust`
+ */
+export interface PostApiWalletV1AccountsByMemberIdAdjustRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 调整积分，支持正负值
+   */
+  changePoints?: string
+  /**
+   * 调整说明
+   */
+  description?: string
+  /**
+   * 会员ID
+   */
+  memberId: string
+}
+
+/**
+ * 接口 手工调整积分 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/{memberId}/adjust`
+ */
+export interface PostApiWalletV1AccountsByMemberIdAdjustResponse {
+  /**
+   * WalletLedgerItem 钱包流水数据。
+   */
+  ledger?: {
+    /**
+     * 流水ID
+     */
+    id?: string
+    /**
+     * 账户ID
+     */
+    accountId?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 流水类型：earn=消费获得积分，payment=订单扣减金币，refund=退款返还金币，order_refund=订单退款扣回积分，recharge=充值获得金币，reward=规则奖励获得积分，expire=积分过期扣减，adjust=人工调整积分，deposit=会员申请存入积分，withdraw=会员提取积分，checkin=签到获得积分。
+     */
+    type?: string
+    /**
+     * 资产类型：points=积分，gold=金币。
+     */
+    assetType?: string
+    /**
+     * 变动数量。earn/order_refund/deposit/withdraw 表示积分变动值，payment/refund 表示金币变动值，扣减时可为负数。
+     */
+    amount?: string
+    /**
+     * 变动后余额。按 asset_type 表示积分或金币余额。
+     */
+    balanceAfter?: string
+    /**
+     * 关联订单号
+     */
+    orderNo?: string
+    /**
+     * 描述
+     */
+    description?: string
+    /**
+     * 过期时间
+     */
+    expireAt?: string
+    /**
+     * 是否已过期
+     */
+    expired?: boolean
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 关联存入申请ID
+     */
+    requestId?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * WalletRequestDisplayInfo 积分存入申请通用展示信息；points 为存入申请历史字段名，表示申请存入积分数量。
+     */
+    request?: {
+      /**
+       * 积分存入申请ID
+       */
+      id?: string
+      /**
+       * 申请状态
+       */
+      status?: string
+      /**
+       * 申请存入积分数量，保留 points 历史字段名
+       */
+      points?: string
+    }
+    /**
+     * WalletDisplayInfo 钱包通用展示信息；points_balance 为积分余额，gold_balance 为金币余额。
+     */
+    account?: {
+      /**
+       * 钱包ID
+       */
+      id?: string
+      /**
+       * 可用积分余额
+       */
+      pointsBalance?: string
+      /**
+       * 冻结积分
+       */
+      pointsFrozen?: string
+      /**
+       * 可用金币余额
+       */
+      goldBalance?: string
+    }
+  }
+}
+
+/**
+ * 接口 手工调整积分 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/{memberId}/adjust`
+ */
+type PostApiWalletV1AccountsByMemberIdAdjustRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/wallet/v1/accounts/{memberId}/adjust', undefined, 'memberId', string, false>
+>
+
+/**
+ * 接口 手工调整积分 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/{memberId}/adjust`
+ */
+const postApiWalletV1AccountsByMemberIdAdjustRequestConfig: PostApiWalletV1AccountsByMemberIdAdjustRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/wallet/v1/accounts/{memberId}/adjust',
+    method: Method.POST,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.json,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: ['memberId'],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'postApiWalletV1AccountsByMemberIdAdjust',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 手工调整积分 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/{memberId}/adjust`
+ */
+export const postApiWalletV1AccountsByMemberIdAdjust = /*#__PURE__*/ (
+  requestData: PostApiWalletV1AccountsByMemberIdAdjustRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiWalletV1AccountsByMemberIdAdjustResponse>(
+    prepare(postApiWalletV1AccountsByMemberIdAdjustRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiWalletV1AccountsByMemberIdAdjust.requestConfig = postApiWalletV1AccountsByMemberIdAdjustRequestConfig
+
+/**
+ * 接口 查询存入申请列表 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests`
+ */
+export interface GetApiWalletV1DepositRequestsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID（可选）
+   */
+  merchantId?: string
+  /**
+   * 门店ID（可选）
+   */
+  storeId?: string
+  /**
+   * 会员ID（可选）
+   */
+  memberId?: string
+  /**
+   * 申请状态筛选：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询存入申请列表 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests`
+ */
+export interface GetApiWalletV1DepositRequestsResponse {
+  /**
+   * 存入申请列表
+   */
+  requests?: {
+    /**
+     * 申请ID
+     */
+    id?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请存入积分数量，保留 points 历史字段名
+     */
+    points?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 审核人ID
+     */
+    reviewerId?: string
+    /**
+     * 审核备注
+     */
+    reviewRemark?: string
+    /**
+     * 审核时间
+     */
+    reviewedAt?: string
+    /**
+     * 撤回时间
+     */
+    cancelledAt?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    reviewer?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * 原始提交积分数量
+     */
+    originalPoints?: string
+    /**
+     * 实际可存入积分数量，与 points 一致
+     */
+    depositPoints?: string
+    /**
+     * 未进入积分钱包的积分数量，计算方式为 originalPoints - depositPoints
+     */
+    undepositedPoints?: string
+    /**
+     * 按梯度预计兑换的抽奖次数，审核通过后到账
+     */
+    drawChanceCount?: string
+    /**
+     * 参与兑换抽奖次数的原始积分数量
+     */
+    drawSourcePoints?: string
+    /**
+     * 没有被任何存入梯度覆盖、无法转换的积分数量
+     */
+    unconvertedPoints?: string
+    /**
+     * 积分存入梯度拆分明细
+     */
+    exchangeSegments?: {
+      /**
+       * 积分区间起点，包含该值
+       */
+      minPoints?: string
+      /**
+       * 积分区间终点，不包含该值；0 表示无上限
+       */
+      maxPoints?: string
+      /**
+       * 本段参与计算的原始积分数量
+       */
+      sourcePoints?: string
+      /**
+       * 本段多少原始积分折算 1 个实际存入积分
+       */
+      depositExchangePoints?: string
+      /**
+       * 本段实际可存入积分数量
+       */
+      depositPoints?: string
+      /**
+       * 本段按存入折算后不足 1 个存入积分的余数
+       */
+      depositRemainderPoints?: string
+      /**
+       * 本段多少原始积分折算 1 次抽奖次数；0 表示不兑换
+       */
+      drawExchangePoints?: string
+      /**
+       * 本段兑换的抽奖次数
+       */
+      drawChanceCount?: string
+      /**
+       * 本段参与兑换抽奖次数的原始积分数量
+       */
+      drawSourcePoints?: string
+      /**
+       * 本段按抽奖折算后不足 1 次抽奖的余数
+       */
+      drawRemainderPoints?: string
+    }[]
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询存入申请列表 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests`
+ */
+type GetApiWalletV1DepositRequestsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/wallet/v1/depositRequests',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'memberId' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询存入申请列表 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests`
+ */
+const getApiWalletV1DepositRequestsRequestConfig: GetApiWalletV1DepositRequestsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/depositRequests',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'memberId', 'status'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiWalletV1DepositRequests',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询存入申请列表 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests`
+ */
+export const getApiWalletV1DepositRequests = /*#__PURE__*/ (
+  requestData: GetApiWalletV1DepositRequestsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiWalletV1DepositRequestsResponse>(
+    prepare(getApiWalletV1DepositRequestsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiWalletV1DepositRequests.requestConfig = getApiWalletV1DepositRequestsRequestConfig
+
+/**
+ * 接口 查询存入申请详情 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests/{id}`
+ */
+export interface GetApiWalletV1DepositRequestsByIdRequest {
+  /**
+   * 存入申请ID
+   */
+  id: string
+}
+
+/**
+ * 接口 查询存入申请详情 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests/{id}`
+ */
+export interface GetApiWalletV1DepositRequestsByIdResponse {
+  /**
+   * DepositRequestInfo 积分存入申请数据；points 为历史字段名，表示实际可存入积分数量。
+   */
+  request?: {
+    /**
+     * 申请ID
+     */
+    id?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 申请存入积分数量，保留 points 历史字段名
+     */
+    points?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 审核人ID
+     */
+    reviewerId?: string
+    /**
+     * 审核备注
+     */
+    reviewRemark?: string
+    /**
+     * 审核时间
+     */
+    reviewedAt?: string
+    /**
+     * 撤回时间
+     */
+    cancelledAt?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * AccountDisplayInfo 账号通用展示信息。
+     */
+    reviewer?: {
+      /**
+       * 账号ID
+       */
+      id?: string
+      /**
+       * 账号展示名称
+       */
+      name?: string
+      /**
+       * 账号头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 账号状态：1=启用，2=禁用
+       */
+      status?: number
+      /**
+       * 账号手机号
+       */
+      phone?: string
+    }
+    /**
+     * 原始提交积分数量
+     */
+    originalPoints?: string
+    /**
+     * 实际可存入积分数量，与 points 一致
+     */
+    depositPoints?: string
+    /**
+     * 未进入积分钱包的积分数量，计算方式为 originalPoints - depositPoints
+     */
+    undepositedPoints?: string
+    /**
+     * 按梯度预计兑换的抽奖次数，审核通过后到账
+     */
+    drawChanceCount?: string
+    /**
+     * 参与兑换抽奖次数的原始积分数量
+     */
+    drawSourcePoints?: string
+    /**
+     * 没有被任何存入梯度覆盖、无法转换的积分数量
+     */
+    unconvertedPoints?: string
+    /**
+     * 积分存入梯度拆分明细
+     */
+    exchangeSegments?: {
+      /**
+       * 积分区间起点，包含该值
+       */
+      minPoints?: string
+      /**
+       * 积分区间终点，不包含该值；0 表示无上限
+       */
+      maxPoints?: string
+      /**
+       * 本段参与计算的原始积分数量
+       */
+      sourcePoints?: string
+      /**
+       * 本段多少原始积分折算 1 个实际存入积分
+       */
+      depositExchangePoints?: string
+      /**
+       * 本段实际可存入积分数量
+       */
+      depositPoints?: string
+      /**
+       * 本段按存入折算后不足 1 个存入积分的余数
+       */
+      depositRemainderPoints?: string
+      /**
+       * 本段多少原始积分折算 1 次抽奖次数；0 表示不兑换
+       */
+      drawExchangePoints?: string
+      /**
+       * 本段兑换的抽奖次数
+       */
+      drawChanceCount?: string
+      /**
+       * 本段参与兑换抽奖次数的原始积分数量
+       */
+      drawSourcePoints?: string
+      /**
+       * 本段按抽奖折算后不足 1 次抽奖的余数
+       */
+      drawRemainderPoints?: string
+    }[]
+  }
+}
+
+/**
+ * 接口 查询存入申请详情 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests/{id}`
+ */
+type GetApiWalletV1DepositRequestsByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/wallet/v1/depositRequests/{id}', undefined, 'id', string, false>
+>
+
+/**
+ * 接口 查询存入申请详情 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests/{id}`
+ */
+const getApiWalletV1DepositRequestsByIdRequestConfig: GetApiWalletV1DepositRequestsByIdRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/depositRequests/{id}',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: ['id'],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiWalletV1DepositRequestsById',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询存入申请详情 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/depositRequests/{id}`
+ */
+export const getApiWalletV1DepositRequestsById = /*#__PURE__*/ (
+  requestData: GetApiWalletV1DepositRequestsByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiWalletV1DepositRequestsByIdResponse>(
+    prepare(getApiWalletV1DepositRequestsByIdRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiWalletV1DepositRequestsById.requestConfig = getApiWalletV1DepositRequestsByIdRequestConfig
+
+/**
+ * 接口 查询钱包流水 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ledger`
+ */
+export interface GetApiWalletV1LedgerRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 会员ID（可选）
+   */
+  memberId?: string
+  /**
+   * 流水类型筛选：earn=获得积分，payment=扣减金币，refund=返还金币，order_refund=订单退款扣回积分，recharge=充值获得金币，reward=规则奖励积分，expire=过期积分，adjust=手工调整积分，deposit=申请存入积分，withdraw=提取积分，checkin=签到积分
+   */
+  type?: string
+}
+
+/**
+ * 接口 查询钱包流水 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ledger`
+ */
+export interface GetApiWalletV1LedgerResponse {
+  /**
+   * 流水列表
+   */
+  ledger?: {
+    /**
+     * 流水ID
+     */
+    id?: string
+    /**
+     * 账户ID
+     */
+    accountId?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 流水类型：earn=消费获得积分，payment=订单扣减金币，refund=退款返还金币，order_refund=订单退款扣回积分，recharge=充值获得金币，reward=规则奖励获得积分，expire=积分过期扣减，adjust=人工调整积分，deposit=会员申请存入积分，withdraw=会员提取积分，checkin=签到获得积分。
+     */
+    type?: string
+    /**
+     * 资产类型：points=积分，gold=金币。
+     */
+    assetType?: string
+    /**
+     * 变动数量。earn/order_refund/deposit/withdraw 表示积分变动值，payment/refund 表示金币变动值，扣减时可为负数。
+     */
+    amount?: string
+    /**
+     * 变动后余额。按 asset_type 表示积分或金币余额。
+     */
+    balanceAfter?: string
+    /**
+     * 关联订单号
+     */
+    orderNo?: string
+    /**
+     * 描述
+     */
+    description?: string
+    /**
+     * 过期时间
+     */
+    expireAt?: string
+    /**
+     * 是否已过期
+     */
+    expired?: boolean
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 关联存入申请ID
+     */
+    requestId?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * WalletRequestDisplayInfo 积分存入申请通用展示信息；points 为存入申请历史字段名，表示申请存入积分数量。
+     */
+    request?: {
+      /**
+       * 积分存入申请ID
+       */
+      id?: string
+      /**
+       * 申请状态
+       */
+      status?: string
+      /**
+       * 申请存入积分数量，保留 points 历史字段名
+       */
+      points?: string
+    }
+    /**
+     * WalletDisplayInfo 钱包通用展示信息；points_balance 为积分余额，gold_balance 为金币余额。
+     */
+    account?: {
+      /**
+       * 钱包ID
+       */
+      id?: string
+      /**
+       * 可用积分余额
+       */
+      pointsBalance?: string
+      /**
+       * 冻结积分
+       */
+      pointsFrozen?: string
+      /**
+       * 可用金币余额
+       */
+      goldBalance?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询钱包流水 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ledger`
+ */
+type GetApiWalletV1LedgerRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/wallet/v1/ledger',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'memberId' | 'type',
+    false
+  >
+>
+
+/**
+ * 接口 查询钱包流水 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ledger`
+ */
+const getApiWalletV1LedgerRequestConfig: GetApiWalletV1LedgerRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/ledger',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'memberId', 'type'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiWalletV1Ledger',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询钱包流水 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ledger`
+ */
+export const getApiWalletV1Ledger = /*#__PURE__*/ (
+  requestData: GetApiWalletV1LedgerRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiWalletV1LedgerResponse>(prepare(getApiWalletV1LedgerRequestConfig, requestData), ...args)
+}
+
+getApiWalletV1Ledger.requestConfig = getApiWalletV1LedgerRequestConfig
+
+/**
+ * 接口 查询积分排行榜 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ranking`
+ */
+export interface GetApiWalletV1RankingRequest {
+  /**
+   * 周期：daily=日榜，weekly=周榜，monthly=月榜，yearly=年榜
+   */
+  period?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID；大于0时查询门店榜，不传时查询商户榜
+   */
+  storeId?: string
+  /**
+   * 返回数量，默认20，最大100
+   */
+  limit?: number
+  /**
+   * 历史期数；daily 使用 YYYY-MM-DD，weekly 使用 YYYY-Www 如 2026-W25，monthly 使用 YYYY-MM，yearly 使用 YYYY；为空时默认当前期
+   */
+  periodNo?: string
+}
+
+/**
+ * 接口 查询积分排行榜 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ranking`
+ */
+export interface GetApiWalletV1RankingResponse {
+  /**
+   * 排行榜列表
+   */
+  items?: {
+    /**
+     * 排名，从 1 开始
+     */
+    rank?: number
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 会员昵称
+     */
+    nickname?: string
+    /**
+     * 会员头像URL
+     */
+    avatarUrl?: string
+    /**
+     * 周期内积分增长值
+     */
+    points?: string
+    /**
+     * 周期内计入排行榜的流水笔数
+     */
+    transactionCount?: string
+    /**
+     * 周期：daily=日榜，weekly=周榜，monthly=月榜，yearly=年榜。
+     */
+    period?: string
+    /**
+     * 范围：merchant/store
+     */
+    scope?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID，商户榜为 0
+     */
+    storeId?: string
+    /**
+     * 统计开始日期，格式 YYYY-MM-DD
+     */
+    startDate?: string
+    /**
+     * 统计结束日期，格式 YYYY-MM-DD
+     */
+    endDate?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+  }[]
+}
+
+/**
+ * 接口 查询积分排行榜 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ranking`
+ */
+type GetApiWalletV1RankingRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/wallet/v1/ranking',
+    undefined,
+    string,
+    'period' | 'merchantId' | 'storeId' | 'limit' | 'periodNo',
+    false
+  >
+>
+
+/**
+ * 接口 查询积分排行榜 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ranking`
+ */
+const getApiWalletV1RankingRequestConfig: GetApiWalletV1RankingRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/wallet/v1/ranking',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['period', 'merchantId', 'storeId', 'limit', 'periodNo'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiWalletV1Ranking',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询积分排行榜 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `GET /api/wallet/v1/ranking`
+ */
+export const getApiWalletV1Ranking = /*#__PURE__*/ (
+  requestData: GetApiWalletV1RankingRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiWalletV1RankingResponse>(prepare(getApiWalletV1RankingRequestConfig, requestData), ...args)
+}
+
+getApiWalletV1Ranking.requestConfig = getApiWalletV1RankingRequestConfig
+
 /* prettier-ignore-end */

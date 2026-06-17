@@ -683,10 +683,10 @@ const handleLogout = async () => {
     </button>
 
     <section class="home-mini-grid" aria-label="服务入口">
-      <RouterLink class="home-mini-card" :to="{ name: 'orders' }">
+      <RouterLink class="home-mini-card" :to="{ name: 'points-deposit' }">
         <span>
-          <strong>订单</strong>
-          <small>ORDERS</small>
+          <strong>存积分</strong>
+          <small>POINTS</small>
         </span>
         <CrownOutlined class="home-mini-icon" />
       </RouterLink>

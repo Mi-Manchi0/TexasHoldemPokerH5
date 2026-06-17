@@ -1,0 +1,1 @@
+{"balanceAfter":1, "createdAt":"2026-06-12 14:01:31", "dishId":"2056050354084122624", "id":"14", "memberId":"1", "merchantId":"1", "quantity":1, "remark":"", "reviewRemark":"", "reviewedAt":"", "reviewerId":"0", "status":"pending", "storageRecordId":"6", "storageStoreId":"1", "storeId":"1", "ticketId":"29", "type":"withdraw"}
