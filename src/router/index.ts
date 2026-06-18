@@ -6,6 +6,7 @@ import MenuView from '@/views/MenuView.vue'
 import MineView from '@/views/MineView.vue'
 import OrdersView from '@/views/OrdersView.vue'
 import PointsDepositView from '@/views/PointsDepositView.vue'
+import WineStorageView from '@/views/WineStorageView.vue'
 import { clearAuthSession, getToken } from '@/utils/auth'
 import { setHttpConfig } from '@/utils/http'
 
@@ -44,6 +45,11 @@ const routes: RouteRecordRaw[] = [
         path: 'points-deposit',
         name: 'points-deposit',
         component: PointsDepositView,
+      },
+      {
+        path: 'wine-storage',
+        name: 'wine-storage',
+        component: WineStorageView,
       },
       {
         path: 'mine',

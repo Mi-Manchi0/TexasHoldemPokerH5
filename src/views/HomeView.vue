@@ -3,15 +3,17 @@ import {
   ArrowRightOutlined,
   CheckCircleFilled,
   CloseOutlined,
+  CoffeeOutlined,
   CrownOutlined,
+  DownloadOutlined,
   EditOutlined,
   QrcodeOutlined,
   ShopOutlined,
   TableOutlined,
-  WalletOutlined,
+  UploadOutlined,
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import brandMarkUrl from '@/assets/bgc.jpg'
 import TableSeatPicker from '@/components/TableSeatPicker.vue'
@@ -25,7 +27,7 @@ import { useOrgScopeStore } from '@/stores/orgScope'
 import type { OrgScopeSelection } from '@/stores/orgScope'
 import { useTableSeatStore } from '@/stores/tableSeat'
 import { decodeQrFromImage, resolveArriveVerifyFromRaw } from '@/utils/arriveVerify'
-import { clearAuthSession, getUserInfo } from '@/utils/auth'
+import { clearAuthSession, getUserInfo, refreshUserInfo, type AuthUserInfo } from '@/utils/auth'
 
 type ApiOrder = NonNullable<GetApiOrderV1OrdersResponse['orders']>[number]
 type ApiOrderWithTimestamps = ApiOrder & {
@@ -61,7 +63,7 @@ const HOME_LATEST_ORDER_PAGE_SIZE = 20
 const router = useRouter()
 const orgScopeStore = useOrgScopeStore()
 const tableSeatStore = useTableSeatStore()
-const userInfo = computed(() => getUserInfo())
+const userInfo = ref<AuthUserInfo | null>(getUserInfo())
 const displayName = computed(() => userInfo.value?.name || userInfo.value?.phone || '玩家')
 const selectedScope = computed(() => orgScopeStore.selected)
 const currentBusiness = computed(() => orgScopeStore.currentBusiness)
@@ -82,8 +84,48 @@ const arriveVerifyCode = ref('')
 const arriveScanMessage = ref('')
 const arriveCapturing = ref(false)
 const arriveVerifying = ref(false)
+const arriveManualInputRef = ref<HTMLInputElement | null>(null)
+const arriveVerifyPanelRef = ref<HTMLElement | null>(null)
+const isWineStorageCardOpen = ref(false)
+const wineStoragePanelRef = ref<HTMLElement | null>(null)
 
 let latestOrderRequestId = 0
+
+const reloadUserInfo = async () => {
+  try {
+    userInfo.value = await refreshUserInfo()
+  } catch {
+    userInfo.value = getUserInfo()
+  }
+}
+
+onMounted(() => {
+  void reloadUserInfo()
+})
+
+const focusArriveVerifyPanel = () => {
+  void nextTick(() => {
+    arriveVerifyPanelRef.value?.focus({
+      preventScroll: true,
+    })
+  })
+}
+
+const focusArriveManualInput = () => {
+  void nextTick(() => {
+    arriveManualInputRef.value?.focus({
+      preventScroll: true,
+    })
+  })
+}
+
+const focusWineStoragePanel = () => {
+  void nextTick(() => {
+    wineStoragePanelRef.value?.focus({
+      preventScroll: true,
+    })
+  })
+}
 
 const normalizeText = (value: unknown) => {
   if (value === undefined || value === null) return ''
@@ -124,6 +166,19 @@ const ensureArriveVerifyScope = () => {
   return false
 }
 
+const ensureWineStorageScope = () => {
+  if (selectedScope.value?.merchantId && selectedScope.value?.storeId) return true
+
+  if (!orgScopeStore.loaded && !orgScopeStore.loading) {
+    void orgScopeStore.loadMyScopes().catch(() => {
+      message.error('组织范围加载失败，请稍后重试')
+    })
+  }
+
+  message.warning('请先选择存取酒门店')
+  return false
+}
+
 const switchArriveStore = (storeId: string) => {
   const scope = selectedScope.value
   const targetStoreId = normalizeText(storeId)
@@ -157,6 +212,7 @@ const toggleArriveVerifyCard = () => {
 
   resetArriveVerifyCard()
   isArriveVerifyCardOpen.value = true
+  focusArriveVerifyPanel()
 }
 
 const closeArriveVerifyCard = () => {
@@ -166,11 +222,110 @@ const closeArriveVerifyCard = () => {
   resetArriveVerifyCard()
 }
 
+const closeWineStorageCard = () => {
+  isWineStorageCardOpen.value = false
+}
+
+const toggleWineStorageCard = () => {
+  if (isWineStorageCardOpen.value) {
+    closeWineStorageCard()
+    return
+  }
+
+  if (!ensureWineStorageScope()) return
+
+  isWineStorageCardOpen.value = true
+  focusWineStoragePanel()
+}
+
+const handleArriveVerifyFocusOut = (event: FocusEvent) => {
+  if (isArriveManualOpen.value || arriveCapturing.value || arriveVerifying.value) return
+
+  const currentTarget = event.currentTarget as HTMLElement
+  const nextTarget = event.relatedTarget as Node | null
+
+  if (nextTarget && currentTarget.contains(nextTarget)) return
+
+  window.setTimeout(() => {
+    const activeElement = document.activeElement
+    if (activeElement && currentTarget.contains(activeElement)) return
+    if (!document.hasFocus()) return
+
+    closeArriveVerifyCard()
+  })
+}
+
+const handleWineStorageFocusOut = (event: FocusEvent) => {
+  const currentTarget = event.currentTarget as HTMLElement
+  const nextTarget = event.relatedTarget as Node | null
+
+  if (nextTarget && currentTarget.contains(nextTarget)) return
+
+  window.setTimeout(() => {
+    const activeElement = document.activeElement
+    if (activeElement && currentTarget.contains(activeElement)) return
+    if (!document.hasFocus()) return
+
+    closeWineStorageCard()
+  })
+}
+
+const handleArriveVerifyOutsidePointerDown = (event: PointerEvent) => {
+  const target = event.target as Node | null
+
+  if (
+    isArriveVerifyCardOpen.value &&
+    !isArriveManualOpen.value &&
+    !arriveCapturing.value &&
+    !arriveVerifying.value
+  ) {
+    const panel = arriveVerifyPanelRef.value
+    if (panel && (!target || !panel.contains(target))) {
+      closeArriveVerifyCard()
+    }
+  }
+
+  if (isWineStorageCardOpen.value) {
+    const panel = wineStoragePanelRef.value
+    if (panel && (!target || !panel.contains(target))) {
+      closeWineStorageCard()
+    }
+  }
+}
+
+window.addEventListener('pointerdown', handleArriveVerifyOutsidePointerDown, true)
+
+onBeforeUnmount(() => {
+  window.removeEventListener('pointerdown', handleArriveVerifyOutsidePointerDown, true)
+})
+
 const openManualArriveInput = () => {
   if (!ensureArriveVerifyScope()) return
 
   isArriveManualOpen.value = true
   arriveScanMessage.value = ''
+  focusArriveManualInput()
+}
+
+const closeManualArriveInput = () => {
+  if (arriveVerifying.value) return
+
+  isArriveManualOpen.value = false
+  arriveVerifyCode.value = ''
+  arriveScanMessage.value = ''
+  focusArriveVerifyPanel()
+}
+
+const openWineStoragePage = async (mode: 'deposit' | 'withdraw') => {
+  if (!ensureWineStorageScope()) return
+
+  closeWineStorageCard()
+  await router.push({
+    name: 'wine-storage',
+    query: {
+      mode,
+    },
+  })
 }
 
 const refreshHomeAfterArriveVerify = async () => {
@@ -189,7 +344,7 @@ const submitArriveVerify = async (rawValue?: string, preferredStoreId?: string) 
   const resolved = resolveArriveRawValue(rawValue ?? arriveVerifyCode.value)
 
   if (resolved.status === 'empty') {
-    message.warning('请输入到店码')
+    message.warning('请输入核验码')
     return
   }
 
@@ -230,7 +385,7 @@ const submitArriveVerify = async (rawValue?: string, preferredStoreId?: string) 
     resetArriveVerifyCard()
     await refreshHomeAfterArriveVerify()
   } catch {
-    arriveScanMessage.value = '到店核验失败，请确认到店码是否有效'
+    arriveScanMessage.value = '到店核验失败，请确认核验码是否有效'
     message.error(arriveScanMessage.value)
   } finally {
     arriveVerifying.value = false
@@ -277,9 +432,9 @@ const handleArriveCaptureChange = async (event: Event) => {
 
     if (resolveArriveScannedValue(rawValue)) return
 
-    arriveScanMessage.value = '未识别到二维码，请重新扫码或输入到店码'
+    arriveScanMessage.value = '未识别到二维码，请重新扫码或输入核验码'
   } catch {
-    arriveScanMessage.value = '二维码识别失败，请重新扫码或输入到店码'
+    arriveScanMessage.value = '二维码识别失败，请重新扫码或输入核验码'
   } finally {
     arriveCapturing.value = false
   }
@@ -851,88 +1006,100 @@ const handleLogout = async () => {
         <small>牌桌管理</small>
       </button>
 
-      <button
-        class="home-action-tile home-action-button"
-        type="button"
-        aria-controls="home-arrive-verify-card"
-        :aria-expanded="isArriveVerifyCardOpen"
-        @click="toggleArriveVerifyCard"
+      <section
+        id="home-arrive-verify-card"
+        class="home-action-tile home-action-button home-arrive-verify-tile"
+        :class="{ 'is-open': isArriveVerifyCardOpen }"
+        aria-label="到店核验"
+        @focusout="handleArriveVerifyFocusOut"
       >
-        <QrcodeOutlined class="home-action-icon" />
-        <span>VERIFY</span>
-        <strong>核验</strong>
-        <small>预约到店</small>
-      </button>
+        <button
+          class="home-arrive-verify-trigger"
+          type="button"
+          aria-controls="home-arrive-verify-actions"
+          :aria-expanded="isArriveVerifyCardOpen"
+          :disabled="arriveCapturing || arriveVerifying"
+          @click="toggleArriveVerifyCard"
+        >
+          <QrcodeOutlined class="home-action-icon" />
+          <span>VERIFY</span>
+          <strong>核验</strong>
+          <small>预约到店</small>
+        </button>
+
+        <div
+          v-if="isArriveVerifyCardOpen"
+          id="home-arrive-verify-actions"
+          ref="arriveVerifyPanelRef"
+          class="home-arrive-action-panel"
+          tabindex="-1"
+        >
+          <div class="home-arrive-action-grid">
+            <label
+              class="home-arrive-action"
+              :class="{ 'is-disabled': arriveCapturing || arriveVerifying }"
+            >
+              <QrcodeOutlined />
+              <span>
+                <strong>{{ arriveCapturing ? '识别中' : arriveVerifying ? '核验中' : '拍照核验' }}</strong>
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                :disabled="arriveCapturing || arriveVerifying"
+                @change="handleArriveCaptureChange"
+              />
+            </label>
+
+            <button
+              class="home-arrive-action"
+              type="button"
+              aria-controls="home-arrive-manual-dialog"
+              :aria-expanded="isArriveManualOpen"
+              aria-haspopup="dialog"
+              :disabled="arriveCapturing || arriveVerifying"
+              @click="openManualArriveInput"
+            >
+              <EditOutlined />
+              <span>
+                <strong>输入核验码</strong>
+              </span>
+            </button>
+          </div>
+
+          <p v-if="arriveScanMessage && !isArriveManualOpen" class="home-arrive-message">
+            {{ arriveScanMessage }}
+          </p>
+        </div>
+      </section>
+
     </section>
 
     <section
-      v-if="isArriveVerifyCardOpen"
-      id="home-arrive-verify-card"
-      class="home-arrive-card"
-      aria-label="到店核验"
+      v-if="isArriveManualOpen"
+      class="table-picker-overlay home-arrive-manual-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="home-arrive-manual-title"
+      @click.self="closeManualArriveInput"
+      @keydown.esc="closeManualArriveInput"
     >
-      <header class="home-arrive-head">
-        <div>
-          <p>ARRIVAL VERIFY</p>
-          <h2>到店核验</h2>
-          <span>{{ selectedScope?.storeName || '当前门店' }}</span>
-        </div>
-
-        <button
-          class="home-arrive-close"
-          type="button"
-          aria-label="关闭到店核验"
-          :disabled="arriveCapturing || arriveVerifying"
-          @click="closeArriveVerifyCard"
-        >
-          <CloseOutlined />
-        </button>
-      </header>
-
-      <div class="home-arrive-action-grid">
-        <label
-          class="home-arrive-action"
-          :class="{ 'is-disabled': arriveCapturing || arriveVerifying }"
-        >
-          <QrcodeOutlined />
-          <span>
-            <strong>{{ arriveCapturing ? '识别中' : arriveVerifying ? '核验中' : '扫码核验' }}</strong>
-            <small>拍摄或选择二维码</small>
-          </span>
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            :disabled="arriveCapturing || arriveVerifying"
-            @change="handleArriveCaptureChange"
-          />
-        </label>
-
-        <button
-          class="home-arrive-action"
-          type="button"
-          :aria-expanded="isArriveManualOpen"
-          :disabled="arriveCapturing || arriveVerifying"
-          @click="openManualArriveInput"
-        >
-          <EditOutlined />
-          <span>
-            <strong>输入到店码</strong>
-            <small>手动确认预约</small>
-          </span>
-        </button>
-      </div>
-
       <form
-        v-if="isArriveManualOpen"
-        class="home-arrive-manual"
-        aria-label="输入到店码"
+        id="home-arrive-manual-dialog"
+        class="home-arrive-manual home-arrive-manual-dialog"
         @submit.prevent="submitArriveVerify()"
       >
+        <header class="home-arrive-manual-head">
+          <p>VERIFY CODE</p>
+          <h2 id="home-arrive-manual-title">输入核验码</h2>
+        </header>
+
         <label class="home-arrive-input-field">
-          <span>到店码</span>
+          <span>核验码</span>
           <input
             v-model="arriveVerifyCode"
+            ref="arriveManualInputRef"
             autocomplete="off"
             placeholder="输入预约 ID 或完整核验内容"
             :disabled="arriveVerifying"
@@ -947,11 +1114,11 @@ const handleLogout = async () => {
           <CheckCircleFilled />
           <span>{{ arriveVerifying ? '核验中' : '确认核验' }}</span>
         </button>
-      </form>
 
-      <p v-if="arriveScanMessage" class="home-arrive-message">
-        {{ arriveScanMessage }}
-      </p>
+        <p v-if="arriveScanMessage" class="home-arrive-message">
+          {{ arriveScanMessage }}
+        </p>
+      </form>
     </section>
 
     <button
@@ -987,13 +1154,58 @@ const handleLogout = async () => {
         <CrownOutlined class="home-mini-icon" />
       </RouterLink>
 
-      <RouterLink class="home-mini-card" :to="{ name: 'mine' }">
-        <span>
-          <strong>筹码</strong>
-          <small>WALLET</small>
-        </span>
-        <WalletOutlined class="home-mini-icon" />
-      </RouterLink>
+      <section
+        class="home-mini-card home-wine-storage-card"
+        :class="{ 'is-open': isWineStorageCardOpen }"
+        aria-label="存取酒"
+        @focusout="handleWineStorageFocusOut"
+      >
+        <button
+          class="home-wine-storage-trigger"
+          type="button"
+          aria-controls="home-wine-storage-actions"
+          :aria-expanded="isWineStorageCardOpen"
+          @click="toggleWineStorageCard"
+        >
+          <span>
+            <strong>存取酒</strong>
+            <small>WINE</small>
+          </span>
+          <CoffeeOutlined class="home-mini-icon" />
+        </button>
+
+        <div
+          v-if="isWineStorageCardOpen"
+          id="home-wine-storage-actions"
+          ref="wineStoragePanelRef"
+          class="home-wine-storage-panel"
+          tabindex="-1"
+        >
+          <div class="home-arrive-action-grid">
+            <button
+              class="home-arrive-action"
+              type="button"
+              @click="openWineStoragePage('deposit')"
+            >
+              <UploadOutlined />
+              <span>
+                <strong>存酒</strong>
+              </span>
+            </button>
+
+            <button
+              class="home-arrive-action"
+              type="button"
+              @click="openWineStoragePage('withdraw')"
+            >
+              <DownloadOutlined />
+              <span>
+                <strong>取酒</strong>
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
     </section>
 
     <RouterLink class="home-latest-order-card" :to="{ name: 'orders' }" aria-label="查看最新订单">

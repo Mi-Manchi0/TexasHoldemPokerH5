@@ -1,4 +1,8 @@
-import type { PostApiAuthV1LoginResponse } from '@/services/basis/basis'
+import {
+  getApiAuthV1Userinfo,
+  type GetApiAuthV1UserinfoResponse,
+  type PostApiAuthV1LoginResponse,
+} from '@/services/basis/basis'
 import { getHttpConfig } from '@/utils/http'
 
 export const userInfoStorageKey = 'USER_INFO'
@@ -8,6 +12,10 @@ export interface LastLoginCredentials {
   account: string
   password: string
 }
+
+export type AuthUserInfo =
+  | GetApiAuthV1UserinfoResponse
+  | NonNullable<PostApiAuthV1LoginResponse['userInfo']>
 
 export const getToken = () => {
   try {
@@ -26,6 +34,26 @@ export const getUserInfo = () => {
   }
 }
 
+export const saveUserInfo = (userInfo?: AuthUserInfo | null) => {
+  const storage = globalThis.localStorage
+
+  if (userInfo) {
+    storage.setItem(userInfoStorageKey, JSON.stringify(userInfo))
+  } else {
+    storage.removeItem(userInfoStorageKey)
+  }
+}
+
+export const refreshUserInfo = async () => {
+  const userInfo = await getApiAuthV1Userinfo(undefined, {
+    errorMessageMode: 'none',
+    withTenant: false,
+  })
+
+  saveUserInfo(userInfo)
+  return userInfo
+}
+
 export const saveAuthSession = (loginResult: PostApiAuthV1LoginResponse) => {
   const token = loginResult.token?.trim()
 
@@ -33,12 +61,7 @@ export const saveAuthSession = (loginResult: PostApiAuthV1LoginResponse) => {
 
   const storage = globalThis.localStorage
   storage.setItem(getHttpConfig().tokenStorageKey, token)
-
-  if (loginResult.userInfo) {
-    storage.setItem(userInfoStorageKey, JSON.stringify(loginResult.userInfo))
-  } else {
-    storage.removeItem(userInfoStorageKey)
-  }
+  saveUserInfo(loginResult.userInfo)
 
   return true
 }

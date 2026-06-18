@@ -2,6 +2,8 @@
 import {
   ArrowLeftOutlined,
   CheckCircleFilled,
+  CheckOutlined,
+  CloseOutlined,
   CreditCardOutlined,
   DownOutlined,
   VerticalAlignTopOutlined,
@@ -13,6 +15,8 @@ import { useRouter } from 'vue-router'
 import {
   getApiOrderV1Orders,
   getApiTicketV1Tickets,
+  putApiTicketV1TicketsApprove,
+  putApiTicketV1TicketsReject,
   type GetApiOrderV1OrdersResponse,
   type GetApiTicketV1TicketsResponse,
 } from '@/services/basis/basis'
@@ -65,6 +69,7 @@ interface TimelinePromotion {
 
 interface TimelineOrder {
   amount: string
+  canAudit: boolean
   dailySeqLabel: string
   details: TimelineOrderDetail[]
   emptyItemsText: string
@@ -76,7 +81,9 @@ interface TimelineOrder {
   promotions: TimelinePromotion[]
   status: string
   statusTone: OrderStatusTone
+  summary: TimelineOrderDetail[]
   tag: string
+  ticketId: string
   time: string
   title: string
   variant: OrderDisplayMode
@@ -84,6 +91,8 @@ interface TimelineOrder {
 
 const ORDER_PAGE_SIZE = 10
 const LOAD_MORE_DISTANCE = 72
+const TICKET_AUDIT_ACTION_WIDTH = 132
+const TICKET_AUDIT_SWIPE_THRESHOLD = 58
 
 const orders = ref<ApiOrder[]>([])
 const tickets = ref<ApiTicket[]>([])
@@ -107,6 +116,15 @@ const expandedTicketKeys = ref<Set<string>>(new Set())
 const displayMode = ref<OrderDisplayMode>('orders')
 const selectedTicketType = ref('')
 const today = new Date()
+const openAuditTicketKey = ref('')
+const swipingTicketKey = ref('')
+const ticketSwipeStartX = ref(0)
+const ticketSwipeStartY = ref(0)
+const ticketSwipeStartOffset = ref(0)
+const ticketSwipeOffset = ref(0)
+const isTicketSwipeLocked = ref(false)
+const auditingTicketKey = ref('')
+const auditingAction = ref<'' | 'approve' | 'reject'>('')
 
 let ordersRequestId = 0
 let ticketsRequestId = 0
@@ -911,6 +929,13 @@ const getTicketMeta = (ticket: ApiTicket) => {
   return metaParts.join(' · ') || '工单申请'
 }
 
+const getTicketApplicantText = (ticket: ApiTicket) => {
+  const applicantName = normalizeText(ticket.applicant?.name)
+  const applicantPhone = normalizeText(ticket.applicant?.phone)
+
+  return [applicantName, applicantPhone].filter(Boolean).join(' ') || '--'
+}
+
 const getTicketEntityMemberText = (ticket: ApiTicket, entity: JsonRecord | null) => {
   const memberName =
     pickRecordValue(entity, ['memberName', 'member_name']) ||
@@ -1391,6 +1416,76 @@ const getTicketDetails = (ticket: ApiTicket): TimelineOrderDetail[] => {
   ]
 }
 
+const getTicketReviewSummaryText = (ticket: ApiTicket, entity: JsonRecord | null) => {
+  const reviewer = getTicketReviewerText(ticket, entity)
+  if (reviewer === '--') return '待审核'
+
+  const operationTime = formatDateTime(getTicketOperationTime(ticket, entity))
+
+  return [reviewer, operationTime === '--' ? '' : operationTime].filter(Boolean).join(' · ')
+}
+
+const getTicketAmountSummaryText = (amount: string, unitLabel: string) => {
+  if (amount === '--') return '待处理'
+
+  return unitLabel === '数量' ? amount : `${amount}${unitLabel}`
+}
+
+const getTicketObjectSummaryText = (
+  ticket: ApiTicket,
+  payload: JsonRecord | null,
+  entity: JsonRecord | null,
+) => {
+  const type = normalizeStatus(ticket.type || ticket.targetType)
+
+  if (isPointsTicketType(type)) return '积分'
+  if (isWineTicketType(type)) {
+    const wineEntity = parseWineStorageTicketEntity(entity)
+
+    return getTicketPayloadDishText(payload) || getWineEntityDishText(ticket, entity, wineEntity)
+  }
+
+  return getTicketTargetName(ticket, payload, entity)
+}
+
+const getTicketSummary = (
+  ticket: ApiTicket,
+  payload: JsonRecord | null,
+  entity: JsonRecord | null,
+  amount: string,
+  unitLabel: string,
+): TimelineOrderDetail[] =>
+  [
+    {
+      label: '类型',
+      value: getTicketTypeLabel(ticket),
+    },
+    {
+      label: '对象',
+      value: getTicketObjectSummaryText(ticket, payload, entity),
+    },
+    {
+      label: '数量',
+      value: getTicketAmountSummaryText(amount, unitLabel),
+    },
+    {
+      label: '会员',
+      value: getTicketEntityMemberText(ticket, entity),
+    },
+    {
+      label: '申请人',
+      value: getTicketApplicantText(ticket),
+    },
+    {
+      label: '审批',
+      value: getTicketReviewSummaryText(ticket, entity),
+    },
+  ].filter((detail) => {
+    const value = normalizeText(detail.value)
+
+    return value && value !== '--'
+  })
+
 const hasOrderMember = (order: ApiOrder) =>
   Boolean(
     normalizeText(order.memberId) ||
@@ -1409,6 +1504,121 @@ const getStatusConfig = (order: ApiOrder) => {
       tone: 'live' as const,
     }
   )
+}
+
+const getTicketId = (ticket: ApiTicket) => normalizeText(ticket.id)
+
+const canAuditTicket = (ticket: ApiTicket) => normalizeStatus(ticket.status) === 'pending' && Boolean(getTicketId(ticket))
+
+const clampTicketAuditOffset = (offset: number) =>
+  Math.min(Math.max(offset, 0), TICKET_AUDIT_ACTION_WIDTH)
+
+const getTicketAuditOffset = (order: TimelineOrder) => {
+  if (!order.canAudit) return 0
+  if (swipingTicketKey.value === order.key) return ticketSwipeOffset.value
+
+  return openAuditTicketKey.value === order.key ? TICKET_AUDIT_ACTION_WIDTH : 0
+}
+
+const getTicketAuditSurfaceStyle = (order: TimelineOrder) => {
+  const offset = getTicketAuditOffset(order)
+
+  return offset ? `transform: translateX(-${offset}px);` : ''
+}
+
+const closeTicketAuditActions = () => {
+  openAuditTicketKey.value = ''
+  swipingTicketKey.value = ''
+  ticketSwipeOffset.value = 0
+  isTicketSwipeLocked.value = false
+}
+
+const handleTicketAuditPointerDown = (order: TimelineOrder, event: PointerEvent) => {
+  if (!order.canAudit || auditingTicketKey.value) return
+
+  ;(event.currentTarget as HTMLElement | null)?.setPointerCapture?.(event.pointerId)
+  swipingTicketKey.value = order.key
+  ticketSwipeStartX.value = event.clientX
+  ticketSwipeStartY.value = event.clientY
+  ticketSwipeStartOffset.value = openAuditTicketKey.value === order.key ? TICKET_AUDIT_ACTION_WIDTH : 0
+  ticketSwipeOffset.value = ticketSwipeStartOffset.value
+  isTicketSwipeLocked.value = false
+
+  if (openAuditTicketKey.value && openAuditTicketKey.value !== order.key) {
+    openAuditTicketKey.value = ''
+  }
+}
+
+const handleTicketAuditPointerMove = (order: TimelineOrder, event: PointerEvent) => {
+  if (swipingTicketKey.value !== order.key) return
+
+  const deltaX = ticketSwipeStartX.value - event.clientX
+  const deltaY = ticketSwipeStartY.value - event.clientY
+
+  if (!isTicketSwipeLocked.value) {
+    if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      closeTicketAuditActions()
+      return
+    }
+
+    isTicketSwipeLocked.value = true
+  }
+
+  event.preventDefault()
+  ticketSwipeOffset.value = clampTicketAuditOffset(ticketSwipeStartOffset.value + deltaX)
+}
+
+const handleTicketAuditPointerEnd = (order: TimelineOrder) => {
+  if (swipingTicketKey.value !== order.key) return
+
+  const shouldOpen = isTicketSwipeLocked.value && ticketSwipeOffset.value >= TICKET_AUDIT_SWIPE_THRESHOLD
+
+  openAuditTicketKey.value = shouldOpen ? order.key : ''
+  swipingTicketKey.value = ''
+  ticketSwipeOffset.value = 0
+  isTicketSwipeLocked.value = false
+}
+
+const replaceTicketInList = (nextTicket: ApiTicket) => {
+  const nextTicketId = getTicketId(nextTicket)
+  if (!nextTicketId) return
+
+  tickets.value = tickets.value.map((ticket) => (getTicketId(ticket) === nextTicketId ? nextTicket : ticket))
+}
+
+const handleAuditTicket = async (order: TimelineOrder, action: 'approve' | 'reject') => {
+  if (!order.canAudit || !order.ticketId || auditingTicketKey.value) return
+
+  auditingTicketKey.value = order.key
+  auditingAction.value = action
+
+  try {
+    const result =
+      action === 'approve'
+        ? await putApiTicketV1TicketsApprove({
+            id: order.ticketId,
+            reviewRemark: '工单审核通过',
+          })
+        : await putApiTicketV1TicketsReject({
+            id: order.ticketId,
+            reviewRemark: '工单审核驳回',
+          })
+
+    if (result.ticket) {
+      replaceTicketInList(result.ticket)
+    } else {
+      await loadTicketsPage(1, true)
+    }
+
+    message.success(action === 'approve' ? '工单已通过' : '工单已驳回')
+    closeTicketAuditActions()
+  } catch {
+    message.error(action === 'approve' ? '工单通过失败，请稍后重试' : '工单驳回失败，请稍后重试')
+  } finally {
+    auditingTicketKey.value = ''
+    auditingAction.value = ''
+  }
 }
 
 const toggleOrderExpanded = (key: string) => {
@@ -1465,7 +1675,10 @@ const createTimelineOrder = (order: ApiOrder, index: number): TimelineOrder => {
     promotions: getOrderPromotions(order),
     status: statusConfig.label,
     statusTone: statusConfig.tone,
+    summary: [],
+    canAudit: false,
     tag: hasOrderMember(order) ? '小程序' : '后台开单',
+    ticketId: '',
     time: formatOrderTime(order),
     title: getOrderTitle(order),
     variant: 'orders',
@@ -1474,7 +1687,8 @@ const createTimelineOrder = (order: ApiOrder, index: number): TimelineOrder => {
 
 const createTimelineTicket = (ticket: ApiTicket, index: number): TimelineOrder => {
   const statusConfig = getTicketStatusConfig(ticket)
-  const key = normalizeText(ticket.id) || normalizeText(ticket.targetId) || `${ticketCurrentPage.value}-${index}`
+  const ticketId = getTicketId(ticket)
+  const key = ticketId || normalizeText(ticket.targetId) || `${ticketCurrentPage.value}-${index}`
   const payload = parseJsonRecord(ticket.payload)
   const entity = parseJsonRecord(ticket.entityJson)
   const amount = getTicketAmount(ticket, payload, entity)
@@ -1493,7 +1707,10 @@ const createTimelineTicket = (ticket: ApiTicket, index: number): TimelineOrder =
     promotions: [],
     status: statusConfig.label,
     statusTone: statusConfig.tone,
+    summary: getTicketSummary(ticket, payload, entity, amount, unitLabel),
+    canAudit: canAuditTicket(ticket),
     tag: '工单',
+    ticketId,
     time: formatTicketTime(ticket),
     title: getTicketTitle(ticket),
     variant: 'tickets',
@@ -1886,12 +2103,23 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
               </button>
             </div>
 
-            <div class="orders-card-meta">
+            <div v-if="order.variant === 'orders'" class="orders-card-meta">
               <component :is="order.icon" />
               <span>{{ order.meta }}</span>
             </div>
 
-            <div v-if="order.items.length" class="orders-card-items">
+            <div v-if="order.summary.length" class="orders-card-summary">
+              <div
+                v-for="detail in order.summary"
+                :key="detail.label"
+                class="orders-card-summary-row"
+              >
+                <span>{{ detail.label }}</span>
+                <strong>{{ detail.value }}</strong>
+              </div>
+            </div>
+
+            <div v-else-if="order.items.length" class="orders-card-items">
               <div v-for="item in order.items" :key="item.key" class="orders-card-item">
                 <span class="orders-item-name">{{ item.name }}</span>
                 <span class="orders-item-quantity">{{ item.quantityLabel }}</span>
@@ -1927,9 +2155,44 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
               </div>
             </div>
 
-            <div class="orders-card-foot">
-              <span class="orders-status" :class="`is-${order.statusTone}`">{{ order.status }}</span>
-              <strong>{{ order.amount }}</strong>
+            <div
+              class="orders-card-foot"
+              :class="{ 'has-audit-actions': order.canAudit, 'is-open': openAuditTicketKey === order.key }"
+              @pointerdown="handleTicketAuditPointerDown(order, $event)"
+              @pointermove="handleTicketAuditPointerMove(order, $event)"
+              @pointerup="handleTicketAuditPointerEnd(order)"
+              @pointercancel="handleTicketAuditPointerEnd(order)"
+              @pointerleave="handleTicketAuditPointerEnd(order)"
+            >
+              <div v-if="order.canAudit" class="orders-card-audit-actions" aria-label="工单审核操作">
+                <button
+                  class="orders-audit-action is-approve"
+                  type="button"
+                  :disabled="Boolean(auditingTicketKey)"
+                  @pointerdown.stop
+                  @pointerup.stop
+                  @click.stop="handleAuditTicket(order, 'approve')"
+                >
+                  <CheckOutlined />
+                  <span>{{ auditingTicketKey === order.key && auditingAction === 'approve' ? '处理中' : '通过' }}</span>
+                </button>
+                <button
+                  class="orders-audit-action is-reject"
+                  type="button"
+                  :disabled="Boolean(auditingTicketKey)"
+                  @pointerdown.stop
+                  @pointerup.stop
+                  @click.stop="handleAuditTicket(order, 'reject')"
+                >
+                  <CloseOutlined />
+                  <span>{{ auditingTicketKey === order.key && auditingAction === 'reject' ? '处理中' : '驳回' }}</span>
+                </button>
+              </div>
+
+              <div class="orders-card-foot-surface" :style="getTicketAuditSurfaceStyle(order)">
+                <span class="orders-status" :class="`is-${order.statusTone}`">{{ order.status }}</span>
+                <strong>{{ order.amount }}</strong>
+              </div>
             </div>
           </article>
         </li>
