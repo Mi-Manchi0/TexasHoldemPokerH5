@@ -4,7 +4,8 @@ import {
   CheckCircleFilled,
   CloseOutlined,
   CrownOutlined,
-  FireOutlined,
+  EditOutlined,
+  QrcodeOutlined,
   ShopOutlined,
   TableOutlined,
   WalletOutlined,
@@ -16,12 +17,14 @@ import brandMarkUrl from '@/assets/bgc.jpg'
 import TableSeatPicker from '@/components/TableSeatPicker.vue'
 import {
   getApiOrderV1Orders,
+  postApiTableV1ReservationsArrive,
   type GetApiOrderV1OrdersResponse,
   type PostApiStoreV1BusinessCurrentResponse,
 } from '@/services/basis/basis'
 import { useOrgScopeStore } from '@/stores/orgScope'
 import type { OrgScopeSelection } from '@/stores/orgScope'
 import { useTableSeatStore } from '@/stores/tableSeat'
+import { decodeQrFromImage, resolveArriveVerifyFromRaw } from '@/utils/arriveVerify'
 import { clearAuthSession, getUserInfo } from '@/utils/auth'
 
 type ApiOrder = NonNullable<GetApiOrderV1OrdersResponse['orders']>[number]
@@ -73,6 +76,12 @@ const isScopePickerOpen = ref(false)
 const latestOrder = ref<ApiOrder | null>(null)
 const latestOrderLoading = ref(false)
 const latestOrderError = ref('')
+const isArriveVerifyCardOpen = ref(false)
+const isArriveManualOpen = ref(false)
+const arriveVerifyCode = ref('')
+const arriveScanMessage = ref('')
+const arriveCapturing = ref(false)
+const arriveVerifying = ref(false)
 
 let latestOrderRequestId = 0
 
@@ -83,6 +92,198 @@ const normalizeText = (value: unknown) => {
 }
 
 const normalizeStatus = (value: unknown) => normalizeText(value).toLowerCase()
+
+const canOperateArriveStore = (storeId: string) => {
+  const scope = selectedScope.value
+  const targetStoreId = normalizeText(storeId)
+  if (!scope?.merchantId || !targetStoreId) return false
+  if (scope.storeId === targetStoreId) return true
+
+  return orgScopeStore.availableSelections.some(
+    (selection) =>
+      selection.merchantId === scope.merchantId && selection.storeId === targetStoreId,
+  )
+}
+
+const resolveArriveRawValue = (rawValue: string) =>
+  resolveArriveVerifyFromRaw(rawValue, {
+    canOperateStore: canOperateArriveStore,
+    merchantId: selectedScope.value?.merchantId || '',
+  })
+
+const ensureArriveVerifyScope = () => {
+  if (selectedScope.value?.merchantId && selectedScope.value?.storeId) return true
+
+  if (!orgScopeStore.loaded && !orgScopeStore.loading) {
+    void orgScopeStore.loadMyScopes().catch(() => {
+      message.error('组织范围加载失败，请稍后重试')
+    })
+  }
+
+  message.warning('请先选择可核验门店')
+  return false
+}
+
+const switchArriveStore = (storeId: string) => {
+  const scope = selectedScope.value
+  const targetStoreId = normalizeText(storeId)
+
+  if (!scope || !targetStoreId || scope.storeId === targetStoreId) return true
+
+  const selection = orgScopeStore.findSelection(scope.merchantId, targetStoreId)
+  if (!selection) return false
+
+  orgScopeStore.applySelection(selection)
+  tableSeatStore.clearSelectedSeat()
+  return true
+}
+
+const resetArriveVerifyCard = () => {
+  arriveVerifyCode.value = ''
+  arriveScanMessage.value = ''
+  isArriveManualOpen.value = false
+}
+
+const toggleArriveVerifyCard = () => {
+  if (isArriveVerifyCardOpen.value) {
+    if (!arriveCapturing.value && !arriveVerifying.value) {
+      isArriveVerifyCardOpen.value = false
+      resetArriveVerifyCard()
+    }
+    return
+  }
+
+  if (!ensureArriveVerifyScope()) return
+
+  resetArriveVerifyCard()
+  isArriveVerifyCardOpen.value = true
+}
+
+const closeArriveVerifyCard = () => {
+  if (arriveCapturing.value || arriveVerifying.value) return
+
+  isArriveVerifyCardOpen.value = false
+  resetArriveVerifyCard()
+}
+
+const openManualArriveInput = () => {
+  if (!ensureArriveVerifyScope()) return
+
+  isArriveManualOpen.value = true
+  arriveScanMessage.value = ''
+}
+
+const refreshHomeAfterArriveVerify = async () => {
+  const scope = selectedScope.value
+
+  if (scope) {
+    await orgScopeStore.loadCurrentBusiness(scope).catch(() => undefined)
+  }
+
+  void loadLatestOrder()
+}
+
+const submitArriveVerify = async (rawValue?: string, preferredStoreId?: string) => {
+  if (!ensureArriveVerifyScope() || arriveVerifying.value) return
+
+  const resolved = resolveArriveRawValue(rawValue ?? arriveVerifyCode.value)
+
+  if (resolved.status === 'empty') {
+    message.warning('请输入到店码')
+    return
+  }
+
+  if (resolved.status === 'invalid') {
+    arriveScanMessage.value = resolved.message
+    message.warning(resolved.message)
+    return
+  }
+
+  if (resolved.storeId && !switchArriveStore(resolved.storeId)) {
+    arriveScanMessage.value = '该预约商户/门店不在操作权限内'
+    message.warning(arriveScanMessage.value)
+    return
+  }
+
+  const verifyStoreId = normalizeText(resolved.storeId || preferredStoreId || selectedScope.value?.storeId)
+  if (!verifyStoreId) {
+    message.warning('请先选择核验门店')
+    return
+  }
+
+  arriveVerifying.value = true
+  arriveVerifyCode.value = resolved.reservationId
+  arriveScanMessage.value = '正在核验到店'
+
+  try {
+    await postApiTableV1ReservationsArrive(
+      { id: resolved.reservationId },
+      {
+        errorMessageMode: 'none',
+        headers: {
+          'x-store-id': verifyStoreId,
+        },
+      },
+    )
+    message.success('到店核验成功')
+    isArriveVerifyCardOpen.value = false
+    resetArriveVerifyCard()
+    await refreshHomeAfterArriveVerify()
+  } catch {
+    arriveScanMessage.value = '到店核验失败，请确认到店码是否有效'
+    message.error(arriveScanMessage.value)
+  } finally {
+    arriveVerifying.value = false
+  }
+}
+
+const resolveArriveScannedValue = (rawValue: string) => {
+  const resolved = resolveArriveRawValue(rawValue)
+
+  if (resolved.status === 'empty') return false
+
+  if (resolved.status === 'invalid') {
+    arriveScanMessage.value = resolved.message
+    message.warning(resolved.message)
+    return true
+  }
+
+  if (resolved.storeId && !switchArriveStore(resolved.storeId)) {
+    arriveScanMessage.value = '该预约商户/门店不在操作权限内'
+    message.warning(arriveScanMessage.value)
+    return true
+  }
+
+  arriveVerifyCode.value = resolved.reservationId
+  arriveScanMessage.value = '已识别核验码'
+  void submitArriveVerify(resolved.reservationId, resolved.storeId)
+  return true
+}
+
+const handleArriveCaptureChange = async (event: Event) => {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+
+  input.value = ''
+
+  if (!file || !ensureArriveVerifyScope()) return
+
+  arriveCapturing.value = true
+  isArriveManualOpen.value = false
+  arriveScanMessage.value = '正在识别二维码'
+
+  try {
+    const rawValue = await decodeQrFromImage(file)
+
+    if (resolveArriveScannedValue(rawValue)) return
+
+    arriveScanMessage.value = '未识别到二维码，请重新扫码或输入到店码'
+  } catch {
+    arriveScanMessage.value = '二维码识别失败，请重新扫码或输入到店码'
+  } finally {
+    arriveCapturing.value = false
+  }
+}
 
 const parseDateText = (value?: string) => {
   const text = normalizeText(value)
@@ -650,12 +851,107 @@ const handleLogout = async () => {
         <small>牌桌管理</small>
       </button>
 
-      <RouterLink class="home-action-tile" :to="{ name: 'menu' }">
-        <FireOutlined class="home-action-icon" />
-        <span>ORDER</span>
-        <strong>点单</strong>
-        <small>酒水小食</small>
-      </RouterLink>
+      <button
+        class="home-action-tile home-action-button"
+        type="button"
+        aria-controls="home-arrive-verify-card"
+        :aria-expanded="isArriveVerifyCardOpen"
+        @click="toggleArriveVerifyCard"
+      >
+        <QrcodeOutlined class="home-action-icon" />
+        <span>VERIFY</span>
+        <strong>核验</strong>
+        <small>预约到店</small>
+      </button>
+    </section>
+
+    <section
+      v-if="isArriveVerifyCardOpen"
+      id="home-arrive-verify-card"
+      class="home-arrive-card"
+      aria-label="到店核验"
+    >
+      <header class="home-arrive-head">
+        <div>
+          <p>ARRIVAL VERIFY</p>
+          <h2>到店核验</h2>
+          <span>{{ selectedScope?.storeName || '当前门店' }}</span>
+        </div>
+
+        <button
+          class="home-arrive-close"
+          type="button"
+          aria-label="关闭到店核验"
+          :disabled="arriveCapturing || arriveVerifying"
+          @click="closeArriveVerifyCard"
+        >
+          <CloseOutlined />
+        </button>
+      </header>
+
+      <div class="home-arrive-action-grid">
+        <label
+          class="home-arrive-action"
+          :class="{ 'is-disabled': arriveCapturing || arriveVerifying }"
+        >
+          <QrcodeOutlined />
+          <span>
+            <strong>{{ arriveCapturing ? '识别中' : arriveVerifying ? '核验中' : '扫码核验' }}</strong>
+            <small>拍摄或选择二维码</small>
+          </span>
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            :disabled="arriveCapturing || arriveVerifying"
+            @change="handleArriveCaptureChange"
+          />
+        </label>
+
+        <button
+          class="home-arrive-action"
+          type="button"
+          :aria-expanded="isArriveManualOpen"
+          :disabled="arriveCapturing || arriveVerifying"
+          @click="openManualArriveInput"
+        >
+          <EditOutlined />
+          <span>
+            <strong>输入到店码</strong>
+            <small>手动确认预约</small>
+          </span>
+        </button>
+      </div>
+
+      <form
+        v-if="isArriveManualOpen"
+        class="home-arrive-manual"
+        aria-label="输入到店码"
+        @submit.prevent="submitArriveVerify()"
+      >
+        <label class="home-arrive-input-field">
+          <span>到店码</span>
+          <input
+            v-model="arriveVerifyCode"
+            autocomplete="off"
+            placeholder="输入预约 ID 或完整核验内容"
+            :disabled="arriveVerifying"
+          />
+        </label>
+
+        <button
+          class="home-arrive-submit"
+          type="submit"
+          :disabled="arriveVerifying"
+        >
+          <CheckCircleFilled />
+          <span>{{ arriveVerifying ? '核验中' : '确认核验' }}</span>
+        </button>
+      </form>
+
+      <p v-if="arriveScanMessage" class="home-arrive-message">
+        {{ arriveScanMessage }}
+      </p>
     </section>
 
     <button
