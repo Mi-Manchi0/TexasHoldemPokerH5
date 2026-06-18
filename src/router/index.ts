@@ -3,9 +3,11 @@ import App from '@/App.vue'
 import MainLayout from '@/layouts/MainLayout.vue'
 import HomeView from '@/views/HomeView.vue'
 import MenuView from '@/views/MenuView.vue'
+import MessagesView from '@/views/MessagesView.vue'
 import MineView from '@/views/MineView.vue'
 import OrdersView from '@/views/OrdersView.vue'
 import PointsDepositView from '@/views/PointsDepositView.vue'
+import SettingsView from '@/views/SettingsView.vue'
 import WineStorageView from '@/views/WineStorageView.vue'
 import { clearAuthSession, getToken } from '@/utils/auth'
 import { setHttpConfig } from '@/utils/http'
@@ -55,6 +57,16 @@ const routes: RouteRecordRaw[] = [
         path: 'mine',
         name: 'mine',
         component: MineView,
+      },
+      {
+        path: 'messages',
+        name: 'messages',
+        component: MessagesView,
+      },
+      {
+        path: 'settings',
+        name: 'settings',
+        component: SettingsView,
       },
     ],
   },

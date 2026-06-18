@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { computed, nextTick, onMounted, ref, watch, type Component } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   getApiOrderV1Orders,
   getApiTicketV1Tickets,
@@ -29,6 +29,7 @@ import {
 } from '@/utils/ticketEntity'
 
 const router = useRouter()
+const route = useRoute()
 const orgScopeStore = useOrgScopeStore()
 
 type ApiOrder = NonNullable<GetApiOrderV1OrdersResponse['orders']>[number]
@@ -46,6 +47,7 @@ type ApiTicketWithReview = ApiTicket & {
 }
 type OrderStatusTone = 'live' | 'making' | 'pending' | 'done'
 type OrderDisplayMode = 'orders' | 'tickets'
+type TicketTypeFilter = 'points_deposit' | 'points_withdraw' | 'member_wine_deposit' | 'member_wine_withdraw'
 type JsonRecord = Record<string, unknown>
 
 interface TimelineOrderDetail {
@@ -93,6 +95,33 @@ const ORDER_PAGE_SIZE = 10
 const LOAD_MORE_DISTANCE = 72
 const TICKET_AUDIT_ACTION_WIDTH = 132
 const TICKET_AUDIT_SWIPE_THRESHOLD = 58
+const TICKET_TYPE_FILTERS: readonly TicketTypeFilter[] = [
+  'points_deposit',
+  'points_withdraw',
+  'member_wine_deposit',
+  'member_wine_withdraw',
+]
+
+function getRouteQueryText(value: unknown) {
+  const rawValue = Array.isArray(value) ? value[0] : value
+
+  return rawValue === undefined || rawValue === null ? '' : String(rawValue).trim()
+}
+
+function getRouteDisplayMode() {
+  const mode = getRouteQueryText(route.query.mode || route.query.view)
+  const ticketType = getRouteQueryText(route.query.type || route.query.ticketType)
+
+  return mode === 'tickets' || mode === 'ticket' || TICKET_TYPE_FILTERS.includes(ticketType as TicketTypeFilter)
+    ? 'tickets'
+    : 'orders'
+}
+
+function getRouteTicketType() {
+  const type = getRouteQueryText(route.query.type || route.query.ticketType)
+
+  return TICKET_TYPE_FILTERS.includes(type as TicketTypeFilter) ? type : ''
+}
 
 const orders = ref<ApiOrder[]>([])
 const tickets = ref<ApiTicket[]>([])
@@ -113,8 +142,8 @@ const ticketLoadMoreError = ref('')
 const orderListRef = ref<HTMLElement | null>(null)
 const expandedOrderKeys = ref<Set<string>>(new Set())
 const expandedTicketKeys = ref<Set<string>>(new Set())
-const displayMode = ref<OrderDisplayMode>('orders')
-const selectedTicketType = ref('')
+const displayMode = ref<OrderDisplayMode>(getRouteDisplayMode())
+const selectedTicketType = ref(getRouteTicketType())
 const today = new Date()
 const openAuditTicketKey = ref('')
 const swipingTicketKey = ref('')
@@ -1986,6 +2015,31 @@ const handleBack = async () => {
 onMounted(() => {
   reloadOrders()
 })
+
+watch(
+  () => [route.query.mode, route.query.view, route.query.type, route.query.ticketType],
+  () => {
+    const nextMode = getRouteDisplayMode()
+    const nextTicketType = getRouteTicketType()
+    const modeChanged = displayMode.value !== nextMode
+    const typeChanged = selectedTicketType.value !== nextTicketType
+
+    if (!modeChanged && !typeChanged) return
+
+    displayMode.value = nextMode
+    selectedTicketType.value = nextTicketType
+    orderListRef.value?.scrollTo({ top: 0 })
+
+    if (nextMode === 'tickets') {
+      clearOrdersCache()
+      void loadTicketsPage(1, true)
+      return
+    }
+
+    clearTicketsCache()
+    void loadOrdersPage(1, true)
+  },
+)
 
 watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
   if (!previousScopeKey || nextScopeKey === previousScopeKey) return

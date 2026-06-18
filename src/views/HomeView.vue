@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import brandMarkUrl from '@/assets/bgc.jpg'
 import TableSeatPicker from '@/components/TableSeatPicker.vue'
 import {
@@ -26,8 +26,9 @@ import {
 import { useOrgScopeStore } from '@/stores/orgScope'
 import type { OrgScopeSelection } from '@/stores/orgScope'
 import { useTableSeatStore } from '@/stores/tableSeat'
+import { normalizeUrl } from '@/utils'
 import { decodeQrFromImage, resolveArriveVerifyFromRaw } from '@/utils/arriveVerify'
-import { clearAuthSession, getUserInfo, refreshUserInfo, type AuthUserInfo } from '@/utils/auth'
+import { getUserInfo, refreshUserInfo, type AuthUserInfo } from '@/utils/auth'
 
 type ApiOrder = NonNullable<GetApiOrderV1OrdersResponse['orders']>[number]
 type ApiOrderWithTimestamps = ApiOrder & {
@@ -61,9 +62,11 @@ const HOME_LATEST_ORDER_ITEM_PREVIEW_LIMIT = 3
 const HOME_LATEST_ORDER_PAGE_SIZE = 20
 
 const router = useRouter()
+const route = useRoute()
 const orgScopeStore = useOrgScopeStore()
 const tableSeatStore = useTableSeatStore()
 const userInfo = ref<AuthUserInfo | null>(getUserInfo())
+const normalizedBrandMarkUrl = normalizeUrl(brandMarkUrl)
 const displayName = computed(() => userInfo.value?.name || userInfo.value?.phone || '玩家')
 const selectedScope = computed(() => orgScopeStore.selected)
 const currentBusiness = computed(() => orgScopeStore.currentBusiness)
@@ -205,6 +208,19 @@ const toggleArriveVerifyCard = () => {
       isArriveVerifyCardOpen.value = false
       resetArriveVerifyCard()
     }
+    return
+  }
+
+  if (!ensureArriveVerifyScope()) return
+
+  resetArriveVerifyCard()
+  isArriveVerifyCardOpen.value = true
+  focusArriveVerifyPanel()
+}
+
+const openArriveVerifyCard = () => {
+  if (isArriveVerifyCardOpen.value) {
+    focusArriveVerifyPanel()
     return
   }
 
@@ -919,6 +935,23 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => [
+    route.query.action,
+    selectedScope.value?.merchantId,
+    selectedScope.value?.storeId,
+    orgScopeStore.loading,
+  ],
+  ([action]) => {
+    const actionValue = Array.isArray(action) ? action[0] : action
+    if (actionValue !== 'arrive-verify') return
+    if (orgScopeStore.loading) return
+
+    openArriveVerifyCard()
+  },
+  { immediate: true },
+)
+
 const openTablePicker = () => {
   isTablePickerOpen.value = true
 }
@@ -959,14 +992,6 @@ const selectScope = (merchantId?: string, storeId?: string) => {
   closeScopePicker()
 }
 
-const handleLogout = async () => {
-  tableSeatStore.clearSelectedSeat()
-  orgScopeStore.resetSession()
-  clearAuthSession()
-  await router.replace({
-    name: 'login',
-  })
-}
 </script>
 
 <template>
@@ -977,12 +1002,11 @@ const handleLogout = async () => {
         <strong>無鳞</strong>
       </div>
 
-      <button class="home-logout" type="button" @click="handleLogout">退出</button>
     </section>
 
     <section class="home-hero" aria-label="無鳞首页">
       <div class="home-hero-mark" aria-hidden="true">
-        <img :src="brandMarkUrl" alt="" />
+        <img :src="normalizedBrandMarkUrl" alt="" />
       </div>
 
       <div class="home-hero-copy">

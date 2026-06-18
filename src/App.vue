@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import {
-	FullscreenExitOutlined,
-	FullscreenOutlined,
-	SettingOutlined,
-} from "@ant-design/icons-vue"
 import { message } from "ant-design-vue"
+import { Maximize2, Minimize2, Settings } from "lucide-vue-next"
 import {
 	computed,
 	onBeforeUnmount,
@@ -22,7 +18,9 @@ import {
 	saveAuthSession,
 	saveLastLoginCredentials,
 } from "@/utils/auth"
+import { normalizeUrl } from "@/utils"
 import { useOrgScopeStore } from "@/stores/orgScope"
+import brandMarkUrl from "@/assets/bgc.jpg"
 
 type FullscreenDocument = Document & {
 	msExitFullscreen?: () => Promise<void> | void
@@ -51,6 +49,7 @@ const isFullscreen = ref(false)
 const isFullscreenSupported = ref(false)
 const isImmersiveMode = ref(false)
 const isSettingsOpen = ref(false)
+const normalizedBrandMarkUrl = normalizeUrl(brandMarkUrl)
 
 const isDisplayExpanded = computed(
 	() => isFullscreen.value || isImmersiveMode.value,
@@ -119,43 +118,6 @@ const handleLogin = async () => {
 	} finally {
 		isLoginSubmitting.value = false
 	}
-}
-
-let stableAppHeight = 0
-let stableAppWidth = 0
-
-const syncViewportSize = () => {
-	const viewport = window.visualViewport
-	const viewportHeight = viewport?.height ?? window.innerHeight
-	const viewportWidth = viewport?.width ?? window.innerWidth
-	const layoutHeight = window.innerHeight
-	const layoutWidth = window.innerWidth
-	const widthChanged =
-		stableAppWidth > 0 && Math.abs(layoutWidth - stableAppWidth) > 40
-	const rootStyle = document.documentElement.style
-	const hasFocusedInput = Boolean(
-		document.activeElement?.matches("input, textarea, select"),
-	)
-
-	if (!stableAppHeight || widthChanged) {
-		stableAppHeight = Math.round(
-			Math.max(layoutHeight, viewportHeight),
-		)
-		stableAppWidth = Math.round(Math.max(layoutWidth, viewportWidth))
-	} else if (!hasFocusedInput) {
-		stableAppHeight = Math.max(
-			stableAppHeight,
-			Math.round(layoutHeight),
-			Math.round(viewportHeight),
-		)
-		stableAppWidth = Math.round(Math.max(layoutWidth, viewportWidth))
-	}
-
-	rootStyle.setProperty(
-		"--app-height",
-		`${stableAppHeight || layoutHeight}px`,
-	)
-	window.scrollTo(0, 0)
 }
 
 const getFullscreenElement = () => {
@@ -245,7 +207,6 @@ const toggleSettings = () => {
 onMounted(() => {
 	syncFullscreenSupport()
 	syncFullscreenState()
-	syncViewportSize()
 	document.addEventListener("fullscreenchange", syncFullscreenState)
 	document.addEventListener(
 		"webkitfullscreenchange",
@@ -256,12 +217,6 @@ onMounted(() => {
 		syncFullscreenState,
 	)
 	document.addEventListener("MSFullscreenChange", syncFullscreenState)
-	window.addEventListener("resize", syncViewportSize)
-	window.addEventListener("orientationchange", syncViewportSize)
-	window.addEventListener("focusin", syncViewportSize)
-	window.addEventListener("focusout", syncViewportSize)
-	window.visualViewport?.addEventListener("resize", syncViewportSize)
-	window.visualViewport?.addEventListener("scroll", syncViewportSize)
 })
 
 watch(isImmersiveMode, enabled => {
@@ -271,7 +226,6 @@ watch(isImmersiveMode, enabled => {
 onBeforeUnmount(() => {
 	isImmersiveMode.value = false
 	document.body.classList.remove("is-immersive-locked")
-	document.documentElement.style.removeProperty("--app-height")
 	document.removeEventListener(
 		"fullscreenchange",
 		syncFullscreenState,
@@ -288,18 +242,6 @@ onBeforeUnmount(() => {
 		"MSFullscreenChange",
 		syncFullscreenState,
 	)
-	window.removeEventListener("resize", syncViewportSize)
-	window.removeEventListener("orientationchange", syncViewportSize)
-	window.removeEventListener("focusin", syncViewportSize)
-	window.removeEventListener("focusout", syncViewportSize)
-	window.visualViewport?.removeEventListener(
-		"resize",
-		syncViewportSize,
-	)
-	window.visualViewport?.removeEventListener(
-		"scroll",
-		syncViewportSize,
-	)
 })
 </script>
 
@@ -309,16 +251,13 @@ onBeforeUnmount(() => {
 		:class="{ 'is-immersive': isImmersiveMode }"
 		aria-label="登录"
 	>
-		<section class="login-shell" aria-label="SELF SHERO 登录">
-			<div
-				class="soft-shape soft-shape-pink"
+		<section class="login-shell" aria-label="無鳞登录">
+			<img
+				class="login-mark"
+				:src="normalizedBrandMarkUrl"
+				alt=""
 				aria-hidden="true"
-			></div>
-			<div
-				class="soft-shape soft-shape-blue"
-				aria-hidden="true"
-			></div>
-			<div class="line-texture" aria-hidden="true"></div>
+			/>
 
 			<nav class="top-nav" aria-label="登录导航">
 				<div class="settings-area">
@@ -329,7 +268,7 @@ onBeforeUnmount(() => {
 						:aria-expanded="isSettingsOpen"
 						@click="toggleSettings"
 					>
-						<SettingOutlined />
+						<Settings />
 					</button>
 
 					<div
@@ -344,58 +283,66 @@ onBeforeUnmount(() => {
 							:aria-pressed="isDisplayExpanded"
 							@click="toggleFullscreen"
 						>
-							<FullscreenExitOutlined
+							<Minimize2
 								v-if="isDisplayExpanded"
 								class="settings-menu-icon"
 							/>
-							<FullscreenOutlined v-else class="settings-menu-icon" />
+							<Maximize2 v-else class="settings-menu-icon" />
 							<span>{{ fullscreenLabel }}</span>
 						</button>
 					</div>
 				</div>
 			</nav>
 
-			<div class="brand-lockup">
-				<h1>
-					SCALE
-					<br />
-					WULIN
-				</h1>
-				<p>
-					<span>無鳞</span>
-					<span>德州 | 鸡尾酒</span>
-				</p>
-			</div>
-
-			<form class="login-form" aria-label="账号密码登录" @submit.prevent="handleLogin">
-				<div class="login-actions">
-					<input
-						v-model="loginAccount"
-						class="login-option login-input"
-						type="text"
-						placeholder="请输入账号"
-						autocomplete="username"
-						:disabled="isLoginSubmitting"
-					/>
-
-					<input
-						v-model="loginPassword"
-						class="login-option login-input"
-						type="password"
-						placeholder="请输入密码"
-						autocomplete="current-password"
-						:disabled="isLoginSubmitting"
-					/>
+			<div class="login-content">
+				<div class="brand-lockup">
+					<h1>無鳞</h1>
+					<p>
+						<span>The Scale Bar</span>
+						<span>德州 | 鸡尾酒</span>
+					</p>
 				</div>
 
-				<button
-					class="account-login"
-					type="submit"
-					:disabled="isLoginSubmitting"
+				<form
+					class="login-form"
+					aria-label="账号密码登录"
+					@submit.prevent="handleLogin"
 				>
-					{{ isLoginSubmitting ? "登录中..." : "登录" }}
-				</button>
-			</form>
+					<div class="login-actions">
+						<label class="login-field">
+							<span>账号</span>
+							<input
+								v-model="loginAccount"
+								class="login-input"
+								type="text"
+								placeholder="请输入账号"
+								autocomplete="username"
+								:disabled="isLoginSubmitting"
+							/>
+						</label>
+
+						<label class="login-field">
+							<span>密码</span>
+							<input
+								v-model="loginPassword"
+								class="login-input"
+								type="password"
+								placeholder="请输入密码"
+								autocomplete="current-password"
+								:disabled="isLoginSubmitting"
+							/>
+						</label>
+					</div>
+
+					<button
+						class="account-login"
+						type="submit"
+						:disabled="isLoginSubmitting"
+					>
+						{{ isLoginSubmitting ? "登录中..." : "登录" }}
+					</button>
+				</form>
+			</div>
 
 			<div class="home-indicator" aria-hidden="true"></div>
 		</section>

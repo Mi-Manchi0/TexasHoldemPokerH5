@@ -147,9 +147,9 @@
                   @click="selectDish(dish)"
                 >
                   <img
-                    v-if="dish.imageUrl"
+                    v-if="getDishImageUrl(dish)"
                     class="wine-dish-image"
-                    :src="String(dish.imageUrl)"
+                    :src="getDishImageUrl(dish)"
                     :alt="getDishName(dish)"
                   />
                   <span v-else class="wine-card-icon">
@@ -314,7 +314,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons-vue'
 import { computed, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   getApiDishV1Categories,
   getApiDishV1Dishes,
@@ -329,6 +329,7 @@ import {
   type PostApiTicketV1TicketsResponse,
 } from '@/services/basis/basis'
 import { useOrgScopeStore, type OrgScopeSelection } from '@/stores/orgScope'
+import { normalizeUrl } from '@/utils'
 
 type ApiDish = NonNullable<GetApiDishV1DishesResponse['dishes']>[number]
 type ApiDishCategory = NonNullable<GetApiDishV1CategoriesResponse['categories']>[number]
@@ -395,6 +396,7 @@ type WineTicketSubmitRequest = PostApiTicketV1TicketsRequest & {
 }
 
 const router = useRouter()
+const route = useRoute()
 const orgScopeStore = useOrgScopeStore()
 
 const MEMBER_PAGE_SIZE = 30
@@ -403,7 +405,13 @@ const DISH_PAGE_SIZE = 100
 const FLOW_PAGE_SIZE = 50
 const ON_SHELF_FILTER = 'DISH_ON_SHELF_FILTER_ON'
 
-const mode = ref<WineMode>('deposit')
+function getRouteWineMode(): WineMode {
+  const rawMode = Array.isArray(route.query.mode) ? route.query.mode[0] : route.query.mode
+
+  return rawMode === 'withdraw' ? 'withdraw' : 'deposit'
+}
+
+const mode = ref<WineMode>(getRouteWineMode())
 const members = ref<ApiMember[]>([])
 const selectedMember = ref<ApiMember | null>(null)
 const memberSearch = ref('')
@@ -625,6 +633,13 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => route.query.mode,
+  () => {
+    setMode(getRouteWineMode())
+  },
+)
+
 function goHome() {
   void router.push({ name: 'home' })
 }
@@ -686,6 +701,10 @@ function getMemberInitial(member: ApiMember): string {
 
 function getDishName(dish: ApiDish): string {
   return normalizeText(dish.name) || `菜品 ${dish.id}`
+}
+
+function getDishImageUrl(dish: ApiDish): string {
+  return normalizeUrl(normalizeText(dish.imageUrl))
 }
 
 function getDishUnit(dish: ApiDish): string {

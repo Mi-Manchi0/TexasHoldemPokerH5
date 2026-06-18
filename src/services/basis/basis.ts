@@ -25353,4 +25353,1721 @@ export const getApiWalletV1Ranking = /*#__PURE__*/ (
 
 getApiWalletV1Ranking.requestConfig = getApiWalletV1RankingRequestConfig
 
+/**
+ * 接口 查询站内信列表 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications`
+ */
+export interface GetApiNotificationV1NotificationsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+}
+
+/**
+ * 接口 查询站内信列表 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications`
+ */
+export interface GetApiNotificationV1NotificationsResponse {
+  /**
+   * 站内信列表
+   */
+  items?: {
+    /**
+     * 通知事件ID
+     */
+    id?: string
+    /**
+     * 通知场景编码
+     */
+    sceneCode?: string
+    /**
+     * 通知场景名称，前端用于展示
+     */
+    sceneName?: string
+    /**
+     * 业务类型，如 reservation、points_deposit
+     */
+    bizType?: string
+    /**
+     * 业务ID
+     */
+    bizId?: string
+    /**
+     * 事件状态：pending=待处理，processing=处理中，completed=已完成，failed=失败
+     */
+    status?: string
+    /**
+     * 当前接收人可读渠道的已读状态：none=无可读渠道，unread=存在未读，read=全部已读
+     */
+    readStatus?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 站内信渠道，固定为 inbox
+     */
+    channel?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 通知内容
+     */
+    content?: string
+    /**
+     * 站内信投递状态
+     */
+    deliveryStatus?: string
+    /**
+     * 已读时间
+     */
+    readAt?: string
+    /**
+     * 是否支持已读
+     */
+    supportsRead?: boolean
+    /**
+     * 接收人类型：account=后台账号
+     */
+    receiverType?: string
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询站内信列表 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications`
+ */
+type GetApiNotificationV1NotificationsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/notification/v1/notifications',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize',
+    false
+  >
+>
+
+/**
+ * 接口 查询站内信列表 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications`
+ */
+const getApiNotificationV1NotificationsRequestConfig: GetApiNotificationV1NotificationsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/notification/v1/notifications',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiNotificationV1Notifications',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询站内信列表 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications`
+ */
+export const getApiNotificationV1Notifications = /*#__PURE__*/ (
+  requestData: GetApiNotificationV1NotificationsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1NotificationsResponse>(
+    prepare(getApiNotificationV1NotificationsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1Notifications.requestConfig = getApiNotificationV1NotificationsRequestConfig
+
+/**
+ * 接口 标记站内信已读 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/notifications/read`
+ */
+export interface PostApiNotificationV1NotificationsReadRequest {
+  /**
+   * 通知事件ID
+   */
+  id?: string
+}
+
+/**
+ * 接口 标记站内信已读 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/notifications/read`
+ */
+export interface PostApiNotificationV1NotificationsReadResponse {}
+
+/**
+ * 接口 标记站内信已读 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/notifications/read`
+ */
+type PostApiNotificationV1NotificationsReadRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/notification/v1/notifications/read', undefined, string, string, false>
+>
+
+/**
+ * 接口 标记站内信已读 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/notifications/read`
+ */
+const postApiNotificationV1NotificationsReadRequestConfig: PostApiNotificationV1NotificationsReadRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/notification/v1/notifications/read',
+    method: Method.POST,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.json,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'postApiNotificationV1NotificationsRead',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 标记站内信已读 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/notifications/read`
+ */
+export const postApiNotificationV1NotificationsRead = /*#__PURE__*/ (
+  requestData: PostApiNotificationV1NotificationsReadRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiNotificationV1NotificationsReadResponse>(
+    prepare(postApiNotificationV1NotificationsReadRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiNotificationV1NotificationsRead.requestConfig = postApiNotificationV1NotificationsReadRequestConfig
+
+/**
+ * 接口 查询未读数量 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/unread/count`
+ */
+export interface GetApiNotificationV1NotificationsUnreadCountRequest {}
+
+/**
+ * 接口 查询未读数量 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/unread/count`
+ */
+export interface GetApiNotificationV1NotificationsUnreadCountResponse {
+  /**
+   * 未读数量
+   */
+  count?: string
+}
+
+/**
+ * 接口 查询未读数量 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/unread/count`
+ */
+type GetApiNotificationV1NotificationsUnreadCountRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/notification/v1/notifications/unread/count', undefined, string, string, true>
+>
+
+/**
+ * 接口 查询未读数量 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/unread/count`
+ */
+const getApiNotificationV1NotificationsUnreadCountRequestConfig: GetApiNotificationV1NotificationsUnreadCountRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/notification/v1/notifications/unread/count',
+    method: Method.GET,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.query,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: true,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'getApiNotificationV1NotificationsUnreadCount',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 查询未读数量 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/unread/count`
+ */
+export const getApiNotificationV1NotificationsUnreadCount = /*#__PURE__*/ (
+  requestData?: GetApiNotificationV1NotificationsUnreadCountRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1NotificationsUnreadCountResponse>(
+    prepare(getApiNotificationV1NotificationsUnreadCountRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1NotificationsUnreadCount.requestConfig = getApiNotificationV1NotificationsUnreadCountRequestConfig
+
+/**
+ * 接口 获取站内信详情 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/{id}`
+ */
+export interface GetApiNotificationV1NotificationsByIdRequest {
+  /**
+   * 通知事件ID
+   */
+  id: string
+}
+
+/**
+ * 接口 获取站内信详情 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/{id}`
+ */
+export interface GetApiNotificationV1NotificationsByIdResponse {
+  /**
+   * 后台站内信展示项。
+   */
+  item?: {
+    /**
+     * 通知事件ID
+     */
+    id?: string
+    /**
+     * 通知场景编码
+     */
+    sceneCode?: string
+    /**
+     * 通知场景名称，前端用于展示
+     */
+    sceneName?: string
+    /**
+     * 业务类型，如 reservation、points_deposit
+     */
+    bizType?: string
+    /**
+     * 业务ID
+     */
+    bizId?: string
+    /**
+     * 事件状态：pending=待处理，processing=处理中，completed=已完成，failed=失败
+     */
+    status?: string
+    /**
+     * 当前接收人可读渠道的已读状态：none=无可读渠道，unread=存在未读，read=全部已读
+     */
+    readStatus?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 站内信渠道，固定为 inbox
+     */
+    channel?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 通知内容
+     */
+    content?: string
+    /**
+     * 站内信投递状态
+     */
+    deliveryStatus?: string
+    /**
+     * 已读时间
+     */
+    readAt?: string
+    /**
+     * 是否支持已读
+     */
+    supportsRead?: boolean
+    /**
+     * 接收人类型：account=后台账号
+     */
+    receiverType?: string
+  }
+}
+
+/**
+ * 接口 获取站内信详情 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/{id}`
+ */
+type GetApiNotificationV1NotificationsByIdRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/notification/v1/notifications/{id}', undefined, 'id', string, false>
+>
+
+/**
+ * 接口 获取站内信详情 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/{id}`
+ */
+const getApiNotificationV1NotificationsByIdRequestConfig: GetApiNotificationV1NotificationsByIdRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/notification/v1/notifications/{id}',
+    method: Method.GET,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.query,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: ['id'],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'getApiNotificationV1NotificationsById',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 获取站内信详情 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/notifications/{id}`
+ */
+export const getApiNotificationV1NotificationsById = /*#__PURE__*/ (
+  requestData: GetApiNotificationV1NotificationsByIdRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1NotificationsByIdResponse>(
+    prepare(getApiNotificationV1NotificationsByIdRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1NotificationsById.requestConfig = getApiNotificationV1NotificationsByIdRequestConfig
+
+/**
+ * 接口 查询通知配置 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences`
+ */
+export interface GetApiNotificationV1PreferencesRequest {}
+
+/**
+ * 接口 查询通知配置 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences`
+ */
+export interface GetApiNotificationV1PreferencesResponse {
+  /**
+   * 通知配置列表
+   */
+  items?: {
+    /**
+     * 配置ID
+     */
+    id?: string
+    /**
+     * 通知场景编码
+     */
+    sceneCode?: string
+    /**
+     * 是否启用
+     */
+    enabled?: boolean
+    /**
+     * 渠道配置列表
+     */
+    channels?: {
+      /**
+       * 通知端：admin=后台，app=C端
+       */
+      side?: string
+      /**
+       * 通知渠道
+       */
+      channel?: string
+      /**
+       * 是否启用该渠道
+       */
+      enabled?: boolean
+      /**
+       * 第三方模板ID
+       */
+      providerTemplateId?: string
+      /**
+       * 内容模板
+       */
+      contentTemplate?: string
+      /**
+       * 变量 schema JSON 字符串
+       */
+      variableSchemaJson?: string
+      /**
+       * 小程序页面路径
+       */
+      miniProgramPagePath?: string
+      /**
+       * 后台接收角色ID列表
+       */
+      receiverRoleIds?: string[]
+      /**
+       * 后台接收账号ID列表
+       */
+      receiverAccountIds?: string[]
+      /**
+       * 后台接收角色展示信息列表
+       */
+      receiverRoles?: {
+        /**
+         * 角色ID
+         */
+        id?: string
+        /**
+         * 角色名称
+         */
+        name?: string
+        /**
+         * 角色编码
+         */
+        code?: string
+        /**
+         * 是否内置角色
+         */
+        isBuiltin?: boolean
+      }[]
+      /**
+       * 后台接收账号展示信息列表
+       */
+      receiverAccounts?: {
+        /**
+         * 账号ID
+         */
+        id?: string
+        /**
+         * 账号展示名称
+         */
+        name?: string
+        /**
+         * 账号头像URL
+         */
+        avatarUrl?: string
+        /**
+         * 账号状态：1=启用，2=禁用
+         */
+        status?: number
+        /**
+         * 账号手机号
+         */
+        phone?: string
+      }[]
+    }[]
+    /**
+     * 通知场景名称，前端用于展示
+     */
+    sceneName?: string
+  }[]
+}
+
+/**
+ * 接口 查询通知配置 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences`
+ */
+type GetApiNotificationV1PreferencesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/notification/v1/preferences', undefined, string, string, true>
+>
+
+/**
+ * 接口 查询通知配置 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences`
+ */
+const getApiNotificationV1PreferencesRequestConfig: GetApiNotificationV1PreferencesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/notification/v1/preferences',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: true,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiNotificationV1Preferences',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询通知配置 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences`
+ */
+export const getApiNotificationV1Preferences = /*#__PURE__*/ (
+  requestData?: GetApiNotificationV1PreferencesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1PreferencesResponse>(
+    prepare(getApiNotificationV1PreferencesRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1Preferences.requestConfig = getApiNotificationV1PreferencesRequestConfig
+
+/**
+ * 接口 获取通知配置 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences/{sceneCode}`
+ */
+export interface GetApiNotificationV1PreferencesBySceneCodeRequest {
+  /**
+   * 通知场景编码
+   */
+  sceneCode: string
+}
+
+/**
+ * 接口 获取通知配置 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences/{sceneCode}`
+ */
+export interface GetApiNotificationV1PreferencesBySceneCodeResponse {
+  /**
+   * 通知场景配置展示项。
+   */
+  item?: {
+    /**
+     * 配置ID
+     */
+    id?: string
+    /**
+     * 通知场景编码
+     */
+    sceneCode?: string
+    /**
+     * 是否启用
+     */
+    enabled?: boolean
+    /**
+     * 渠道配置列表
+     */
+    channels?: {
+      /**
+       * 通知端：admin=后台，app=C端
+       */
+      side?: string
+      /**
+       * 通知渠道
+       */
+      channel?: string
+      /**
+       * 是否启用该渠道
+       */
+      enabled?: boolean
+      /**
+       * 第三方模板ID
+       */
+      providerTemplateId?: string
+      /**
+       * 内容模板
+       */
+      contentTemplate?: string
+      /**
+       * 变量 schema JSON 字符串
+       */
+      variableSchemaJson?: string
+      /**
+       * 小程序页面路径
+       */
+      miniProgramPagePath?: string
+      /**
+       * 后台接收角色ID列表
+       */
+      receiverRoleIds?: string[]
+      /**
+       * 后台接收账号ID列表
+       */
+      receiverAccountIds?: string[]
+      /**
+       * 后台接收角色展示信息列表
+       */
+      receiverRoles?: {
+        /**
+         * 角色ID
+         */
+        id?: string
+        /**
+         * 角色名称
+         */
+        name?: string
+        /**
+         * 角色编码
+         */
+        code?: string
+        /**
+         * 是否内置角色
+         */
+        isBuiltin?: boolean
+      }[]
+      /**
+       * 后台接收账号展示信息列表
+       */
+      receiverAccounts?: {
+        /**
+         * 账号ID
+         */
+        id?: string
+        /**
+         * 账号展示名称
+         */
+        name?: string
+        /**
+         * 账号头像URL
+         */
+        avatarUrl?: string
+        /**
+         * 账号状态：1=启用，2=禁用
+         */
+        status?: number
+        /**
+         * 账号手机号
+         */
+        phone?: string
+      }[]
+    }[]
+    /**
+     * 通知场景名称，前端用于展示
+     */
+    sceneName?: string
+  }
+}
+
+/**
+ * 接口 获取通知配置 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences/{sceneCode}`
+ */
+type GetApiNotificationV1PreferencesBySceneCodeRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/notification/v1/preferences/{sceneCode}', undefined, 'sceneCode', string, false>
+>
+
+/**
+ * 接口 获取通知配置 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences/{sceneCode}`
+ */
+const getApiNotificationV1PreferencesBySceneCodeRequestConfig: GetApiNotificationV1PreferencesBySceneCodeRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/notification/v1/preferences/{sceneCode}',
+    method: Method.GET,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.query,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: ['sceneCode'],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'getApiNotificationV1PreferencesBySceneCode',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 获取通知配置 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/preferences/{sceneCode}`
+ */
+export const getApiNotificationV1PreferencesBySceneCode = /*#__PURE__*/ (
+  requestData: GetApiNotificationV1PreferencesBySceneCodeRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1PreferencesBySceneCodeResponse>(
+    prepare(getApiNotificationV1PreferencesBySceneCodeRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1PreferencesBySceneCode.requestConfig = getApiNotificationV1PreferencesBySceneCodeRequestConfig
+
+/**
+ * 接口 更新通知配置 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/preferences_put`
+ */
+export interface PutApiNotificationV1PreferencesRequest {
+  /**
+   * 通知场景编码
+   */
+  sceneCode?: string
+  /**
+   * 是否启用该场景通知
+   */
+  enabled?: boolean
+  /**
+   * 渠道配置列表，每项包含端、渠道、模板和后台接收人
+   */
+  channels?: {
+    /**
+     * 通知端：admin=后台，app=C端
+     */
+    side?: string
+    /**
+     * 通知渠道：inbox=站内信，mini_program=小程序订阅消息
+     */
+    channel?: string
+    /**
+     * 是否启用该渠道
+     */
+    enabled?: boolean
+    /**
+     * 第三方模板ID，小程序订阅消息使用
+     */
+    providerTemplateId?: string
+    /**
+     * 内容模板，支持 {变量名} 占位符
+     */
+    contentTemplate?: string
+    /**
+     * 变量 schema JSON 字符串
+     */
+    variableSchemaJson?: string
+    /**
+     * 小程序跳转页面路径
+     */
+    miniProgramPagePath?: string
+    /**
+     * 后台接收角色ID列表，仅 admin/inbox 使用
+     */
+    receiverRoleIds?: string[]
+    /**
+     * 后台接收账号ID列表，仅 admin/inbox 使用
+     */
+    receiverAccountIds?: string[]
+  }[]
+}
+
+/**
+ * 接口 更新通知配置 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/preferences_put`
+ */
+export interface PutApiNotificationV1PreferencesResponse {
+  /**
+   * 通知场景配置展示项。
+   */
+  item?: {
+    /**
+     * 配置ID
+     */
+    id?: string
+    /**
+     * 通知场景编码
+     */
+    sceneCode?: string
+    /**
+     * 是否启用
+     */
+    enabled?: boolean
+    /**
+     * 渠道配置列表
+     */
+    channels?: {
+      /**
+       * 通知端：admin=后台，app=C端
+       */
+      side?: string
+      /**
+       * 通知渠道
+       */
+      channel?: string
+      /**
+       * 是否启用该渠道
+       */
+      enabled?: boolean
+      /**
+       * 第三方模板ID
+       */
+      providerTemplateId?: string
+      /**
+       * 内容模板
+       */
+      contentTemplate?: string
+      /**
+       * 变量 schema JSON 字符串
+       */
+      variableSchemaJson?: string
+      /**
+       * 小程序页面路径
+       */
+      miniProgramPagePath?: string
+      /**
+       * 后台接收角色ID列表
+       */
+      receiverRoleIds?: string[]
+      /**
+       * 后台接收账号ID列表
+       */
+      receiverAccountIds?: string[]
+      /**
+       * 后台接收角色展示信息列表
+       */
+      receiverRoles?: {
+        /**
+         * 角色ID
+         */
+        id?: string
+        /**
+         * 角色名称
+         */
+        name?: string
+        /**
+         * 角色编码
+         */
+        code?: string
+        /**
+         * 是否内置角色
+         */
+        isBuiltin?: boolean
+      }[]
+      /**
+       * 后台接收账号展示信息列表
+       */
+      receiverAccounts?: {
+        /**
+         * 账号ID
+         */
+        id?: string
+        /**
+         * 账号展示名称
+         */
+        name?: string
+        /**
+         * 账号头像URL
+         */
+        avatarUrl?: string
+        /**
+         * 账号状态：1=启用，2=禁用
+         */
+        status?: number
+        /**
+         * 账号手机号
+         */
+        phone?: string
+      }[]
+    }[]
+    /**
+     * 通知场景名称，前端用于展示
+     */
+    sceneName?: string
+  }
+}
+
+/**
+ * 接口 更新通知配置 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/preferences_put`
+ */
+type PutApiNotificationV1PreferencesRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/notification/v1/preferences_put', undefined, string, string, false>
+>
+
+/**
+ * 接口 更新通知配置 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/preferences_put`
+ */
+const putApiNotificationV1PreferencesRequestConfig: PutApiNotificationV1PreferencesRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/notification/v1/preferences_put',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'putApiNotificationV1Preferences',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 更新通知配置 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `POST /api/notification/v1/preferences_put`
+ */
+export const putApiNotificationV1Preferences = /*#__PURE__*/ (
+  requestData: PutApiNotificationV1PreferencesRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PutApiNotificationV1PreferencesResponse>(
+    prepare(putApiNotificationV1PreferencesRequestConfig, requestData),
+    ...args,
+  )
+}
+
+putApiNotificationV1Preferences.requestConfig = putApiNotificationV1PreferencesRequestConfig
+
+/**
+ * 接口 查询推送记录 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/pushRecords`
+ */
+export interface GetApiNotificationV1PushRecordsRequest {
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+  /**
+   * 通知端：admin=后台，app=C端
+   */
+  side?: string
+  /**
+   * 通知渠道：inbox=站内信，mini_program=小程序订阅消息
+   */
+  channel?: string
+  /**
+   * 投递状态：pending=待发送，delivering=发送中，delivered=已送达，failed=失败
+   */
+  status?: string
+}
+
+/**
+ * 接口 查询推送记录 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/pushRecords`
+ */
+export interface GetApiNotificationV1PushRecordsResponse {
+  /**
+   * 推送记录列表
+   */
+  items?: {
+    /**
+     * 通知事件ID
+     */
+    id?: string
+    /**
+     * 通知场景编码
+     */
+    sceneCode?: string
+    /**
+     * 通知场景名称，前端用于展示
+     */
+    sceneName?: string
+    /**
+     * 业务类型
+     */
+    bizType?: string
+    /**
+     * 业务ID
+     */
+    bizId?: string
+    /**
+     * 事件状态
+     */
+    status?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 渠道投递汇总
+     */
+    channels?: {
+      /**
+       * 通知端：admin=后台，app=C端
+       */
+      side?: string
+      /**
+       * 通知渠道
+       */
+      channel?: string
+      /**
+       * 接收人总数
+       */
+      totalCount?: number
+      /**
+       * 送达数量
+       */
+      deliveredCount?: number
+      /**
+       * 失败数量
+       */
+      failedCount?: number
+      /**
+       * 已读数量
+       */
+      readCount?: number
+      /**
+       * 未读数量
+       */
+      unreadCount?: number
+      /**
+       * 该渠道是否支持已读
+       */
+      supportsRead?: boolean
+      /**
+       * 接收人投递明细
+       */
+      receivers?: {
+        /**
+         * 通知投递记录ID
+         */
+        id?: string
+        /**
+         * 通知端：admin=后台，app=C端
+         */
+        side?: string
+        /**
+         * 通知渠道
+         */
+        channel?: string
+        /**
+         * 接收人类型：account=后台账号，member=会员
+         */
+        receiverType?: string
+        /**
+         * 后台接收账号ID
+         */
+        receiverAccountId?: string
+        /**
+         * 会员接收人ID
+         */
+        receiverMemberId?: string
+        /**
+         * 通知内容
+         */
+        content?: string
+        /**
+         * 投递状态
+         */
+        status?: string
+        /**
+         * 重试次数
+         */
+        retryCount?: number
+        /**
+         * 第三方响应 JSON
+         */
+        responseJson?: string
+        /**
+         * 创建时间
+         */
+        createdAt?: string
+        /**
+         * MemberDisplayInfo 会员通用展示信息。
+         */
+        receiverMember?: {
+          /**
+           * 会员ID
+           */
+          id?: string
+          /**
+           * 会员展示名称
+           */
+          name?: string
+          /**
+           * 会员头像URL
+           */
+          avatarUrl?: string
+          /**
+           * 会员手机号
+           */
+          phone?: string
+        }
+        /**
+         * 已读时间，仅支持已读的渠道有业务意义
+         */
+        readAt?: string
+        /**
+         * 该渠道是否支持已读状态
+         */
+        supportsRead?: boolean
+      }[]
+    }[]
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 查询推送记录 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/pushRecords`
+ */
+type GetApiNotificationV1PushRecordsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/notification/v1/pushRecords',
+    undefined,
+    string,
+    'pageRequest.page' | 'pageRequest.pageSize' | 'side' | 'channel' | 'status',
+    false
+  >
+>
+
+/**
+ * 接口 查询推送记录 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/pushRecords`
+ */
+const getApiNotificationV1PushRecordsRequestConfig: GetApiNotificationV1PushRecordsRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/notification/v1/pushRecords',
+  method: Method.GET,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.query,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'side', 'channel', 'status'],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'getApiNotificationV1PushRecords',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 查询推送记录 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/pushRecords`
+ */
+export const getApiNotificationV1PushRecords = /*#__PURE__*/ (
+  requestData: GetApiNotificationV1PushRecordsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1PushRecordsResponse>(
+    prepare(getApiNotificationV1PushRecordsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1PushRecords.requestConfig = getApiNotificationV1PushRecordsRequestConfig
+
+/**
+ * 接口 分页查询场景商户配置 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigMerchants`
+ */
+export interface GetApiNotificationV1SceneConfigMerchantsRequest {
+  /**
+   * 通知场景编码
+   */
+  sceneCode?: string
+  /**
+   * 页码
+   */
+  'pageRequest.page'?: number
+  /**
+   * 每页数量
+   */
+  'pageRequest.pageSize'?: number
+}
+
+/**
+ * 接口 分页查询场景商户配置 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigMerchants`
+ */
+export interface GetApiNotificationV1SceneConfigMerchantsResponse {
+  /**
+   * 已配置商户详情列表
+   */
+  items?: {
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 通知场景配置展示项。
+     */
+    preference?: {
+      /**
+       * 配置ID
+       */
+      id?: string
+      /**
+       * 通知场景编码
+       */
+      sceneCode?: string
+      /**
+       * 是否启用
+       */
+      enabled?: boolean
+      /**
+       * 渠道配置列表
+       */
+      channels?: {
+        /**
+         * 通知端：admin=后台，app=C端
+         */
+        side?: string
+        /**
+         * 通知渠道
+         */
+        channel?: string
+        /**
+         * 是否启用该渠道
+         */
+        enabled?: boolean
+        /**
+         * 第三方模板ID
+         */
+        providerTemplateId?: string
+        /**
+         * 内容模板
+         */
+        contentTemplate?: string
+        /**
+         * 变量 schema JSON 字符串
+         */
+        variableSchemaJson?: string
+        /**
+         * 小程序页面路径
+         */
+        miniProgramPagePath?: string
+        /**
+         * 后台接收角色ID列表
+         */
+        receiverRoleIds?: string[]
+        /**
+         * 后台接收账号ID列表
+         */
+        receiverAccountIds?: string[]
+        /**
+         * 后台接收角色展示信息列表
+         */
+        receiverRoles?: {
+          /**
+           * 角色ID
+           */
+          id?: string
+          /**
+           * 角色名称
+           */
+          name?: string
+          /**
+           * 角色编码
+           */
+          code?: string
+          /**
+           * 是否内置角色
+           */
+          isBuiltin?: boolean
+        }[]
+        /**
+         * 后台接收账号展示信息列表
+         */
+        receiverAccounts?: {
+          /**
+           * 账号ID
+           */
+          id?: string
+          /**
+           * 账号展示名称
+           */
+          name?: string
+          /**
+           * 账号头像URL
+           */
+          avatarUrl?: string
+          /**
+           * 账号状态：1=启用，2=禁用
+           */
+          status?: number
+          /**
+           * 账号手机号
+           */
+          phone?: string
+        }[]
+      }[]
+      /**
+       * 通知场景名称，前端用于展示
+       */
+      sceneName?: string
+    }
+  }[]
+  /**
+   * PageReply 分页响应数据。
+   */
+  pageReply?: {
+    /**
+     * 总数
+     */
+    total?: number
+    /**
+     * 当前页码
+     */
+    page?: number
+    /**
+     * 每页数量
+     */
+    pageSize?: number
+  }
+}
+
+/**
+ * 接口 分页查询场景商户配置 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigMerchants`
+ */
+type GetApiNotificationV1SceneConfigMerchantsRequestConfig = Readonly<
+  RequestConfig<
+    '',
+    '',
+    '',
+    '/api/notification/v1/sceneConfigMerchants',
+    undefined,
+    string,
+    'sceneCode' | 'pageRequest.page' | 'pageRequest.pageSize',
+    false
+  >
+>
+
+/**
+ * 接口 分页查询场景商户配置 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigMerchants`
+ */
+const getApiNotificationV1SceneConfigMerchantsRequestConfig: GetApiNotificationV1SceneConfigMerchantsRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/notification/v1/sceneConfigMerchants',
+    method: Method.GET,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.query,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: ['sceneCode', 'pageRequest.page', 'pageRequest.pageSize'],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'getApiNotificationV1SceneConfigMerchants',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 分页查询场景商户配置 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigMerchants`
+ */
+export const getApiNotificationV1SceneConfigMerchants = /*#__PURE__*/ (
+  requestData: GetApiNotificationV1SceneConfigMerchantsRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1SceneConfigMerchantsResponse>(
+    prepare(getApiNotificationV1SceneConfigMerchantsRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1SceneConfigMerchants.requestConfig = getApiNotificationV1SceneConfigMerchantsRequestConfig
+
+/**
+ * 接口 查询通知场景配置概览 的 **请求类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigOverview`
+ */
+export interface GetApiNotificationV1SceneConfigOverviewRequest {}
+
+/**
+ * 接口 查询通知场景配置概览 的 **返回类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigOverview`
+ */
+export interface GetApiNotificationV1SceneConfigOverviewResponse {
+  /**
+   * 通知场景配置概览列表
+   */
+  items?: {
+    /**
+     * 通知场景编码
+     */
+    sceneCode?: string
+    /**
+     * 通知场景名称
+     */
+    sceneName?: string
+    /**
+     * 通知场景说明
+     */
+    description?: string
+    /**
+     * 已配置该场景的商户数量
+     */
+    configuredMerchantCount?: string
+  }[]
+}
+
+/**
+ * 接口 查询通知场景配置概览 的 **请求配置的类型**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigOverview`
+ */
+type GetApiNotificationV1SceneConfigOverviewRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/notification/v1/sceneConfigOverview', undefined, string, string, true>
+>
+
+/**
+ * 接口 查询通知场景配置概览 的 **请求配置**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigOverview`
+ */
+const getApiNotificationV1SceneConfigOverviewRequestConfig: GetApiNotificationV1SceneConfigOverviewRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/notification/v1/sceneConfigOverview',
+    method: Method.GET,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.query,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: true,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'getApiNotificationV1SceneConfigOverview',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 查询通知场景配置概览 的 **请求函数**
+ *
+ * @分类 NotificationService
+ * @请求头 `GET /api/notification/v1/sceneConfigOverview`
+ */
+export const getApiNotificationV1SceneConfigOverview = /*#__PURE__*/ (
+  requestData?: GetApiNotificationV1SceneConfigOverviewRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<GetApiNotificationV1SceneConfigOverviewResponse>(
+    prepare(getApiNotificationV1SceneConfigOverviewRequestConfig, requestData),
+    ...args,
+  )
+}
+
+getApiNotificationV1SceneConfigOverview.requestConfig = getApiNotificationV1SceneConfigOverviewRequestConfig
+
 /* prettier-ignore-end */

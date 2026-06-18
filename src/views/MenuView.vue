@@ -39,6 +39,7 @@ import {
 } from '@/services/basis/basis'
 import { useOrgScopeStore } from '@/stores/orgScope'
 import { useTableSeatStore } from '@/stores/tableSeat'
+import { normalizeUrl } from '@/utils'
 
 const orgScopeStore = useOrgScopeStore()
 const tableSeatStore = useTableSeatStore()
@@ -630,7 +631,7 @@ const createMenuProductView = (dish: ApiDish, index: number): MenuProductView =>
     category: getDishCategoryId(dish),
     dishId,
     id: dishId || `${activeCategory.value}-${name}-${index}`,
-    imageUrl: normalizeText(dish.imageUrl),
+    imageUrl: normalizeUrl(normalizeText(dish.imageUrl)),
     label: getDishLabel(dish),
     name,
     priceCents: getDishPriceCents(dish),

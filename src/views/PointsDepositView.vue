@@ -23,6 +23,7 @@ import {
   type PostApiWalletV1AccountsDepositPreviewResponse,
 } from '@/services/basis/basis'
 import { useOrgScopeStore } from '@/stores/orgScope'
+import { normalizeUrl } from '@/utils'
 
 type ApiMember = NonNullable<GetApiMemberV1MembersResponse['members']>[number]
 type ApiTicket = NonNullable<GetApiTicketV1TicketsByIdResponse['ticket']>
@@ -355,6 +356,10 @@ function getMemberMeta(member: ApiMember) {
     .join(' · ')
 }
 
+function normalizeMemberAvatarUrl(member: ApiMember) {
+  return normalizeUrl(normalizeText(member.avatarUrl))
+}
+
 function getTicketStatusConfig(ticket: ApiTicket | null) {
   const status = normalizeStatus(ticket?.status)
 
@@ -485,7 +490,12 @@ async function loadMembers() {
 
     if (requestId !== memberRequestId) return
 
-    members.value = (result.members ?? []).filter((member) => Number(member.status) === 1)
+    members.value = (result.members ?? [])
+      .filter((member) => Number(member.status) === 1)
+      .map((member) => ({
+        ...member,
+        avatarUrl: normalizeMemberAvatarUrl(member),
+      }))
     totalMembers.value = Number(result.pageReply?.total) || members.value.length
   } catch {
     if (requestId !== memberRequestId) return

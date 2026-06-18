@@ -1,11 +1,11 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import './style.css'
-import { RouterView } from 'vue-router'
+import RootApp from './RootApp.vue'
 import { setupVueRequest } from './logics/setVueRequest'
 import { router } from './router'
 
-const app = createApp(RouterView)
+const app = createApp(RootApp)
 
 setupVueRequest()
 app.use(createPinia())

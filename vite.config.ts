@@ -2,6 +2,8 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv, type ProxyOptions } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+const httpsRE = /^https:\/\//
+
 const createProxy = (proxyText?: string): Record<string, string | ProxyOptions> => {
   if (!proxyText) return {}
 
@@ -9,10 +11,16 @@ const createProxy = (proxyText?: string): Record<string, string | ProxyOptions> 
     const proxyList = JSON.parse(proxyText) as Array<[string, string]>
 
     return proxyList.reduce<Record<string, ProxyOptions>>((proxy, [prefix, target]) => {
+      const isSocketIoProxy = prefix === '/socket.io' || prefix === '/socket.io/'
+
       proxy[prefix] = {
         changeOrigin: true,
-        rewrite: (path) => path.replace(new RegExp(`^${prefix}`), ''),
         target,
+        ws: true,
+        ...(isSocketIoProxy
+          ? {}
+          : { rewrite: (path) => path.replace(new RegExp(`^${prefix}`), '') }),
+        ...(httpsRE.test(target) ? { secure: false } : {}),
       }
       return proxy
     }, {})
