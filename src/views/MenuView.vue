@@ -1196,24 +1196,28 @@ const checkoutSelectedTable = async () => {
 
 <template>
   <main class="tab-page menu-page" aria-label="点单">
-    <header class="menu-location" aria-label="座位信息">
-      <button
-        class="menu-location-main"
-        type="button"
-        aria-haspopup="dialog"
-        :aria-expanded="isTablePickerOpen"
-        aria-label="查看或切换座位"
-        @click="openTablePicker"
-      >
-        <component :is="seatIcon" class="menu-location-icon" />
-        <span>{{ seatTitle }}</span>
-        <ChevronRight class="menu-location-arrow" />
-      </button>
+    <header class="menu-location" :class="{ 'has-table-actions': selectedOpenSession }" aria-label="座位信息">
+      <div class="menu-location-overview">
+        <div class="menu-location-copy">
+          <button
+            class="menu-location-main"
+            type="button"
+            aria-haspopup="dialog"
+            :aria-expanded="isTablePickerOpen"
+            aria-label="查看或切换座位"
+            @click="openTablePicker"
+          >
+            <component :is="seatIcon" class="menu-location-icon" />
+            <span>{{ seatTitle }}</span>
+            <ChevronRight class="menu-location-arrow" />
+          </button>
 
-      <span class="menu-distance">{{ seatSubtitle }}</span>
+          <span class="menu-distance">{{ seatSubtitle }}</span>
+        </div>
 
-      <div class="menu-delivery-track" :style="tableProgressStyle" :aria-label="tableProgressText">
-        <span>{{ tableProgressText }}</span>
+        <div class="menu-delivery-track" :style="tableProgressStyle" :aria-label="tableProgressText">
+          <span>{{ tableProgressText }}</span>
+        </div>
       </div>
 
       <div v-if="selectedOpenSession" class="menu-table-actions" aria-label="桌位操作">

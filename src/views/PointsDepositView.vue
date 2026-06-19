@@ -853,7 +853,7 @@ onBeforeUnmount(() => {
           <WalletOutlined />
         </header>
 
-        <article class="points-selected-member points-deposit-member">
+        <article class="points-selected-member points-deposit-member has-action">
           <span class="points-selected-avatar" aria-hidden="true">
             <UserOutlined />
           </span>
@@ -861,6 +861,7 @@ onBeforeUnmount(() => {
             <strong>{{ selectedMemberTitle }}</strong>
             <small>{{ selectedMemberSubtitle }}</small>
           </div>
+          <button class="member-reselect-button" type="button" @click="openMemberStep">重新选择</button>
         </article>
 
         <label class="points-amount-field">

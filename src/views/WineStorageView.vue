@@ -37,7 +37,7 @@
       <div class="wine-operation-steps" aria-label="存取酒操作步骤">
         <article
           class="wine-step-block"
-          :class="{ 'is-active': !selectedMember, 'is-complete': Boolean(selectedMember) }"
+          :class="{ 'is-active': isMemberStepExpanded, 'is-complete': Boolean(selectedMember) && !isMemberStepExpanded }"
         >
           <span class="wine-step-marker">1</span>
           <div class="wine-step-content">
@@ -46,10 +46,18 @@
                 <span>选择会员</span>
                 <strong>{{ selectedMemberTitle }}</strong>
               </div>
-              <small>{{ selectedMemberSubtitle }}</small>
+              <button
+                v-if="selectedMember && !isMemberStepExpanded"
+                class="member-reselect-button"
+                type="button"
+                @click="reselectMember"
+              >
+                重新选择
+              </button>
+              <small v-else>{{ selectedMemberSubtitle }}</small>
             </header>
 
-            <section class="wine-step-body wine-member-step-body">
+            <section v-if="isMemberStepExpanded" class="wine-step-body wine-member-step-body">
               <label class="points-search-field">
                 <SearchOutlined />
                 <input
@@ -170,8 +178,8 @@
 
             <section v-else-if="selectedMemberId" class="wine-step-body">
               <div class="wine-section-title">
-                <strong>会员存酒流水</strong>
-                <small>选择本次要取酒的流水</small>
+                <strong>会员可取酒列表</strong>
+                <small>选择本次要取酒的记录</small>
               </div>
 
               <div class="wine-scroll-list">
@@ -194,9 +202,9 @@
                 </button>
               </div>
 
-              <p v-if="flowLoading" class="points-list-state">正在查询存酒流水</p>
+              <p v-if="flowLoading" class="points-list-state">正在查询可取酒记录</p>
               <p v-else-if="flowError" class="points-list-state is-error">{{ flowError }}</p>
-              <p v-else-if="!flowCards.length" class="points-list-state">该会员暂无可取酒流水</p>
+              <p v-else-if="!flowCards.length" class="points-list-state">该会员暂无可取酒记录</p>
             </section>
 
             <p v-else class="wine-step-placeholder">先完成会员选择，下一步会在这里展开。</p>
@@ -288,7 +296,7 @@
             <small>已生成工单</small>
             <h2>{{ ticketTitle }}</h2>
           </div>
-          <strong>{{ formatTicketStatus(submittedTicket?.status) }}</strong>
+          <strong :class="`is-${ticketStatusConfig.tone}`">{{ ticketStatusConfig.label }}</strong>
         </header>
         <dl class="points-ticket-details">
           <div v-for="item in ticketDetails" :key="item.label">
@@ -296,6 +304,37 @@
             <dd>{{ item.value }}</dd>
           </div>
         </dl>
+
+        <template v-if="canAuditTicket">
+          <textarea
+            v-model="reviewRemark"
+            class="points-ticket-remark"
+            placeholder="审核备注"
+            rows="2"
+          />
+
+          <div class="points-ticket-actions">
+            <button
+              class="points-ticket-reject"
+              type="button"
+              :disabled="auditingAction !== ''"
+              @click="handleAuditTicket('reject')"
+            >
+              <CloseCircleFilled />
+              {{ auditingAction === 'reject' ? '驳回中' : '驳回' }}
+            </button>
+            <button
+              class="points-ticket-approve"
+              type="button"
+              :disabled="auditingAction !== ''"
+              @click="handleAuditTicket('approve')"
+            >
+              <CheckCircleFilled />
+              {{ auditingAction === 'approve' ? '通过中' : '通过' }}
+            </button>
+          </div>
+        </template>
+
         <button class="points-submit-button" type="button" @click="continueCurrentMode">继续{{ mode === 'deposit' ? '存酒' : '取酒' }}</button>
       </article>
     </aside>
@@ -306,6 +345,7 @@
 import {
   ArrowLeftOutlined,
   CheckCircleFilled,
+  CloseCircleFilled,
   CoffeeOutlined,
   DownloadOutlined,
   FileTextOutlined,
@@ -313,18 +353,21 @@ import {
   UploadOutlined,
   UserOutlined,
 } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   getApiDishV1Categories,
   getApiDishV1Dishes,
   getApiMemberV1Members,
-  getApiMemberV1StorageFlows,
+  getApiMemberV1StoredWines,
   postApiTicketV1Tickets,
+  putApiTicketV1TicketsApprove,
+  putApiTicketV1TicketsReject,
   type GetApiDishV1CategoriesResponse,
   type GetApiDishV1DishesResponse,
   type GetApiMemberV1MembersResponse,
-  type GetApiMemberV1StorageFlowsResponse,
+  type GetApiMemberV1StoredWinesResponse,
   type PostApiTicketV1TicketsRequest,
   type PostApiTicketV1TicketsResponse,
 } from '@/services/basis/basis'
@@ -334,10 +377,11 @@ import { normalizeUrl } from '@/utils'
 type ApiDish = NonNullable<GetApiDishV1DishesResponse['dishes']>[number]
 type ApiDishCategory = NonNullable<GetApiDishV1CategoriesResponse['categories']>[number]
 type ApiMember = NonNullable<GetApiMemberV1MembersResponse['members']>[number]
-type ApiStorageFlow = NonNullable<GetApiMemberV1StorageFlowsResponse['flows']>[number]
+type ApiStoredWine = NonNullable<GetApiMemberV1StoredWinesResponse['wines']>[number]
 type ApiTicket = NonNullable<PostApiTicketV1TicketsResponse['ticket']>
 
 type WineMode = 'deposit' | 'withdraw'
+type ReviewAction = 'approve' | 'reject'
 
 type DetailItem = {
   label: string
@@ -349,7 +393,7 @@ type FlowCard = {
   title: string
   meta: string
   availableText: string
-  raw: ApiStorageFlow
+  raw: ApiStoredWine
 }
 
 type TicketSnapshot = {
@@ -414,6 +458,7 @@ function getRouteWineMode(): WineMode {
 const mode = ref<WineMode>(getRouteWineMode())
 const members = ref<ApiMember[]>([])
 const selectedMember = ref<ApiMember | null>(null)
+const isMemberStepExpanded = ref(true)
 const memberSearch = ref('')
 const memberLoading = ref(false)
 const memberError = ref('')
@@ -428,8 +473,8 @@ const dishSearch = ref('')
 const dishLoading = ref(false)
 const dishError = ref('')
 
-const storageFlows = ref<ApiStorageFlow[]>([])
-const selectedFlow = ref<ApiStorageFlow | null>(null)
+const storageFlows = ref<ApiStoredWine[]>([])
+const selectedFlow = ref<ApiStoredWine | null>(null)
 const flowLoading = ref(false)
 const flowError = ref('')
 
@@ -437,8 +482,10 @@ const quantityInput = ref('')
 const remarkInput = ref('')
 const submitting = ref(false)
 const submittedTicket = ref<ApiTicket | null>(null)
-const submittedEntity = ref<ApiDish | ApiStorageFlow | null>(null)
+const submittedEntity = ref<ApiDish | ApiStoredWine | null>(null)
 const submittedSnapshot = ref<TicketSnapshot | null>(null)
+const reviewRemark = ref('')
+const auditingAction = ref<ReviewAction | ''>('')
 
 let memberSearchTimer: number | undefined
 let memberRequestId = 0
@@ -511,7 +558,7 @@ const canShowQuantityStep = computed(() => {
   return Boolean(selectedFlow.value)
 })
 
-const choiceStepTitle = computed(() => (mode.value === 'deposit' ? '选择存酒菜品' : '选择取酒流水'))
+const choiceStepTitle = computed(() => (mode.value === 'deposit' ? '选择存酒菜品' : '选择可取酒记录'))
 
 const choiceStepSummary = computed(() => {
   if (!selectedMemberId.value) {
@@ -522,7 +569,7 @@ const choiceStepSummary = computed(() => {
     return selectedDish.value ? getDishName(selectedDish.value) : '选择已上架菜品'
   }
 
-  return selectedFlowCard.value?.title ?? '选择会员存酒流水'
+  return selectedFlowCard.value?.title ?? '选择会员可取酒记录'
 })
 
 const choiceStepSubtitle = computed(() => {
@@ -530,7 +577,7 @@ const choiceStepSubtitle = computed(() => {
     return '会员选择完成后展开'
   }
 
-  return mode.value === 'deposit' ? '按名称搜索，按分类筛选' : '仅展示该会员可取酒流水'
+  return mode.value === 'deposit' ? '按名称搜索，按分类筛选' : '仅展示该会员可取酒记录'
 })
 
 const quantityStepTitle = computed(() => (mode.value === 'deposit' ? '输入存酒数量' : '输入取酒数量'))
@@ -545,14 +592,14 @@ const quantityStepSummary = computed(() => {
 
 const quantityStepSubtitle = computed(() => {
   if (!canShowQuantityStep.value) {
-    return mode.value === 'deposit' ? '选择菜品后展开' : '选择流水后展开'
+    return mode.value === 'deposit' ? '选择菜品后展开' : '选择记录后展开'
   }
 
   return mode.value === 'deposit' ? selectedDishSubtitle.value : selectedFlowCard.value?.availableText ?? '确认取酒数量'
 })
 
 const quantityLockedText = computed(() =>
-  mode.value === 'deposit' ? '先选择存酒菜品，数量输入会在这里展开。' : '先选择取酒流水，数量输入会在这里展开。',
+  mode.value === 'deposit' ? '先选择存酒菜品，数量输入会在这里展开。' : '先选择可取酒记录，数量输入会在这里展开。',
 )
 
 const quantityPlaceholder = computed(() => (mode.value === 'deposit' ? '输入存酒数量' : '输入取酒数量'))
@@ -570,6 +617,9 @@ const canSubmitWithdraw = computed(() => {
 const canSubmitCurrent = computed(() => (mode.value === 'deposit' ? canSubmitDeposit.value : canSubmitWithdraw.value))
 
 const isTicketCardVisible = computed(() => Boolean(submittedTicket.value))
+const ticketStatus = computed(() => normalizeStatus(submittedTicket.value?.status))
+const ticketStatusConfig = computed(() => getTicketStatusConfig(submittedTicket.value))
+const canAuditTicket = computed(() => Boolean(normalizeText(submittedTicket.value?.id)) && ticketStatus.value === 'pending')
 
 const visibleDishes = computed(() => {
   const keyword = normalizeText(dishSearch.value).toLowerCase()
@@ -603,7 +653,7 @@ const ticketDetails = computed<DetailItem[]>(() => {
 
   return [
     { label: '会员', value: [snapshot.memberName, snapshot.memberPhone].filter(Boolean).join(' ') || '--' },
-    { label: mode.value === 'deposit' ? '存酒菜品' : '取酒流水', value: getSubmittedEntityName(submittedEntity.value) },
+    { label: mode.value === 'deposit' ? '存酒菜品' : '取酒记录', value: getSubmittedEntityName(submittedEntity.value) },
     { label: '数量', value: formatQuantity(snapshot.quantity) },
     { label: '状态', value: formatTicketStatus(submittedTicket.value.status) },
   ].filter((item) => item.value)
@@ -683,6 +733,36 @@ function formatTicketStatus(value: unknown): string {
   return status || '已提交'
 }
 
+function getTicketStatusConfig(ticket: ApiTicket | null) {
+  const status = normalizeStatus(ticket?.status)
+
+  if (status === 'approved') {
+    return {
+      label: '已通过',
+      tone: 'done',
+    }
+  }
+
+  if (status === 'rejected') {
+    return {
+      label: '已驳回',
+      tone: 'rejected',
+    }
+  }
+
+  if (status === 'cancelled') {
+    return {
+      label: '已取消',
+      tone: 'done',
+    }
+  }
+
+  return {
+    label: status === 'pending' ? '待审核' : '已提交',
+    tone: status === 'pending' ? 'pending' : 'live',
+  }
+}
+
 function getMemberName(member: ApiMember): string {
   return normalizeText(member.nickname) || normalizeText(member.phone) || `会员 ${member.id}`
 }
@@ -730,34 +810,35 @@ function isDishSelected(dish: ApiDish): boolean {
   return selectedDish.value?.id === dish.id
 }
 
-function getFlowDishName(flow: ApiStorageFlow): string {
-  return normalizeText(flow.dishName) || `流水 ${flow.id}`
+function getFlowDishName(flow: ApiStoredWine): string {
+  return normalizeText(flow.dishName) || normalizeText(flow.dish?.name) || `存酒记录 ${flow.id}`
 }
 
-function getFlowAvailableQuantity(flow: ApiStorageFlow): number {
-  const balanceAfter = Number(flow.balanceAfter ?? 0)
+function getFlowAvailableQuantity(flow: ApiStoredWine): number {
+  const hasRemainingQuantity = flow.remainingQuantity !== undefined && flow.remainingQuantity !== null
+  const remainingQuantity = Number(flow.remainingQuantity)
 
-  if (Number.isFinite(balanceAfter) && balanceAfter > 0) {
-    return balanceAfter
+  if (hasRemainingQuantity) {
+    return Number.isFinite(remainingQuantity) && remainingQuantity > 0 ? remainingQuantity : 0
   }
 
-  const quantity = Number(flow.quantity ?? 0)
-  return Number.isFinite(quantity) && quantity > 0 ? quantity : 0
+  const totalQuantity = Number(flow.totalQuantity ?? 0)
+  return Number.isFinite(totalQuantity) && totalQuantity > 0 ? totalQuantity : 0
 }
 
 function getFlowUnit(): string {
   return '份'
 }
 
-function getFlowDate(flow: ApiStorageFlow): string {
+function getFlowDate(flow: ApiStoredWine): string {
   return normalizeText(flow.createdAt) || '未记录时间'
 }
 
-function getFlowStorageRecordId(flow: ApiStorageFlow): string {
-  return normalizeText(flow.storageRecordId) || normalizeText(flow.id)
+function getFlowStorageRecordId(flow: ApiStoredWine): string {
+  return normalizeText(flow.id)
 }
 
-function toFlowCard(flow: ApiStorageFlow): FlowCard {
+function toFlowCard(flow: ApiStoredWine): FlowCard {
   const available = getFlowAvailableQuantity(flow)
   const unit = getFlowUnit()
   const flowId = normalizeText(flow.id)
@@ -765,19 +846,19 @@ function toFlowCard(flow: ApiStorageFlow): FlowCard {
   return {
     id: flowId,
     title: getFlowDishName(flow),
-    meta: `${getFlowDate(flow)} · 流水ID ${flowId || '--'}`,
+    meta: `${getFlowDate(flow)} · 记录ID ${flowId || '--'}`,
     availableText: `可取 ${formatQuantity(available)} ${unit}`,
     raw: flow,
   }
 }
 
-function getSubmittedEntityName(entity: ApiDish | ApiStorageFlow | null): string {
+function getSubmittedEntityName(entity: ApiDish | ApiStoredWine | null): string {
   if (!entity) {
     return mode.value === 'deposit' ? selectedDishTitle.value : selectedFlowCard.value?.title ?? '未选择'
   }
 
-  if ('dishName' in entity || 'storageRecordId' in entity || 'balanceAfter' in entity) {
-    return getFlowDishName(entity as ApiStorageFlow)
+  if ('remainingQuantity' in entity || 'totalQuantity' in entity || 'dishName' in entity) {
+    return getFlowDishName(entity as ApiStoredWine)
   }
 
   return getDishName(entity as ApiDish)
@@ -821,6 +902,7 @@ function setMode(nextMode: WineMode) {
 
   mode.value = nextMode
   resetBusinessSelection()
+  isMemberStepExpanded.value = !selectedMemberId.value
 
   if (nextMode === 'withdraw' && selectedMemberId.value) {
     void loadStorageFlows()
@@ -829,6 +911,7 @@ function setMode(nextMode: WineMode) {
 
 function resetForScope() {
   selectedMember.value = null
+  isMemberStepExpanded.value = true
   members.value = []
   memberError.value = ''
   dishCategories.value = []
@@ -854,11 +937,14 @@ function resetSubmittedTicket() {
   submittedTicket.value = null
   submittedEntity.value = null
   submittedSnapshot.value = null
+  reviewRemark.value = ''
+  auditingAction.value = ''
 }
 
 function selectMember(member: ApiMember) {
   const changed = selectedMember.value?.id !== member.id
   selectedMember.value = member
+  isMemberStepExpanded.value = false
 
   if (changed) {
     resetBusinessSelection()
@@ -868,6 +954,10 @@ function selectMember(member: ApiMember) {
   if (mode.value === 'withdraw') {
     void loadStorageFlows()
   }
+}
+
+function reselectMember() {
+  isMemberStepExpanded.value = true
 }
 
 function selectDishCategory(categoryId: string) {
@@ -889,7 +979,7 @@ function selectDish(dish: ApiDish) {
   resetSubmittedTicket()
 }
 
-function selectFlow(flow: ApiStorageFlow) {
+function selectFlow(flow: ApiStoredWine) {
   selectedFlow.value = flow
   selectedDish.value = null
   quantityInput.value = ''
@@ -1106,21 +1196,20 @@ async function loadStorageFlows() {
       return
     }
 
-    const response = await getApiMemberV1StorageFlows({
+    const response = await getApiMemberV1StoredWines({
       'pageRequest.page': 1,
       'pageRequest.pageSize': FLOW_PAGE_SIZE,
       memberId,
       merchantId: scope.merchantId,
       status: 'active',
       storeId: scope.storeId,
-      type: 'deposit',
     })
 
     if (requestId !== flowRequestId) {
       return
     }
 
-    storageFlows.value = (response.flows ?? []).filter((flow) => {
+    storageFlows.value = (response.wines ?? []).filter((flow) => {
       const status = normalizeStatus(flow.status)
       return getFlowAvailableQuantity(flow) > 0 && status !== 'cancelled' && status !== 'expired' && status !== 'finished'
     })
@@ -1132,7 +1221,7 @@ async function loadStorageFlows() {
     }
   } catch {
     if (requestId === flowRequestId) {
-      flowError.value = '存酒流水查询失败，请稍后重试'
+      flowError.value = '可取酒记录查询失败，请稍后重试'
       storageFlows.value = []
     }
   } finally {
@@ -1241,8 +1330,8 @@ async function submitWithdraw() {
   }
 
   snapshot.storageRecordId = getFlowStorageRecordId(flow)
-  snapshot.storageStoreId = normalizeText(flow.storageStoreId) || normalizeText(flow.storeId)
-  snapshot.storageStoreName = normalizeText(flow.storageStoreName) || normalizeText(flow.storeName) || scope.storeName
+  snapshot.storageStoreId = normalizeText(flow.storeId)
+  snapshot.storageStoreName = normalizeText(flow.storeName) || normalizeText(flow.store?.name) || scope.storeName
   snapshot.storageStore = {
     id: snapshot.storageStoreId,
     name: snapshot.storageStoreName,
@@ -1262,7 +1351,7 @@ async function submitCurrent() {
   await submitWithdraw()
 }
 
-async function submitTicket(request: WineTicketSubmitRequest, entity: ApiDish | ApiStorageFlow, snapshot: TicketSnapshot) {
+async function submitTicket(request: WineTicketSubmitRequest, entity: ApiDish | ApiStoredWine, snapshot: TicketSnapshot) {
   submitting.value = true
 
   try {
@@ -1278,6 +1367,36 @@ async function submitTicket(request: WineTicketSubmitRequest, entity: ApiDish | 
     }
   } finally {
     submitting.value = false
+  }
+}
+
+async function handleAuditTicket(action: ReviewAction) {
+  const ticketId = normalizeText(submittedTicket.value?.id)
+  if (!ticketId || !canAuditTicket.value || auditingAction.value) return
+
+  auditingAction.value = action
+
+  try {
+    const result =
+      action === 'approve'
+        ? await putApiTicketV1TicketsApprove({
+            id: ticketId,
+            reviewRemark: reviewRemark.value || `${mode.value === 'deposit' ? '存酒' : '取酒'}工单审核通过`,
+          })
+        : await putApiTicketV1TicketsReject({
+            id: ticketId,
+            reviewRemark: reviewRemark.value || `${mode.value === 'deposit' ? '存酒' : '取酒'}工单审核驳回`,
+          })
+
+    if (result.ticket) {
+      submittedTicket.value = result.ticket
+    }
+
+    message.success(action === 'approve' ? '工单已通过' : '工单已驳回')
+  } catch {
+    message.error(action === 'approve' ? '工单通过失败，请稍后重试' : '工单驳回失败，请稍后重试')
+  } finally {
+    auditingAction.value = ''
   }
 }
 

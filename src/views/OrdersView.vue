@@ -2055,7 +2055,7 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
 </script>
 
 <template>
-  <main class="tab-page orders-page" :aria-label="pageAriaLabel">
+  <main class="tab-page orders-page" :class="{ 'has-filter': isTicketMode }" :aria-label="pageAriaLabel">
     <section class="orders-topbar" aria-label="订单导航">
       <button class="orders-icon-button" type="button" aria-label="返回" @click="handleBack">
         <ArrowLeftOutlined />
@@ -2068,17 +2068,17 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
       </button>
     </section>
 
-    <section class="orders-hero" :aria-label="overviewAriaLabel">
-      <div>
+    <section class="orders-overview" :aria-label="overviewAriaLabel">
+      <div class="orders-hero">
         <p>{{ heroKindLabel }} {{ heroDateLabel }}</p>
         <h1>{{ heroTitle }}</h1>
       </div>
-    </section>
 
-    <section class="orders-stat-strip" :aria-label="statsAriaLabel">
-      <div v-for="stat in orderStats" :key="stat.label" class="orders-stat">
-        <strong>{{ stat.value }}</strong>
-        <span>{{ stat.label }}</span>
+      <div class="orders-stat-strip" :aria-label="statsAriaLabel">
+        <div v-for="stat in orderStats" :key="stat.label" class="orders-stat">
+          <strong>{{ stat.value }}</strong>
+          <span>{{ stat.label }}</span>
+        </div>
       </div>
     </section>
 

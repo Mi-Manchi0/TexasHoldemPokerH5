@@ -82,7 +82,7 @@ input,
 textarea,
 select {
   min-width: 0;
-  font-size: max(16px, 1em);
+  font-size: 16px;
   user-select: text;
 }
 
@@ -1320,7 +1320,7 @@ body.is-keyboard-open .home-indicator {
   border-radius: 8px;
   color: #050505;
   background: rgba(255, 255, 255, 0.82);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 800;
 }
 
@@ -2123,6 +2123,10 @@ body.is-keyboard-open .home-indicator {
   max-height: min(72svh, 560px);
 }
 
+.home-scope-picker-overlay {
+  z-index: 40;
+}
+
 .scope-group-list {
   gap: 16px;
 }
@@ -2207,7 +2211,7 @@ body.is-keyboard-open .home-indicator {
   --menu-gold: #d8c786;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(10px, 3vw, 14px);
+  gap: clamp(7px, 2.2vw, 10px);
   padding: max(14px, var(--safe-top)) calc(var(--page-edge-tight) + var(--safe-right))
     calc(var(--tabbar-space) - clamp(6px, 2vw, 12px));
   padding-left: calc(var(--page-edge-tight) + var(--safe-left));
@@ -2217,8 +2221,34 @@ body.is-keyboard-open .home-indicator {
 
 .menu-location {
   display: grid;
-  gap: clamp(4px, 1.5vw, 6px);
-  padding: 0 clamp(4px, 1.6vw, 6px);
+  gap: clamp(5px, 1.6vw, 7px);
+  padding: 0 clamp(3px, 1.2vw, 5px);
+}
+
+.menu-location.has-table-actions {
+  grid-template-columns: minmax(124px, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: clamp(7px, 2.2vw, 10px);
+}
+
+.menu-location-overview {
+  min-width: 0;
+  min-height: 32px;
+  display: grid;
+  grid-template-columns: minmax(118px, 0.82fr) minmax(112px, 1fr);
+  align-items: center;
+  gap: clamp(7px, 2.4vw, 10px);
+}
+
+.menu-location.has-table-actions .menu-location-overview {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.menu-location-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
 }
 
 .menu-location-main {
@@ -2244,7 +2274,7 @@ body.is-keyboard-open .home-indicator {
 
 .menu-location-main span {
   overflow: hidden;
-  max-width: min(252px, 72vw);
+  max-width: 100%;
   font-size: 15px;
   font-weight: 900;
   letter-spacing: 0;
@@ -2273,7 +2303,7 @@ body.is-keyboard-open .home-indicator {
 
 .menu-delivery-track {
   position: relative;
-  height: 12px;
+  height: 18px;
   overflow: hidden;
   border-radius: 999px;
   --menu-table-progress: 0%;
@@ -2295,12 +2325,12 @@ body.is-keyboard-open .home-indicator {
   z-index: 1;
   display: block;
   overflow: hidden;
-  padding-left: 8px;
+  padding: 0 8px;
   color: rgba(17, 17, 17, 0.48);
   font-size: 9px;
   font-weight: 900;
   letter-spacing: 0;
-  line-height: 12px;
+  line-height: 18px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -2349,7 +2379,7 @@ body.is-keyboard-open .home-indicator {
 
 .menu-table-action-card {
   gap: 7px;
-  padding: 7px 8px;
+  padding: 6px 8px;
   border: 1px solid rgba(17, 17, 17, 0.06);
   border-radius: 8px;
   color: rgba(17, 17, 17, 0.64);
@@ -2524,7 +2554,7 @@ body.is-keyboard-open .home-indicator {
   border-radius: 8px;
   color: #111111;
   background: #ffffff;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 900;
   outline: none;
 }
@@ -2545,8 +2575,8 @@ body.is-keyboard-open .home-indicator {
   min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(9px, 2.8vw, 12px);
-  padding: clamp(8px, 2.8vw, 12px) clamp(5px, 1.8vw, 8px)
+  gap: clamp(7px, 2.2vw, 10px);
+  padding: clamp(5px, 1.8vw, 8px) clamp(5px, 1.8vw, 8px)
     calc(var(--tabbar-link-height) + clamp(22px, 6vw, 30px));
   overflow: hidden;
 }
@@ -2555,9 +2585,9 @@ body.is-keyboard-open .home-indicator {
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: clamp(8px, 2.6vw, 12px);
-  padding: clamp(12px, 3.8vw, 16px);
+  align-items: center;
+  gap: clamp(7px, 2.2vw, 10px);
+  padding: clamp(8px, 2.5vw, 10px) clamp(10px, 3vw, 12px);
   border: 1px solid rgba(17, 17, 17, 0.05);
   border-radius: 8px;
   background:
@@ -2572,7 +2602,7 @@ body.is-keyboard-open .home-indicator {
 .menu-bill-summary div {
   min-width: 0;
   display: grid;
-  gap: 4px;
+  gap: 2px;
 }
 
 .menu-bill-summary span,
@@ -2598,7 +2628,7 @@ body.is-keyboard-open .home-indicator {
   overflow: hidden;
   margin: 0;
   color: var(--menu-ink);
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1.05;
@@ -2608,7 +2638,7 @@ body.is-keyboard-open .home-indicator {
 
 .menu-bill-summary > strong {
   color: var(--menu-ink);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 900;
   line-height: 1;
   white-space: nowrap;
@@ -3059,7 +3089,7 @@ body.is-keyboard-open .home-indicator {
   border-radius: 8px;
   color: #111111;
   background: rgba(255, 255, 255, 0.82);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.45;
 }
@@ -3858,9 +3888,9 @@ body.is-keyboard-open .home-indicator {
 
 .orders-page {
   position: relative;
-  grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
   align-content: stretch;
-  gap: clamp(11px, 3.4vw, 15px);
+  gap: clamp(8px, 2.6vw, 12px);
   padding: max(12px, var(--safe-top)) calc(var(--page-edge) + var(--safe-right))
     calc(var(--tabbar-space) + clamp(4px, 1.6vw, 8px));
   padding-left: calc(var(--page-edge) + var(--safe-left));
@@ -3871,7 +3901,12 @@ body.is-keyboard-open .home-indicator {
     radial-gradient(circle at 94% 18%, rgba(186, 30, 53, 0.1), transparent 20%);
 }
 
+.orders-page.has-filter {
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
 .orders-topbar,
+.orders-overview,
 .orders-hero,
 .orders-stat-strip,
 .orders-filter-strip,
@@ -3933,41 +3968,56 @@ body.is-keyboard-open .home-indicator {
   font-weight: 800;
 }
 
+.orders-overview {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.58fr) minmax(0, 1.42fr);
+  align-items: center;
+  gap: clamp(8px, 2.6vw, 12px);
+  padding: 0 4px;
+}
+
 .orders-hero {
-  display: block;
-  padding: 2px 4px 0;
+  display: grid;
+  gap: 3px;
+  padding: 0;
 }
 
 .orders-hero p {
-  margin: 0 0 6px;
+  overflow: hidden;
+  margin: 0;
   color: rgba(17, 17, 17, 0.46);
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .orders-hero h1 {
-  margin: 8px 0 0;
+  overflow: hidden;
+  margin: 0;
   color: #050505;
-  font-size: 30px;
+  font-size: clamp(22px, 6.1vw, 30px);
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .orders-stat-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(7px, 2.4vw, 10px);
+  gap: clamp(5px, 1.8vw, 8px);
 }
 
 .orders-stat {
   min-width: 0;
-  min-height: clamp(54px, 15vw, 66px);
+  min-height: clamp(44px, 12vw, 54px);
   display: grid;
   align-content: center;
-  gap: 4px;
-  padding: clamp(9px, 3vw, 12px);
+  gap: 3px;
+  padding: clamp(7px, 2.3vw, 10px);
   border: 1px solid rgba(17, 17, 17, 0.045);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.76);
@@ -3978,21 +4028,21 @@ body.is-keyboard-open .home-indicator {
 
 .orders-stat strong {
   color: #050505;
-  font-size: 18px;
+  font-size: clamp(15px, 4.6vw, 18px);
   font-weight: 900;
   line-height: 1;
 }
 
 .orders-stat span {
   color: rgba(17, 17, 17, 0.44);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
 }
 
 .orders-filter-strip {
   display: flex;
   gap: 7px;
-  padding: 0 4px 2px;
+  padding: 0 4px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -4027,9 +4077,9 @@ body.is-keyboard-open .home-indicator {
   min-height: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(8px, 2.6vw, 11px);
+  gap: clamp(7px, 2.2vw, 10px);
   overflow: hidden;
-  padding-top: 3px;
+  padding-top: 0;
 }
 
 .orders-section-heading {
@@ -4857,7 +4907,7 @@ body.is-keyboard-open .home-indicator {
 }
 
 .points-search-field input {
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .points-search-field input::placeholder,
@@ -4876,6 +4926,10 @@ body.is-keyboard-open .home-indicator {
   border: 1px solid rgba(19, 92, 67, 0.12);
   border-radius: 8px;
   background: rgba(19, 92, 67, 0.075);
+}
+
+.points-selected-member.has-action {
+  grid-template-columns: 38px minmax(0, 1fr) auto;
 }
 
 .points-selected-member.is-empty {
@@ -5024,6 +5078,21 @@ body.is-keyboard-open .home-indicator {
   background: rgba(17, 17, 17, 0.07);
   font-size: 11px;
   font-weight: 900;
+  cursor: pointer;
+}
+
+.member-reselect-button {
+  min-height: 28px;
+  max-width: 86px;
+  overflow: hidden;
+  padding: 0 11px;
+  border-radius: 999px;
+  color: #111111;
+  background: rgba(17, 17, 17, 0.07);
+  font-size: 11px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -5347,7 +5416,7 @@ body.is-keyboard-open .home-indicator {
   border-radius: 8px;
   color: #111111;
   background: rgba(255, 255, 255, 0.78);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 800;
   line-height: 1.4;
 }
@@ -5616,7 +5685,7 @@ body.is-keyboard-open .home-indicator {
   border-radius: 8px;
   color: #111111;
   background: rgba(247, 247, 248, 0.88);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 800;
   line-height: 1.4;
 }
@@ -5986,7 +6055,7 @@ body.is-keyboard-open .home-indicator {
   outline: 0;
   color: #111111;
   background: rgba(247, 247, 248, 0.88);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 800;
 }
 
@@ -6409,12 +6478,8 @@ body.is-keyboard-open .tab-page {
     min-height: clamp(188px, 31svh, 218px);
   }
 
-  .orders-hero h1 {
-    font-size: 26px;
-  }
-
   .orders-stat {
-    min-height: 50px;
+    min-height: 42px;
   }
 
   .table-picker-sheet,
@@ -6505,9 +6570,66 @@ body.is-keyboard-open .tab-page {
     padding-inline: 7px;
   }
 
+  .menu-location.has-table-actions {
+    grid-template-columns: minmax(104px, 0.76fr) minmax(0, 1.24fr);
+    gap: 6px;
+  }
+
+  .menu-location-main span {
+    font-size: 14px;
+  }
+
+  .menu-table-action-card {
+    gap: 5px;
+    padding-inline: 6px;
+  }
+
+  .menu-table-action-card svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .menu-table-action-card strong {
+    font-size: 11px;
+  }
+
+  .menu-table-action-card small {
+    font-size: 8px;
+  }
+
   .menu-order-shell {
     grid-template-columns: var(--menu-rail-width) minmax(0, 1fr);
     gap: 7px;
+  }
+
+  .orders-overview {
+    grid-template-columns: minmax(78px, 0.48fr) minmax(0, 1.52fr);
+    gap: 6px;
+    padding-inline: 2px;
+  }
+
+  .orders-hero p {
+    font-size: 9px;
+  }
+
+  .orders-hero h1 {
+    font-size: 21px;
+  }
+
+  .orders-stat-strip {
+    gap: 4px;
+  }
+
+  .orders-stat {
+    padding-inline: 6px;
+  }
+
+  .orders-stat strong {
+    font-size: 15px;
+  }
+
+  .orders-stat span {
+    font-size: 9px;
   }
 
   .menu-category {

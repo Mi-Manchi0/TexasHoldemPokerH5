@@ -1306,89 +1306,91 @@ const selectScope = (merchantId?: string, storeId?: string) => {
 
     <TableSeatPicker v-model:open="isTablePickerOpen" />
 
-    <section
-      v-if="isScopePickerOpen"
-      class="table-picker-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-label="切换组织"
-      @click.self="closeScopePicker"
-    >
-      <div class="table-picker-sheet scope-picker-sheet">
-        <header class="table-picker-head">
-          <div>
-            <p>ORGANIZATION</p>
-            <h2>切换组织</h2>
+    <Teleport to="body">
+      <section
+        v-if="isScopePickerOpen"
+        class="table-picker-overlay home-scope-picker-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="切换组织"
+        @click.self="closeScopePicker"
+      >
+        <div class="table-picker-sheet scope-picker-sheet">
+          <header class="table-picker-head">
+            <div>
+              <p>ORGANIZATION</p>
+              <h2>切换组织</h2>
+            </div>
+
+            <button class="table-picker-close" type="button" aria-label="关闭" @click="closeScopePicker">
+              <CloseOutlined />
+            </button>
+          </header>
+
+          <div class="table-picker-stats" aria-label="组织概览">
+            <span>
+              <strong>{{ orgScopeStore.scopes.length }}</strong>
+              <small>商户</small>
+            </span>
+            <span>
+              <strong>{{ orgScopeStore.storeCount }}</strong>
+              <small>门店</small>
+            </span>
           </div>
 
-          <button class="table-picker-close" type="button" aria-label="关闭" @click="closeScopePicker">
-            <CloseOutlined />
-          </button>
-        </header>
+          <div class="table-group-list scope-group-list">
+            <p v-if="orgScopeStore.loading" class="scope-empty-text">正在加载组织</p>
+            <p v-else-if="!orgScopeStore.storeCount" class="scope-empty-text">暂无可用组织</p>
 
-        <div class="table-picker-stats" aria-label="组织概览">
-          <span>
-            <strong>{{ orgScopeStore.scopes.length }}</strong>
-            <small>商户</small>
-          </span>
-          <span>
-            <strong>{{ orgScopeStore.storeCount }}</strong>
-            <small>门店</small>
-          </span>
-        </div>
+            <template v-else>
+              <section
+                v-for="scope in orgScopeStore.scopes"
+                :key="scope.merchant?.id || scope.merchant?.name"
+                class="table-group scope-group"
+              >
+                <header class="table-group-head">
+                  <div>
+                    <span>MERCHANT</span>
+                    <h3>{{ scope.merchant?.name || '未命名商户' }}</h3>
+                  </div>
+                  <small>{{ scope.stores?.length ?? 0 }} 个门店</small>
+                </header>
 
-        <div class="table-group-list scope-group-list">
-          <p v-if="orgScopeStore.loading" class="scope-empty-text">正在加载组织</p>
-          <p v-else-if="!orgScopeStore.storeCount" class="scope-empty-text">暂无可用组织</p>
-
-          <template v-else>
-            <section
-              v-for="scope in orgScopeStore.scopes"
-              :key="scope.merchant?.id || scope.merchant?.name"
-              class="table-group scope-group"
-            >
-              <header class="table-group-head">
-                <div>
-                  <span>MERCHANT</span>
-                  <h3>{{ scope.merchant?.name || '未命名商户' }}</h3>
-                </div>
-                <small>{{ scope.stores?.length ?? 0 }} 个门店</small>
-              </header>
-
-              <div class="scope-store-list">
-                <button
-                  v-for="store in scope.stores"
-                  :key="`${scope.merchant?.id}-${store.id}`"
-                  class="scope-store-card"
-                  :class="{
-                    'is-selected':
-                      selectedScope?.merchantId === scope.merchant?.id &&
-                      selectedScope?.storeId === store.id,
-                  }"
-                  type="button"
-                  :aria-pressed="
-                    selectedScope?.merchantId === scope.merchant?.id &&
-                    selectedScope?.storeId === store.id
-                  "
-                  @click="selectScope(scope.merchant?.id, store.id)"
-                >
-                  <span class="scope-store-copy">
-                    <strong>{{ store.name || '未命名门店' }}</strong>
-                    <small>{{ scope.merchant?.name || '未命名商户' }}</small>
-                  </span>
-                  <CheckCircleFilled
-                    v-if="
+                <div class="scope-store-list">
+                  <button
+                    v-for="store in scope.stores"
+                    :key="`${scope.merchant?.id}-${store.id}`"
+                    class="scope-store-card"
+                    :class="{
+                      'is-selected':
+                        selectedScope?.merchantId === scope.merchant?.id &&
+                        selectedScope?.storeId === store.id,
+                    }"
+                    type="button"
+                    :aria-pressed="
                       selectedScope?.merchantId === scope.merchant?.id &&
                       selectedScope?.storeId === store.id
                     "
-                    class="scope-store-check"
-                  />
-                </button>
-              </div>
-            </section>
-          </template>
+                    @click="selectScope(scope.merchant?.id, store.id)"
+                  >
+                    <span class="scope-store-copy">
+                      <strong>{{ store.name || '未命名门店' }}</strong>
+                      <small>{{ scope.merchant?.name || '未命名商户' }}</small>
+                    </span>
+                    <CheckCircleFilled
+                      v-if="
+                        selectedScope?.merchantId === scope.merchant?.id &&
+                        selectedScope?.storeId === store.id
+                      "
+                      class="scope-store-check"
+                    />
+                  </button>
+                </div>
+              </section>
+            </template>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </Teleport>
   </main>
 </template>
