@@ -153,5 +153,8 @@ export const decodeQrFromImage = async (file: File) => {
 
   const imageData = context.getImageData(0, 0, width, height)
 
-  return jsQR(imageData.data, width, height)?.data || ''
+  return decodeQrFromImageData(imageData)
 }
+
+export const decodeQrFromImageData = (imageData: ImageData) =>
+  jsQR(imageData.data, imageData.width, imageData.height)?.data || ''

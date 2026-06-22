@@ -27,7 +27,7 @@ import { useOrgScopeStore } from '@/stores/orgScope'
 import type { OrgScopeSelection } from '@/stores/orgScope'
 import { useTableSeatStore } from '@/stores/tableSeat'
 import { normalizeUrl } from '@/utils'
-import { decodeQrFromImage, resolveArriveVerifyFromRaw } from '@/utils/arriveVerify'
+import { decodeQrFromImageData, resolveArriveVerifyFromRaw } from '@/utils/arriveVerify'
 import { getUserInfo, refreshUserInfo, type AuthUserInfo } from '@/utils/auth'
 
 type ApiOrder = NonNullable<GetApiOrderV1OrdersResponse['orders']>[number]
@@ -58,6 +58,19 @@ interface LatestOrderCard {
   title: string
 }
 
+interface BarcodeDetectorBarcode {
+  rawValue?: string
+}
+
+interface BarcodeDetectorInstance {
+  detect: (source: HTMLVideoElement) => Promise<BarcodeDetectorBarcode[]>
+}
+
+interface BarcodeDetectorConstructor {
+  new (options?: { formats?: string[] }): BarcodeDetectorInstance
+  getSupportedFormats?: () => Promise<string[]>
+}
+
 const HOME_LATEST_ORDER_ITEM_PREVIEW_LIMIT = 3
 const HOME_LATEST_ORDER_PAGE_SIZE = 20
 
@@ -83,16 +96,28 @@ const latestOrderLoading = ref(false)
 const latestOrderError = ref('')
 const isArriveVerifyCardOpen = ref(false)
 const isArriveManualOpen = ref(false)
+const isArriveScannerOpen = ref(false)
 const arriveVerifyCode = ref('')
 const arriveScanMessage = ref('')
-const arriveCapturing = ref(false)
+const arriveScanning = ref(false)
 const arriveVerifying = ref(false)
 const arriveManualInputRef = ref<HTMLInputElement | null>(null)
 const arriveVerifyPanelRef = ref<HTMLElement | null>(null)
+const arriveScannerVideoRef = ref<HTMLVideoElement | null>(null)
 const isWineStorageCardOpen = ref(false)
 const wineStoragePanelRef = ref<HTMLElement | null>(null)
 
 let latestOrderRequestId = 0
+let arriveScannerFrameId = 0
+let arriveScannerSessionId = 0
+let arriveScannerStream: MediaStream | null = null
+let arriveScannerCanvas: HTMLCanvasElement | null = null
+let arriveBarcodeDetector: BarcodeDetectorInstance | null = null
+
+const getBarcodeDetectorConstructor = () =>
+  (globalThis as typeof globalThis & {
+    BarcodeDetector?: BarcodeDetectorConstructor
+  }).BarcodeDetector
 
 const reloadUserInfo = async () => {
   try {
@@ -196,7 +221,77 @@ const switchArriveStore = (storeId: string) => {
   return true
 }
 
+const getArriveScannerCanvas = () => {
+  if (!arriveScannerCanvas) arriveScannerCanvas = document.createElement('canvas')
+
+  return arriveScannerCanvas
+}
+
+const createArriveBarcodeDetector = async () => {
+  const Detector = getBarcodeDetectorConstructor()
+  if (!Detector) return null
+
+  try {
+    if (Detector.getSupportedFormats) {
+      const supportedFormats = await Detector.getSupportedFormats()
+      if (!supportedFormats.includes('qr_code')) return null
+    }
+
+    return new Detector({ formats: ['qr_code'] })
+  } catch {
+    return null
+  }
+}
+
+const decodeArriveFrameByCanvas = (video: HTMLVideoElement) => {
+  const maxSize = 900
+  const scale = Math.min(1, maxSize / Math.max(video.videoWidth, video.videoHeight))
+  const width = Math.max(1, Math.round(video.videoWidth * scale))
+  const height = Math.max(1, Math.round(video.videoHeight * scale))
+  const canvas = getArriveScannerCanvas()
+  const context = canvas.getContext('2d', { willReadFrequently: true })
+
+  canvas.width = width
+  canvas.height = height
+
+  if (!context) return ''
+
+  context.drawImage(video, 0, 0, width, height)
+
+  return decodeQrFromImageData(context.getImageData(0, 0, width, height))
+}
+
+const stopArriveScannerFrame = () => {
+  if (!arriveScannerFrameId) return
+
+  window.cancelAnimationFrame(arriveScannerFrameId)
+  arriveScannerFrameId = 0
+}
+
+const stopArriveScanner = () => {
+  arriveScannerSessionId += 1
+  stopArriveScannerFrame()
+
+  if (arriveScannerStream) {
+    arriveScannerStream.getTracks().forEach((track) => {
+      track.stop()
+    })
+    arriveScannerStream = null
+  }
+
+  const video = arriveScannerVideoRef.value
+  if (video) {
+    video.pause()
+    video.srcObject = null
+  }
+
+  arriveScanning.value = false
+  arriveBarcodeDetector = null
+}
+
 const resetArriveVerifyCard = () => {
+  stopArriveScanner()
+  isArriveScannerOpen.value = false
   arriveVerifyCode.value = ''
   arriveScanMessage.value = ''
   isArriveManualOpen.value = false
@@ -204,7 +299,7 @@ const resetArriveVerifyCard = () => {
 
 const toggleArriveVerifyCard = () => {
   if (isArriveVerifyCardOpen.value) {
-    if (!arriveCapturing.value && !arriveVerifying.value) {
+    if (!arriveScanning.value && !arriveVerifying.value) {
       isArriveVerifyCardOpen.value = false
       resetArriveVerifyCard()
     }
@@ -232,7 +327,7 @@ const openArriveVerifyCard = () => {
 }
 
 const closeArriveVerifyCard = () => {
-  if (arriveCapturing.value || arriveVerifying.value) return
+  if (arriveScanning.value || arriveVerifying.value) return
 
   isArriveVerifyCardOpen.value = false
   resetArriveVerifyCard()
@@ -255,7 +350,14 @@ const toggleWineStorageCard = () => {
 }
 
 const handleArriveVerifyFocusOut = (event: FocusEvent) => {
-  if (isArriveManualOpen.value || arriveCapturing.value || arriveVerifying.value) return
+  if (
+    isArriveManualOpen.value ||
+    isArriveScannerOpen.value ||
+    arriveScanning.value ||
+    arriveVerifying.value
+  ) {
+    return
+  }
 
   const currentTarget = event.currentTarget as HTMLElement
   const nextTarget = event.relatedTarget as Node | null
@@ -292,7 +394,8 @@ const handleArriveVerifyOutsidePointerDown = (event: PointerEvent) => {
   if (
     isArriveVerifyCardOpen.value &&
     !isArriveManualOpen.value &&
-    !arriveCapturing.value &&
+    !isArriveScannerOpen.value &&
+    !arriveScanning.value &&
     !arriveVerifying.value
   ) {
     const panel = arriveVerifyPanelRef.value
@@ -313,11 +416,14 @@ window.addEventListener('pointerdown', handleArriveVerifyOutsidePointerDown, tru
 
 onBeforeUnmount(() => {
   window.removeEventListener('pointerdown', handleArriveVerifyOutsidePointerDown, true)
+  stopArriveScanner()
 })
 
 const openManualArriveInput = () => {
   if (!ensureArriveVerifyScope()) return
 
+  stopArriveScanner()
+  isArriveScannerOpen.value = false
   isArriveManualOpen.value = true
   arriveScanMessage.value = ''
   focusArriveManualInput()
@@ -431,29 +537,120 @@ const resolveArriveScannedValue = (rawValue: string) => {
   return true
 }
 
-const handleArriveCaptureChange = async (event: Event) => {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
+const scanArriveVideoFrame = async (sessionId: number) => {
+  if (
+    sessionId !== arriveScannerSessionId ||
+    !isArriveScannerOpen.value ||
+    !arriveScanning.value
+  ) {
+    return
+  }
 
-  input.value = ''
+  const video = arriveScannerVideoRef.value
 
-  if (!file || !ensureArriveVerifyScope()) return
+  if (video && video.readyState >= 2 && video.videoWidth && video.videoHeight) {
+    let rawValue = ''
 
-  arriveCapturing.value = true
+    if (arriveBarcodeDetector) {
+      try {
+        const barcodes = await arriveBarcodeDetector.detect(video)
+        rawValue = normalizeText(barcodes[0]?.rawValue)
+      } catch {
+        arriveBarcodeDetector = null
+      }
+    }
+
+    if (
+      sessionId !== arriveScannerSessionId ||
+      !isArriveScannerOpen.value ||
+      !arriveScanning.value
+    ) {
+      return
+    }
+
+    if (!arriveBarcodeDetector) {
+      rawValue = decodeArriveFrameByCanvas(video)
+    }
+
+    if (rawValue) {
+      stopArriveScanner()
+      isArriveScannerOpen.value = false
+      focusArriveVerifyPanel()
+      resolveArriveScannedValue(rawValue)
+      return
+    }
+  }
+
+  arriveScannerFrameId = window.requestAnimationFrame(() => {
+    void scanArriveVideoFrame(sessionId)
+  })
+}
+
+const openArriveScanner = async () => {
+  if (!ensureArriveVerifyScope() || arriveScanning.value || arriveVerifying.value) return
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    arriveScanMessage.value = '当前浏览器不支持摄像头扫码，请输入核验码'
+    message.warning(arriveScanMessage.value)
+    return
+  }
+
+  stopArriveScanner()
   isArriveManualOpen.value = false
-  arriveScanMessage.value = '正在识别二维码'
+  isArriveScannerOpen.value = true
+  arriveScanMessage.value = '正在打开摄像头'
+
+  const sessionId = ++arriveScannerSessionId
 
   try {
-    const rawValue = await decodeQrFromImage(file)
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        facingMode: { ideal: 'environment' },
+        height: { ideal: 720 },
+        width: { ideal: 1280 },
+      },
+    })
 
-    if (resolveArriveScannedValue(rawValue)) return
+    if (sessionId !== arriveScannerSessionId || !isArriveScannerOpen.value) {
+      stream.getTracks().forEach((track) => {
+        track.stop()
+      })
+      return
+    }
 
-    arriveScanMessage.value = '未识别到二维码，请重新扫码或输入核验码'
+    arriveScannerStream = stream
+    await nextTick()
+
+    const video = arriveScannerVideoRef.value
+    if (!video) throw new Error('Scanner video is unavailable')
+
+    video.srcObject = stream
+    video.muted = true
+    video.setAttribute('playsinline', 'true')
+
+    arriveScanning.value = true
+    arriveScanMessage.value = '将二维码放入取景框'
+
+    await video.play()
+    arriveBarcodeDetector = await createArriveBarcodeDetector()
+    await scanArriveVideoFrame(sessionId)
   } catch {
-    arriveScanMessage.value = '二维码识别失败，请重新扫码或输入核验码'
-  } finally {
-    arriveCapturing.value = false
+    stopArriveScanner()
+    isArriveScannerOpen.value = false
+    arriveScanMessage.value = '无法打开摄像头，请检查权限或输入核验码'
+    message.error(arriveScanMessage.value)
+    focusArriveVerifyPanel()
   }
+}
+
+const closeArriveScanner = () => {
+  if (arriveVerifying.value) return
+
+  stopArriveScanner()
+  isArriveScannerOpen.value = false
+  arriveScanMessage.value = ''
+  focusArriveVerifyPanel()
 }
 
 const parseDateText = (value?: string) => {
@@ -1042,7 +1239,7 @@ const selectScope = (merchantId?: string, storeId?: string) => {
           type="button"
           aria-controls="home-arrive-verify-actions"
           :aria-expanded="isArriveVerifyCardOpen"
-          :disabled="arriveCapturing || arriveVerifying"
+          :disabled="arriveScanning || arriveVerifying"
           @click="toggleArriveVerifyCard"
         >
           <QrcodeOutlined class="home-action-icon" />
@@ -1059,22 +1256,20 @@ const selectScope = (merchantId?: string, storeId?: string) => {
           tabindex="-1"
         >
           <div class="home-arrive-action-grid">
-            <label
+            <button
               class="home-arrive-action"
-              :class="{ 'is-disabled': arriveCapturing || arriveVerifying }"
+              type="button"
+              aria-controls="home-arrive-scanner-dialog"
+              aria-haspopup="dialog"
+              :aria-expanded="isArriveScannerOpen"
+              :disabled="arriveScanning || arriveVerifying"
+              @click="openArriveScanner"
             >
               <QrcodeOutlined />
               <span>
-                <strong>{{ arriveCapturing ? '识别中' : arriveVerifying ? '核验中' : '拍照核验' }}</strong>
+                <strong>{{ arriveScanning ? '扫码中' : arriveVerifying ? '核验中' : '扫码核验' }}</strong>
               </span>
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                :disabled="arriveCapturing || arriveVerifying"
-                @change="handleArriveCaptureChange"
-              />
-            </label>
+            </button>
 
             <button
               class="home-arrive-action"
@@ -1082,7 +1277,7 @@ const selectScope = (merchantId?: string, storeId?: string) => {
               aria-controls="home-arrive-manual-dialog"
               :aria-expanded="isArriveManualOpen"
               aria-haspopup="dialog"
-              :disabled="arriveCapturing || arriveVerifying"
+              :disabled="arriveScanning || arriveVerifying"
               @click="openManualArriveInput"
             >
               <EditOutlined />
@@ -1098,6 +1293,62 @@ const selectScope = (merchantId?: string, storeId?: string) => {
         </div>
       </section>
 
+    </section>
+
+    <section
+      v-if="isArriveScannerOpen"
+      class="table-picker-overlay home-arrive-scanner-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="home-arrive-scanner-title"
+      @click.self="closeArriveScanner"
+      @keydown.esc="closeArriveScanner"
+    >
+      <div
+        id="home-arrive-scanner-dialog"
+        class="home-arrive-scanner-dialog"
+      >
+        <header class="table-picker-head home-arrive-scanner-head">
+          <div>
+            <p>VERIFY QR</p>
+            <h2 id="home-arrive-scanner-title">扫码核验</h2>
+          </div>
+
+          <button
+            class="table-picker-close"
+            type="button"
+            aria-label="关闭"
+            :disabled="arriveVerifying"
+            @click="closeArriveScanner"
+          >
+            <CloseOutlined />
+          </button>
+        </header>
+
+        <div class="home-arrive-scanner-view">
+          <video
+            ref="arriveScannerVideoRef"
+            autoplay
+            muted
+            playsinline
+          ></video>
+          <span class="home-arrive-scanner-frame" aria-hidden="true"></span>
+        </div>
+
+        <p v-if="arriveScanMessage" class="home-arrive-message">
+          {{ arriveScanMessage }}
+        </p>
+
+        <button
+          class="home-arrive-submit"
+          type="button"
+          :disabled="arriveVerifying"
+          @click="openManualArriveInput"
+        >
+          <EditOutlined />
+          <span>输入核验码</span>
+        </button>
+      </div>
     </section>
 
     <section
