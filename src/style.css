@@ -5237,7 +5237,8 @@ body.is-keyboard-open .home-indicator {
   line-height: 1;
 }
 
-.points-withdraw-summary {
+.points-withdraw-summary,
+.points-deposit-request-summary {
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(118px, auto);
@@ -5252,11 +5253,18 @@ body.is-keyboard-open .home-indicator {
 .points-withdraw-main,
 .points-withdraw-side,
 .points-withdraw-counts,
-.points-withdraw-error {
+.points-withdraw-error,
+.points-deposit-request-main,
+.points-deposit-request-side,
+.points-deposit-request-counts,
+.points-deposit-request-error,
+.points-deposit-request-list,
+.points-deposit-request-row {
   min-width: 0;
 }
 
-.points-withdraw-main {
+.points-withdraw-main,
+.points-deposit-request-main {
   display: grid;
   align-content: center;
   gap: 5px;
@@ -5265,7 +5273,12 @@ body.is-keyboard-open .home-indicator {
 .points-withdraw-main span,
 .points-withdraw-main small,
 .points-withdraw-counts span,
-.points-withdraw-error {
+.points-withdraw-error,
+.points-deposit-request-main span,
+.points-deposit-request-main small,
+.points-deposit-request-counts span,
+.points-deposit-request-error,
+.points-deposit-request-values small {
   overflow: hidden;
   color: rgba(17, 17, 17, 0.5);
   font-size: 10px;
@@ -5275,7 +5288,8 @@ body.is-keyboard-open .home-indicator {
   white-space: nowrap;
 }
 
-.points-withdraw-main strong {
+.points-withdraw-main strong,
+.points-deposit-request-main strong {
   min-width: 0;
   overflow: hidden;
   color: #050505;
@@ -5286,20 +5300,23 @@ body.is-keyboard-open .home-indicator {
   white-space: nowrap;
 }
 
-.points-withdraw-side {
+.points-withdraw-side,
+.points-deposit-request-side {
   display: grid;
   align-content: center;
   gap: 8px;
 }
 
-.points-withdraw-counts {
+.points-withdraw-counts,
+.points-deposit-request-counts {
   display: flex;
   justify-content: flex-end;
   gap: 6px;
   flex-wrap: wrap;
 }
 
-.points-withdraw-counts span {
+.points-withdraw-counts span,
+.points-deposit-request-counts span {
   min-height: 20px;
   display: inline-flex;
   align-items: center;
@@ -5316,6 +5333,8 @@ body.is-keyboard-open .home-indicator {
 
 .points-withdraw-actions button,
 .points-withdraw-error button,
+.points-deposit-request-side button,
+.points-deposit-request-error button,
 .points-withdraw-dialog-toolbar button,
 .points-withdraw-dialog-foot button {
   min-width: 0;
@@ -5332,6 +5351,10 @@ body.is-keyboard-open .home-indicator {
   cursor: pointer;
 }
 
+.points-deposit-request-side button {
+  justify-self: end;
+}
+
 .points-withdraw-actions button.is-primary,
 .points-withdraw-dialog-foot button:not(.points-withdraw-total-button) {
   color: #ffffff;
@@ -5339,13 +5362,15 @@ body.is-keyboard-open .home-indicator {
 }
 
 .points-withdraw-actions button:disabled,
+.points-deposit-request-side button:disabled,
 .points-withdraw-dialog-toolbar button:disabled,
 .points-withdraw-dialog-foot button:disabled:not(.points-withdraw-total-button) {
   cursor: default;
   opacity: 0.5;
 }
 
-.points-withdraw-error {
+.points-withdraw-error,
+.points-deposit-request-error {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
@@ -5353,6 +5378,99 @@ body.is-keyboard-open .home-indicator {
   gap: 8px;
   margin: 0;
   color: rgba(186, 30, 53, 0.82);
+}
+
+.points-deposit-request-list {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 8px;
+  max-height: clamp(172px, 34svh, 280px);
+  overflow-y: auto;
+  padding-top: 1px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.points-deposit-request-row {
+  min-height: 74px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(128px, auto);
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(17, 17, 17, 0.055);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.points-deposit-request-copy,
+.points-deposit-request-values,
+.points-deposit-request-values span {
+  min-width: 0;
+}
+
+.points-deposit-request-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.points-deposit-request-copy strong,
+.points-deposit-request-copy small,
+.points-deposit-request-values strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-deposit-request-copy strong {
+  color: #050505;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.points-deposit-request-copy small {
+  color: rgba(17, 17, 17, 0.46);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.points-deposit-request-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.points-deposit-request-values span {
+  display: grid;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(17, 17, 17, 0.045);
+}
+
+.points-deposit-request-values strong {
+  color: #050505;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+@media (max-width: 360px) {
+  .points-deposit-request-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .points-deposit-request-counts {
+    justify-content: flex-start;
+  }
+
+  .points-deposit-request-side button {
+    justify-self: stretch;
+  }
+
+  .points-deposit-request-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .points-primary-button,

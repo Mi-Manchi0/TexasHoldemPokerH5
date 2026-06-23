@@ -15,6 +15,7 @@ import {
   getApiMemberV1Members,
   getApiTicketV1Tickets,
   getApiTicketV1TicketsById,
+  getApiWalletV1DepositRequests,
   postApiWalletV1AccountsDeposit,
   postApiWalletV1AccountsDepositPreview,
   putApiTicketV1TicketsApprove,
@@ -23,6 +24,7 @@ import {
   type GetApiMemberV1MembersResponse,
   type GetApiTicketV1TicketsResponse,
   type GetApiTicketV1TicketsByIdResponse,
+  type GetApiWalletV1DepositRequestsResponse,
   type PostApiWalletV1AccountsDepositPreviewResponse,
 } from '@/services/basis/basis'
 import { useOrgScopeStore } from '@/stores/orgScope'
@@ -32,6 +34,7 @@ import { parsePointsWithdrawTicketEntity } from '@/utils/ticketEntity'
 type ApiMember = NonNullable<GetApiMemberV1MembersResponse['members']>[number]
 type ApiWithdrawTicket = NonNullable<GetApiTicketV1TicketsResponse['tickets']>[number]
 type ApiTicket = NonNullable<GetApiTicketV1TicketsByIdResponse['ticket']>
+type ApiDepositRequest = NonNullable<GetApiWalletV1DepositRequestsResponse['requests']>[number]
 type PreviewResult = PostApiWalletV1AccountsDepositPreviewResponse
 type JsonRecord = Record<string, unknown>
 type DepositStep = 'member' | 'deposit'
@@ -56,6 +59,8 @@ const MEMBER_PAGE_SIZE = 20
 const MEMBER_SEARCH_DELAY = 280
 const WITHDRAW_TICKET_PAGE_SIZE = 100
 const WITHDRAW_TICKET_MAX_PAGES = 20
+const DEPOSIT_REQUEST_PAGE_SIZE = 100
+const DEPOSIT_REQUEST_MAX_PAGES = 20
 
 const router = useRouter()
 const orgScopeStore = useOrgScopeStore()
@@ -84,10 +89,15 @@ const withdrawTicketsError = ref('')
 const withdrawDetailsOpen = ref(false)
 const selectedWithdrawTicketIds = ref<string[]>([])
 const withdrawBatchAction = ref<WithdrawBatchAction>('')
+const depositRequests = ref<ApiDepositRequest[]>([])
+const depositRequestsLoading = ref(false)
+const depositRequestsError = ref('')
+const depositDetailsOpen = ref(false)
 
 let memberRequestId = 0
 let ticketRequestId = 0
 let withdrawTicketsRequestId = 0
+let depositRequestsRequestId = 0
 let memberSearchTimer: number | undefined
 
 const selectedScope = computed(() => orgScopeStore.selected)
@@ -156,6 +166,16 @@ const approvedWithdrawPoints = computed(() =>
   approvedWithdrawTickets.value.reduce((total, ticket) => total + getWithdrawTicketPoints(ticket), 0),
 )
 const approvedWithdrawPointsText = computed(() => formatPoints(approvedWithdrawPoints.value))
+const approvedDepositRequests = computed(() =>
+  depositRequests.value.filter((request) => normalizeStatus(request.status) === 'approved'),
+)
+const pendingDepositRequests = computed(() =>
+  depositRequests.value.filter((request) => normalizeStatus(request.status) === 'pending'),
+)
+const depositRequestActualPoints = computed(() =>
+  depositRequests.value.reduce((total, request) => total + getDepositRequestActualPoints(request), 0),
+)
+const depositRequestActualPointsText = computed(() => formatPoints(depositRequestActualPoints.value))
 const selectedPendingWithdrawTicketIds = computed(() => {
   const pendingIds = new Set(pendingWithdrawTickets.value.map(getWithdrawTicketId).filter(Boolean))
 
@@ -167,6 +187,12 @@ const isAllPendingWithdrawTicketsSelected = computed(
     selectedPendingWithdrawTicketIds.value.length === pendingWithdrawTickets.value.length,
 )
 const withdrawBusinessStartText = computed(() => {
+  if (currentBusinessStartTime.value) return `当前营业日 ${formatDateTime(currentBusinessStartTime.value)} 起`
+  if (orgScopeStore.currentBusinessLoading) return '正在同步营业日'
+
+  return '暂无当前营业日'
+})
+const depositRequestSummaryText = computed(() => {
   if (currentBusinessStartTime.value) return `当前营业日 ${formatDateTime(currentBusinessStartTime.value)} 起`
   if (orgScopeStore.currentBusinessLoading) return '正在同步营业日'
 
@@ -417,6 +443,15 @@ function formatDateTime(value?: string) {
   })
 }
 
+function parseDateTimeValue(value: unknown) {
+  const text = normalizeText(value)
+  if (!text) return null
+
+  const date = new Date(text.replace(' ', 'T'))
+
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
 function formatDatePart(value: unknown) {
   const text = normalizeText(value)
   const matchedDate = text.match(/\d{4}[-/]\d{1,2}[-/]\d{1,2}/)
@@ -466,6 +501,24 @@ function getBusinessStartTime(business: typeof orgScopeStore.currentBusiness) {
   return `${datePart} ${formatTimePart(business?.openedAt) || '00:00:00'}`
 }
 
+function isDepositRequestInCurrentBusinessDay(
+  request: ApiDepositRequest,
+  business: typeof orgScopeStore.currentBusiness,
+) {
+  const businessDate = formatDatePart(business?.businessDate) || formatDatePart(business?.openedAt)
+  if (!businessDate) return false
+
+  const requestBusinessDate = formatDatePart(request.businessDate)
+  if (requestBusinessDate) return requestBusinessDate === businessDate
+
+  const createdAt = parseDateTimeValue(request.createdAt)
+  const startTime = parseDateTimeValue(getBusinessStartTime(business))
+
+  if (!createdAt || !startTime) return false
+
+  return createdAt.getTime() >= startTime.getTime()
+}
+
 function getMemberName(member: ApiMember) {
   return normalizeText(member.nickname) || normalizeText(member.phone) || normalizeText(member.id) || '未命名会员'
 }
@@ -481,8 +534,8 @@ function normalizeMemberAvatarUrl(member: ApiMember) {
   return normalizeUrl(normalizeText(member.avatarUrl))
 }
 
-function getTicketStatusConfig(ticket: ApiTicket | null) {
-  const status = normalizeStatus(ticket?.status)
+function getStatusConfigByStatus(value: unknown) {
+  const status = normalizeStatus(value)
 
   if (status === 'approved') {
     return {
@@ -509,6 +562,10 @@ function getTicketStatusConfig(ticket: ApiTicket | null) {
     label: status ? '待审核' : '生成中',
     tone: status ? 'pending' : 'live',
   }
+}
+
+function getTicketStatusConfig(ticket: ApiTicket | null) {
+  return getStatusConfigByStatus(ticket?.status)
 }
 
 function getTicketMemberText(ticket: ApiTicket | null, entity: JsonRecord | null) {
@@ -555,6 +612,45 @@ function getWithdrawTicketPoints(ticket: ApiWithdrawTicket) {
 
 function getWithdrawTicketPointsText(ticket: ApiWithdrawTicket) {
   return formatPoints(getWithdrawTicketPoints(ticket))
+}
+
+function getDepositRequestId(request: ApiDepositRequest) {
+  return normalizeText(request.id)
+}
+
+function getDepositRequestActualPoints(request: ApiDepositRequest) {
+  return pickNumberValue(request.depositPoints ?? request.points)
+}
+
+function getDepositRequestApplyPointsText(request: ApiDepositRequest) {
+  return formatPoints(request.originalPoints ?? request.points)
+}
+
+function getDepositRequestActualPointsText(request: ApiDepositRequest) {
+  return formatPoints(request.depositPoints ?? request.points)
+}
+
+function getDepositRequestTitle(request: ApiDepositRequest) {
+  const memberName = normalizeText(request.member?.name) || selectedMemberTitle.value
+  const requestId = getDepositRequestId(request)
+
+  return [memberName, requestId ? `#${requestId}` : '积分存入'].filter(Boolean).join(' ')
+}
+
+function getDepositRequestMeta(request: ApiDepositRequest) {
+  return [
+    formatDateTime(request.createdAt),
+    getStatusConfigByStatus(request.status).label,
+  ].filter((item) => item && item !== '--').join(' · ') || '积分存入工单'
+}
+
+function pickNumberValue(value: unknown) {
+  const text = normalizeText(value)
+  if (!text) return 0
+
+  const numberValue = Number(text.replace(/,/g, ''))
+
+  return Number.isFinite(numberValue) ? Math.abs(numberValue) : 0
 }
 
 function getWithdrawTicketTitle(ticket: ApiWithdrawTicket) {
@@ -638,6 +734,14 @@ function resetWithdrawTickets() {
   selectedWithdrawTicketIds.value = []
   withdrawDetailsOpen.value = false
   withdrawBatchAction.value = ''
+}
+
+function resetDepositRequests() {
+  depositRequestsRequestId += 1
+  depositRequests.value = []
+  depositRequestsLoading.value = false
+  depositRequestsError.value = ''
+  depositDetailsOpen.value = false
 }
 
 function waitForCurrentBusinessLoading() {
@@ -791,6 +895,66 @@ async function loadWithdrawTickets() {
   }
 }
 
+async function loadDepositRequests() {
+  const requestId = ++depositRequestsRequestId
+  const memberId = selectedMemberId.value
+  const scope = selectedScope.value
+
+  if (!memberId || !scope) {
+    resetDepositRequests()
+    return
+  }
+
+  depositRequestsLoading.value = true
+  depositRequestsError.value = ''
+
+  try {
+    const business = await ensureCurrentBusiness()
+
+    if (requestId !== depositRequestsRequestId) return
+
+    if (!business || !getBusinessStartTime(business)) {
+      depositRequests.value = []
+      depositRequestsError.value = orgScopeStore.currentBusinessErrorMessage || '暂无当前营业日'
+      return
+    }
+
+    const loadedRequests: ApiDepositRequest[] = []
+
+    for (let page = 1; page <= DEPOSIT_REQUEST_MAX_PAGES; page += 1) {
+      const result = await getApiWalletV1DepositRequests({
+        'pageRequest.page': page,
+        'pageRequest.pageSize': DEPOSIT_REQUEST_PAGE_SIZE,
+        memberId,
+        merchantId: scope.merchantId,
+        storeId: scope.storeId,
+      })
+
+      if (requestId !== depositRequestsRequestId) return
+
+      const pageRequests = result.requests ?? []
+      loadedRequests.push(
+        ...pageRequests.filter((request) => isDepositRequestInCurrentBusinessDay(request, business)),
+      )
+
+      const total = Number(result.pageReply?.total)
+      if (pageRequests.length < DEPOSIT_REQUEST_PAGE_SIZE) break
+      if (Number.isFinite(total) && page * DEPOSIT_REQUEST_PAGE_SIZE >= total) break
+    }
+
+    depositRequests.value = loadedRequests
+  } catch {
+    if (requestId !== depositRequestsRequestId) return
+
+    depositRequests.value = []
+    depositRequestsError.value = '当日存入工单加载失败'
+  } finally {
+    if (requestId === depositRequestsRequestId) {
+      depositRequestsLoading.value = false
+    }
+  }
+}
+
 function queueMembersLoad() {
   if (memberSearchTimer !== undefined) {
     window.clearTimeout(memberSearchTimer)
@@ -810,6 +974,7 @@ function selectMember(member: ApiMember) {
   if (previousMemberId !== normalizeText(member.id)) {
     resetSubmittedTicket()
     resetWithdrawTickets()
+    resetDepositRequests()
   }
 
   currentStep.value = 'deposit'
@@ -990,6 +1155,15 @@ function closeWithdrawDetails() {
   withdrawDetailsOpen.value = false
 }
 
+function toggleDepositDetails() {
+  if (!selectedMemberId.value) {
+    message.warning('请先选择会员')
+    return
+  }
+
+  depositDetailsOpen.value = !depositDetailsOpen.value
+}
+
 function toggleWithdrawTicket(ticket: ApiWithdrawTicket) {
   if (!isWithdrawTicketPending(ticket) || withdrawBatchAction.value) return
 
@@ -1071,6 +1245,7 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
   resetPreview()
   resetSubmittedTicket()
   resetWithdrawTickets()
+  resetDepositRequests()
 })
 
 watch(
@@ -1085,10 +1260,12 @@ watch(
   ([scopeKey, memberId]) => {
     if (!scopeKey || !memberId) {
       resetWithdrawTickets()
+      resetDepositRequests()
       return
     }
 
     void loadWithdrawTickets()
+    void loadDepositRequests()
   },
   { immediate: true },
 )
@@ -1231,6 +1408,63 @@ onBeforeUnmount(() => {
           </div>
           <button class="member-reselect-button" type="button" @click="openMemberStep">重新选择</button>
         </article>
+
+        <section class="points-deposit-request-summary" aria-label="当日积分存入工单">
+          <div class="points-deposit-request-main">
+            <span>当日存入积分</span>
+            <strong>{{ depositRequestsLoading ? '同步中' : depositRequestActualPointsText }}</strong>
+            <small>{{ depositRequestSummaryText }}</small>
+          </div>
+
+          <div class="points-deposit-request-side">
+            <div class="points-deposit-request-counts" aria-label="积分存入工单状态">
+              <span>已通过 {{ approvedDepositRequests.length }}</span>
+              <span>待审核 {{ pendingDepositRequests.length }}</span>
+              <span>合计 {{ depositRequests.length }}</span>
+            </div>
+            <button type="button" @click="toggleDepositDetails">
+              {{ depositDetailsOpen ? '收起详情' : '查看详情' }}
+            </button>
+          </div>
+
+          <p v-if="depositRequestsError" class="points-deposit-request-error">
+            <span>{{ depositRequestsError }}</span>
+            <button type="button" @click="loadDepositRequests">重试</button>
+          </p>
+
+          <div
+            v-if="depositDetailsOpen"
+            class="points-deposit-request-list"
+            aria-label="积分存入工单记录"
+          >
+            <p v-if="depositRequestsLoading" class="points-list-state">正在加载存入工单</p>
+            <p v-else-if="depositRequestsError" class="points-list-state is-error">{{ depositRequestsError }}</p>
+            <p v-else-if="!depositRequests.length" class="points-list-state">当前营业日暂无存入工单</p>
+
+            <template v-else>
+              <article
+                v-for="request in depositRequests"
+                :key="getDepositRequestId(request)"
+                class="points-deposit-request-row"
+              >
+                <div class="points-deposit-request-copy">
+                  <strong>{{ getDepositRequestTitle(request) }}</strong>
+                  <small>{{ getDepositRequestMeta(request) }}</small>
+                </div>
+                <div class="points-deposit-request-values">
+                  <span>
+                    <small>申请存入积分</small>
+                    <strong>{{ getDepositRequestApplyPointsText(request) }}</strong>
+                  </span>
+                  <span>
+                    <small>实际存入积分</small>
+                    <strong>{{ getDepositRequestActualPointsText(request) }}</strong>
+                  </span>
+                </div>
+              </article>
+            </template>
+          </div>
+        </section>
 
         <label class="points-amount-field">
           <span>存入积分数量</span>
