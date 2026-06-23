@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "android:sync": "npm run build && cap sync android",
+    "apk:debug": "npm run build && cap sync android && cd android && gradlew.bat assembleDebug",
     "preview": "vite preview",
     "ytt": "node scripts/run-ytt.cjs -c ytt.config.ts"
   },
@@ -26,6 +28,9 @@
     "vue-router": "4.6.3"
   },
   "devDependencies": {
+    "@capacitor/android": "^4.8.2",
+    "@capacitor/cli": "^4.8.2",
+    "@capacitor/core": "^4.8.2",
     "@types/json-schema": "^7.0.15",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^24.12.3",

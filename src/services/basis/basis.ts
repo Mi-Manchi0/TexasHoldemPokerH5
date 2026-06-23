@@ -4800,6 +4800,22 @@ export interface GetApiOrderV1OrdersRequest {
    * 订单类型筛选（可选）：consume=消费订单，recharge=充值订单；不传返回全部类型
    */
   orderType?: string
+  /**
+   * 会员ID（可选筛选）
+   */
+  memberId?: string
+  /**
+   * 会员手机号（可选筛选，支持模糊匹配）
+   */
+  memberPhone?: string
+  /**
+   * 下单开始时间（可选），格式：YYYY-MM-DD HH:mm:ss，按订单创建时间筛选
+   */
+  startTime?: string
+  /**
+   * 下单结束时间（可选），格式：YYYY-MM-DD HH:mm:ss，按订单创建时间筛选
+   */
+  endTime?: string
 }
 
 /**
@@ -5252,7 +5268,16 @@ type GetApiOrderV1OrdersRequestConfig = Readonly<
     '/api/order/v1/orders',
     undefined,
     string,
-    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'status' | 'orderType',
+    | 'pageRequest.page'
+    | 'pageRequest.pageSize'
+    | 'merchantId'
+    | 'storeId'
+    | 'status'
+    | 'orderType'
+    | 'memberId'
+    | 'memberPhone'
+    | 'startTime'
+    | 'endTime',
     false
   >
 >
@@ -5274,7 +5299,18 @@ const getApiOrderV1OrdersRequestConfig: GetApiOrderV1OrdersRequestConfig = /*#__
   responseBodyType: ResponseBodyType.json,
   dataKey: dataKey,
   paramNames: [],
-  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'status', 'orderType'],
+  queryNames: [
+    'pageRequest.page',
+    'pageRequest.pageSize',
+    'merchantId',
+    'storeId',
+    'status',
+    'orderType',
+    'memberId',
+    'memberPhone',
+    'startTime',
+    'endTime',
+  ],
   requestDataOptional: false,
   requestDataJsonSchema: {},
   responseDataJsonSchema: {},
@@ -12002,23 +12038,31 @@ export interface PutApiMerchantV1MerchantsPointsConfigRequest {
    */
   minUsePoints?: number
   /**
-   * 积分存入梯度列表；第一档 minPoints 表示最小可提交积分，各档区间连续；最后一档可用 maxPoints=0 表示无上限
+   * 每日固定 1:1 可存入积分额度，0 表示没有固定额度
    */
-  depositExchangeTiers?: {
+  dailyBaseDepositPoints?: string
+  /**
+   * 当日已审核提取积分转换为 1:1 可存入额度的比例，万分比；5000 表示 50%，0 表示不计算当日取出积分
+   */
+  withdrawDepositRate?: number
+  /**
+   * 超出每日 1:1 可存入额度后的转换梯度列表；第一档 minPoints 必须为 0，各档区间连续；最后一档可用 maxPoints=0 表示无上限
+   */
+  overflowExchangeTiers?: {
     /**
-     * 积分区间起点，包含该值，第一档必须为 0
+     * 超出每日 1:1 额度后的积分区间起点，包含该值，第一档必须为 0
      */
     minPoints?: string
     /**
-     * 积分区间终点，不包含该值；0 表示无上限，仅最后一档允许为 0
+     * 超出每日 1:1 额度后的积分区间终点，不包含该值；0 表示无上限，仅最后一档允许为 0
      */
     maxPoints?: string
     /**
-     * 该档多少原始积分折算 1 个实际存入积分，向下取整；1 表示 1:1 存入
+     * 该档多少超额原始积分折算 1 个实际存入积分，向下取整；1 表示超额部分也 1:1 存入
      */
     depositExchangePoints?: string
     /**
-     * 该档多少原始积分折算 1 次抽奖次数，向下取整；0 表示该档不兑换抽奖次数
+     * 该档多少超额原始积分折算 1 次抽奖次数，向下取整；0 表示该档不兑换抽奖次数
      */
     drawExchangePoints?: string
   }[]
@@ -13174,26 +13218,34 @@ export interface GetApiMerchantV1MerchantsByIdPointsConfigResponse {
       logo?: string
     }
     /**
-     * 积分存入梯度列表；按本次提交积分总量分段计算实际存入积分和抽奖次数
+     * 超出每日 1:1 可存入额度后的转换梯度列表；超额部分按该列表累计分段计算实际存入积分和抽奖次数
      */
-    depositExchangeTiers?: {
+    overflowExchangeTiers?: {
       /**
-       * 积分区间起点，包含该值，第一档必须为 0
+       * 超出每日 1:1 额度后的积分区间起点，包含该值，第一档必须为 0
        */
       minPoints?: string
       /**
-       * 积分区间终点，不包含该值；0 表示无上限，仅最后一档允许为 0
+       * 超出每日 1:1 额度后的积分区间终点，不包含该值；0 表示无上限，仅最后一档允许为 0
        */
       maxPoints?: string
       /**
-       * 该档多少原始积分折算 1 个实际存入积分，向下取整；1 表示 1:1 存入
+       * 该档多少超额原始积分折算 1 个实际存入积分，向下取整；1 表示超额部分也 1:1 存入
        */
       depositExchangePoints?: string
       /**
-       * 该档多少原始积分折算 1 次抽奖次数，向下取整；0 表示该档不兑换抽奖次数
+       * 该档多少超额原始积分折算 1 次抽奖次数，向下取整；0 表示该档不兑换抽奖次数
        */
       drawExchangePoints?: string
     }[]
+    /**
+     * 每日固定 1:1 可存入积分额度，0 表示没有固定额度
+     */
+    dailyBaseDepositPoints?: string
+    /**
+     * 当日已审核提取积分转换为 1:1 可存入额度的比例，万分比；5000 表示 50%，0 表示不计算当日取出积分
+     */
+    withdrawDepositRate?: number
   }
 }
 
@@ -20371,6 +20423,257 @@ export const getApiMemberV1Members = /*#__PURE__*/ (
 getApiMemberV1Members.requestConfig = getApiMemberV1MembersRequestConfig
 
 /**
+ * 接口 后台创建会员 的 **请求类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members`
+ */
+export interface PostApiMemberV1MembersRequest {
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 会员手机号，商户内不可重复
+   */
+  phone?: string
+  /**
+   * 会员昵称，不填时按商户会员编号生成
+   */
+  nickname?: string
+  /**
+   * 会员头像URL
+   */
+  avatarUrl?: string
+  /**
+   * 会员状态：0=默认启用，1=启用，2=禁用
+   */
+  status?: number
+}
+
+/**
+ * 接口 后台创建会员 的 **返回类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members`
+ */
+export interface PostApiMemberV1MembersResponse {
+  member?: {
+    /**
+     * 会员ID
+     */
+    id?: string
+    /**
+     * OpenID
+     */
+    openid?: string
+    /**
+     * UnionID（可选，可能为空）
+     */
+    unionid?: string
+    /**
+     * 昵称
+     */
+    nickname?: string
+    /**
+     * 头像URL
+     */
+    avatarUrl?: string
+    /**
+     * 手机号
+     */
+    phone?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 状态：active=可取，finished=已取完，expired=已过期，cancelled=已取消，pending=待审核，approved=已通过，rejected=已驳回，completed=已完成。
+     */
+    status?: number
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * 会员创建时间
+     */
+    createdAt?: string
+    /**
+     * 当前可用积分
+     */
+    currentPoints?: string
+    /**
+     * 累计成长值
+     */
+    totalGrowth?: string
+    /**
+     * 会员等级ID，无匹配等级时为0
+     */
+    levelId?: string
+    /**
+     * LevelConfig 等级配置数据。
+     */
+    level?: {
+      /**
+       * 等级ID
+       */
+      id?: string
+      /**
+       * 商户ID
+       */
+      merchantId?: string
+      /**
+       * 等级名称
+       */
+      levelName?: string
+      /**
+       * 成长值门槛
+       */
+      growthThreshold?: string
+      /**
+       * 排序值
+       */
+      sort?: number
+      /**
+       * 创建时间
+       */
+      createdAt?: string
+      /**
+       * 更新时间
+       */
+      updatedAt?: string
+      /**
+       * MerchantDisplayInfo 商户通用展示信息。
+       */
+      merchant?: {
+        /**
+         * 商户ID
+         */
+        id?: string
+        /**
+         * 商户名称
+         */
+        name?: string
+        /**
+         * 商户logo URL
+         */
+        logo?: string
+      }
+    }
+    /**
+     * 邀请人会员ID；没有邀请人时为0
+     */
+    inviterMemberId?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    inviterMember?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * 被邀请关系状态：registered=已注册，pending_qualification=待达成消费，qualified=已达成，invalid=无效
+     */
+    inviteRelationStatus?: string
+    /**
+     * 被邀请人奖励状态：not_triggered=未触发，pending=发放中，succeeded=已发放，failed=发放失败，partial_failed=部分失败，skipped=未命中规则
+     */
+    inviteeRewardStatus?: string
+    /**
+     * 该会员邀请的新会员总数
+     */
+    invitedCount?: string
+    /**
+     * 该会员邀请且已达成条件的人数
+     */
+    qualifiedInvitedCount?: string
+    /**
+     * 该会员获得邀请奖励次数
+     */
+    inviteRewardCount?: string
+  }
+}
+
+/**
+ * 接口 后台创建会员 的 **请求配置的类型**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members`
+ */
+type PostApiMemberV1MembersRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/member/v1/members', undefined, string, string, false>
+>
+
+/**
+ * 接口 后台创建会员 的 **请求配置**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members`
+ */
+const postApiMemberV1MembersRequestConfig: PostApiMemberV1MembersRequestConfig = /*#__PURE__*/ {
+  mockUrl: mockUrl,
+  devUrl: devUrl,
+  prodUrl: prodUrl,
+  path: '/api/member/v1/members',
+  method: Method.POST,
+  requestHeaders: {},
+  requestBodyType: RequestBodyType.json,
+  responseBodyType: ResponseBodyType.json,
+  dataKey: dataKey,
+  paramNames: [],
+  queryNames: [],
+  requestDataOptional: false,
+  requestDataJsonSchema: {},
+  responseDataJsonSchema: {},
+  requestFunctionName: 'postApiMemberV1Members',
+  queryStringArrayFormat: QueryStringArrayFormat.repeat,
+  extraInfo: {},
+}
+
+/**
+ * 接口 后台创建会员 的 **请求函数**
+ *
+ * @分类 MemberService
+ * @请求头 `POST /api/member/v1/members`
+ */
+export const postApiMemberV1Members = /*#__PURE__*/ (
+  requestData: PostApiMemberV1MembersRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiMemberV1MembersResponse>(prepare(postApiMemberV1MembersRequestConfig, requestData), ...args)
+}
+
+postApiMemberV1Members.requestConfig = postApiMemberV1MembersRequestConfig
+
+/**
  * 接口 禁用会员 的 **请求类型**
  *
  * @分类 MemberService
@@ -21436,6 +21739,22 @@ export interface GetApiTicketV1TicketsRequest {
    * 工单类型：points_deposit=积分存入申请，points_withdraw=积分提取申请，member_wine_deposit=会员存酒申请，member_wine_withdraw=会员取酒申请。
    */
   type?: string
+  /**
+   * 会员ID（可选筛选，对应工单申请人）
+   */
+  memberId?: string
+  /**
+   * 会员手机号（可选筛选，支持模糊匹配）
+   */
+  memberPhone?: string
+  /**
+   * 创建开始时间（可选），格式：YYYY-MM-DD HH:mm:ss，按工单创建时间筛选
+   */
+  startTime?: string
+  /**
+   * 创建结束时间（可选），格式：YYYY-MM-DD HH:mm:ss，按工单创建时间筛选
+   */
+  endTime?: string
 }
 
 /**
@@ -21628,7 +21947,16 @@ type GetApiTicketV1TicketsRequestConfig = Readonly<
     '/api/ticket/v1/tickets',
     undefined,
     string,
-    'pageRequest.page' | 'pageRequest.pageSize' | 'merchantId' | 'storeId' | 'status' | 'type',
+    | 'pageRequest.page'
+    | 'pageRequest.pageSize'
+    | 'merchantId'
+    | 'storeId'
+    | 'status'
+    | 'type'
+    | 'memberId'
+    | 'memberPhone'
+    | 'startTime'
+    | 'endTime',
     false
   >
 >
@@ -21650,7 +21978,18 @@ const getApiTicketV1TicketsRequestConfig: GetApiTicketV1TicketsRequestConfig = /
   responseBodyType: ResponseBodyType.json,
   dataKey: dataKey,
   paramNames: [],
-  queryNames: ['pageRequest.page', 'pageRequest.pageSize', 'merchantId', 'storeId', 'status', 'type'],
+  queryNames: [
+    'pageRequest.page',
+    'pageRequest.pageSize',
+    'merchantId',
+    'storeId',
+    'status',
+    'type',
+    'memberId',
+    'memberPhone',
+    'startTime',
+    'endTime',
+  ],
   requestDataOptional: false,
   requestDataJsonSchema: {},
   responseDataJsonSchema: {},
@@ -23158,15 +23497,15 @@ export interface PostApiWalletV1AccountsDepositResponse {
      */
     unconvertedPoints?: string
     /**
-     * 积分存入梯度拆分明细
+     * 积分存入拆分明细，包含 1:1 直接存入段和超额转换梯度段
      */
     exchangeSegments?: {
       /**
-       * 积分区间起点，包含该值
+       * 区间起点，包含该值；direct=true 时表示当日 1:1 额度累计区间，direct=false 时表示超额区间
        */
       minPoints?: string
       /**
-       * 积分区间终点，不包含该值；0 表示无上限
+       * 区间终点，不包含该值；0 表示无上限
        */
       maxPoints?: string
       /**
@@ -23201,6 +23540,10 @@ export interface PostApiWalletV1AccountsDepositResponse {
        * 本段按抽奖折算后不足 1 次抽奖的余数
        */
       drawRemainderPoints?: string
+      /**
+       * 是否为每日 1:1 直接存入额度段；false 表示超额转换梯度段
+       */
+      direct?: boolean
     }[]
   }
   /**
@@ -23503,11 +23846,11 @@ export interface PostApiWalletV1AccountsDepositPreviewResponse {
    */
   exchangeSegments?: {
     /**
-     * 积分区间起点，包含该值
+     * 区间起点，包含该值；direct=true 时表示当日 1:1 额度累计区间，direct=false 时表示超额区间
      */
     minPoints?: string
     /**
-     * 积分区间终点，不包含该值；0 表示无上限
+     * 区间终点，不包含该值；0 表示无上限
      */
     maxPoints?: string
     /**
@@ -23542,7 +23885,39 @@ export interface PostApiWalletV1AccountsDepositPreviewResponse {
      * 本段按抽奖折算后不足 1 次抽奖的余数
      */
     drawRemainderPoints?: string
+    /**
+     * 是否为每日 1:1 直接存入额度段；false 表示超额转换梯度段
+     */
+    direct?: boolean
   }[]
+  /**
+   * 每日固定 1:1 可存入积分额度
+   */
+  baseDepositLimit?: string
+  /**
+   * 会员当日已审核通过的提取积分数量
+   */
+  withdrawnPointsToday?: string
+  /**
+   * 当日已提取积分转换为 1:1 存入额度的比例，万分比
+   */
+  withdrawDepositRate?: number
+  /**
+   * 由当日已审核提取积分折算出的 1:1 可存入额度
+   */
+  withdrawDepositLimit?: string
+  /**
+   * 当日总 1:1 可存入额度，等于固定额度加取出积分折算额度
+   */
+  totalDirectDepositLimit?: string
+  /**
+   * 会员当日已提交的原始存入积分数量，包含待审核和已通过
+   */
+  usedOriginalPointsToday?: string
+  /**
+   * 本次提交前当日剩余 1:1 可存入额度
+   */
+  remainingDirectDepositLimit?: string
 }
 
 /**
@@ -23599,6 +23974,377 @@ export const postApiWalletV1AccountsDepositPreview = /*#__PURE__*/ (
 }
 
 postApiWalletV1AccountsDepositPreview.requestConfig = postApiWalletV1AccountsDepositPreviewRequestConfig
+
+/**
+ * 接口 后台手动充值金豆 的 **请求类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/goldRecharge`
+ */
+export interface PostApiWalletV1AccountsGoldRechargeRequest {
+  /**
+   * 会员ID
+   */
+  memberId?: string
+  /**
+   * 商户ID
+   */
+  merchantId?: string
+  /**
+   * 门店ID，可为空；传入时必须在当前管理范围内
+   */
+  storeId?: string
+  /**
+   * 充值金额，单位分；到账金豆按商户金币兑换比例计算
+   */
+  rechargeAmount?: string
+  /**
+   * 后台手动充值备注，可为空
+   */
+  remark?: string
+}
+
+/**
+ * 接口 后台手动充值金豆 的 **返回类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/goldRecharge`
+ */
+export interface PostApiWalletV1AccountsGoldRechargeResponse {
+  /**
+   * GoldRechargeOrderInfo 后台金豆充值订单数据。
+   */
+  order?: {
+    /**
+     * 充值订单ID
+     */
+    id?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 门店ID，0 表示不关联门店
+     */
+    storeId?: string
+    /**
+     * 充值订单号
+     */
+    orderNo?: string
+    /**
+     * 充值金额，单位分
+     */
+    rechargeAmount?: string
+    /**
+     * 到账金豆数量
+     */
+    goldAmount?: string
+    /**
+     * 订单状态：pending=待支付，completed=已完成
+     */
+    status?: string
+    /**
+     * 支付方式：internal=后台手动确认，wechat=微信支付
+     */
+    paymentMethod?: string
+    /**
+     * 支付平台交易号或后台内部流水号
+     */
+    paymentTradeNo?: string
+    /**
+     * 充值成功后执行的营销规则ID，0 表示未执行
+     */
+    marketingRuleId?: string
+    /**
+     * 充值奖励营销规则是否执行成功
+     */
+    marketingSuccess?: boolean
+    /**
+     * 支付成功时间
+     */
+    paidAt?: string
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 更新时间
+     */
+    updatedAt?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+  }
+  /**
+   * WalletLedgerItem 钱包流水数据。
+   */
+  ledger?: {
+    /**
+     * 流水ID
+     */
+    id?: string
+    /**
+     * 账户ID
+     */
+    accountId?: string
+    /**
+     * 会员ID
+     */
+    memberId?: string
+    /**
+     * 商户ID
+     */
+    merchantId?: string
+    /**
+     * 流水类型：earn=消费获得积分，payment=订单扣减金币，refund=退款返还金币，order_refund=订单退款扣回积分，recharge=充值获得金币，reward=规则奖励获得积分，expire=积分过期扣减，adjust=人工调整积分，deposit=会员申请存入积分，withdraw=会员提取积分，checkin=签到获得积分。
+     */
+    type?: string
+    /**
+     * 资产类型：points=积分，gold=金币。
+     */
+    assetType?: string
+    /**
+     * 变动数量。earn/order_refund/deposit/withdraw 表示积分变动值，payment/refund 表示金币变动值，扣减时可为负数。
+     */
+    amount?: string
+    /**
+     * 变动后余额。按 asset_type 表示积分或金币余额。
+     */
+    balanceAfter?: string
+    /**
+     * 关联订单号
+     */
+    orderNo?: string
+    /**
+     * 描述
+     */
+    description?: string
+    /**
+     * 过期时间
+     */
+    expireAt?: string
+    /**
+     * 是否已过期
+     */
+    expired?: boolean
+    /**
+     * 创建时间
+     */
+    createdAt?: string
+    /**
+     * 门店ID
+     */
+    storeId?: string
+    /**
+     * 关联存入申请ID
+     */
+    requestId?: string
+    /**
+     * 申请状态：pending=待审核，approved=已通过，rejected=已驳回，cancelled=已撤回。
+     */
+    status?: string
+    /**
+     * 营业日期
+     */
+    businessDate?: string
+    /**
+     * MemberDisplayInfo 会员通用展示信息。
+     */
+    member?: {
+      /**
+       * 会员ID
+       */
+      id?: string
+      /**
+       * 会员展示名称
+       */
+      name?: string
+      /**
+       * 会员头像URL
+       */
+      avatarUrl?: string
+      /**
+       * 会员手机号
+       */
+      phone?: string
+    }
+    /**
+     * MerchantDisplayInfo 商户通用展示信息。
+     */
+    merchant?: {
+      /**
+       * 商户ID
+       */
+      id?: string
+      /**
+       * 商户名称
+       */
+      name?: string
+      /**
+       * 商户logo URL
+       */
+      logo?: string
+    }
+    /**
+     * StoreDisplayInfo 门店通用展示信息。
+     */
+    store?: {
+      /**
+       * 门店ID
+       */
+      id?: string
+      /**
+       * 门店名称
+       */
+      name?: string
+    }
+    /**
+     * WalletRequestDisplayInfo 积分存入申请通用展示信息；points 为存入申请历史字段名，表示申请存入积分数量。
+     */
+    request?: {
+      /**
+       * 积分存入申请ID
+       */
+      id?: string
+      /**
+       * 申请状态
+       */
+      status?: string
+      /**
+       * 申请存入积分数量，保留 points 历史字段名
+       */
+      points?: string
+    }
+    /**
+     * WalletDisplayInfo 钱包通用展示信息；points_balance 为积分余额，gold_balance 为金币余额。
+     */
+    account?: {
+      /**
+       * 钱包ID
+       */
+      id?: string
+      /**
+       * 可用积分余额
+       */
+      pointsBalance?: string
+      /**
+       * 冻结积分
+       */
+      pointsFrozen?: string
+      /**
+       * 可用金币余额
+       */
+      goldBalance?: string
+    }
+  }
+}
+
+/**
+ * 接口 后台手动充值金豆 的 **请求配置的类型**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/goldRecharge`
+ */
+type PostApiWalletV1AccountsGoldRechargeRequestConfig = Readonly<
+  RequestConfig<'', '', '', '/api/wallet/v1/accounts/goldRecharge', undefined, string, string, false>
+>
+
+/**
+ * 接口 后台手动充值金豆 的 **请求配置**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/goldRecharge`
+ */
+const postApiWalletV1AccountsGoldRechargeRequestConfig: PostApiWalletV1AccountsGoldRechargeRequestConfig =
+  /*#__PURE__*/ {
+    mockUrl: mockUrl,
+    devUrl: devUrl,
+    prodUrl: prodUrl,
+    path: '/api/wallet/v1/accounts/goldRecharge',
+    method: Method.POST,
+    requestHeaders: {},
+    requestBodyType: RequestBodyType.json,
+    responseBodyType: ResponseBodyType.json,
+    dataKey: dataKey,
+    paramNames: [],
+    queryNames: [],
+    requestDataOptional: false,
+    requestDataJsonSchema: {},
+    responseDataJsonSchema: {},
+    requestFunctionName: 'postApiWalletV1AccountsGoldRecharge',
+    queryStringArrayFormat: QueryStringArrayFormat.repeat,
+    extraInfo: {},
+  }
+
+/**
+ * 接口 后台手动充值金豆 的 **请求函数**
+ *
+ * @分类 WalletService
+ * @请求头 `POST /api/wallet/v1/accounts/goldRecharge`
+ */
+export const postApiWalletV1AccountsGoldRecharge = /*#__PURE__*/ (
+  requestData: PostApiWalletV1AccountsGoldRechargeRequest,
+  ...args: UserRequestRestArgs
+) => {
+  return request<PostApiWalletV1AccountsGoldRechargeResponse>(
+    prepare(postApiWalletV1AccountsGoldRechargeRequestConfig, requestData),
+    ...args,
+  )
+}
+
+postApiWalletV1AccountsGoldRecharge.requestConfig = postApiWalletV1AccountsGoldRechargeRequestConfig
 
 /**
  * 接口 后台划账扣减金豆 的 **请求类型**
@@ -24469,15 +25215,15 @@ export interface GetApiWalletV1DepositRequestsResponse {
      */
     unconvertedPoints?: string
     /**
-     * 积分存入梯度拆分明细
+     * 积分存入拆分明细，包含 1:1 直接存入段和超额转换梯度段
      */
     exchangeSegments?: {
       /**
-       * 积分区间起点，包含该值
+       * 区间起点，包含该值；direct=true 时表示当日 1:1 额度累计区间，direct=false 时表示超额区间
        */
       minPoints?: string
       /**
-       * 积分区间终点，不包含该值；0 表示无上限
+       * 区间终点，不包含该值；0 表示无上限
        */
       maxPoints?: string
       /**
@@ -24512,6 +25258,10 @@ export interface GetApiWalletV1DepositRequestsResponse {
        * 本段按抽奖折算后不足 1 次抽奖的余数
        */
       drawRemainderPoints?: string
+      /**
+       * 是否为每日 1:1 直接存入额度段；false 表示超额转换梯度段
+       */
+      direct?: boolean
     }[]
   }[]
   /**
@@ -24773,15 +25523,15 @@ export interface GetApiWalletV1DepositRequestsByIdResponse {
      */
     unconvertedPoints?: string
     /**
-     * 积分存入梯度拆分明细
+     * 积分存入拆分明细，包含 1:1 直接存入段和超额转换梯度段
      */
     exchangeSegments?: {
       /**
-       * 积分区间起点，包含该值
+       * 区间起点，包含该值；direct=true 时表示当日 1:1 额度累计区间，direct=false 时表示超额区间
        */
       minPoints?: string
       /**
-       * 积分区间终点，不包含该值；0 表示无上限
+       * 区间终点，不包含该值；0 表示无上限
        */
       maxPoints?: string
       /**
@@ -24816,6 +25566,10 @@ export interface GetApiWalletV1DepositRequestsByIdResponse {
        * 本段按抽奖折算后不足 1 次抽奖的余数
        */
       drawRemainderPoints?: string
+      /**
+       * 是否为每日 1:1 直接存入额度段；false 表示超额转换梯度段
+       */
+      direct?: boolean
     }[]
   }
 }

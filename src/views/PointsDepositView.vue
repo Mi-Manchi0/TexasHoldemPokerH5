@@ -13,24 +13,30 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   getApiMemberV1Members,
+  getApiTicketV1Tickets,
   getApiTicketV1TicketsById,
   postApiWalletV1AccountsDeposit,
   postApiWalletV1AccountsDepositPreview,
   putApiTicketV1TicketsApprove,
+  putApiTicketV1TicketsBatchComplete,
   putApiTicketV1TicketsReject,
   type GetApiMemberV1MembersResponse,
+  type GetApiTicketV1TicketsResponse,
   type GetApiTicketV1TicketsByIdResponse,
   type PostApiWalletV1AccountsDepositPreviewResponse,
 } from '@/services/basis/basis'
 import { useOrgScopeStore } from '@/stores/orgScope'
 import { normalizeUrl } from '@/utils'
+import { parsePointsWithdrawTicketEntity } from '@/utils/ticketEntity'
 
 type ApiMember = NonNullable<GetApiMemberV1MembersResponse['members']>[number]
+type ApiWithdrawTicket = NonNullable<GetApiTicketV1TicketsResponse['tickets']>[number]
 type ApiTicket = NonNullable<GetApiTicketV1TicketsByIdResponse['ticket']>
 type PreviewResult = PostApiWalletV1AccountsDepositPreviewResponse
 type JsonRecord = Record<string, unknown>
 type DepositStep = 'member' | 'deposit'
 type ReviewAction = 'approve' | 'reject'
+type WithdrawBatchAction = '' | 'all' | 'selected'
 
 interface PreviewStat {
   label: string
@@ -48,6 +54,8 @@ interface SegmentView {
 
 const MEMBER_PAGE_SIZE = 20
 const MEMBER_SEARCH_DELAY = 280
+const WITHDRAW_TICKET_PAGE_SIZE = 100
+const WITHDRAW_TICKET_MAX_PAGES = 20
 
 const router = useRouter()
 const orgScopeStore = useOrgScopeStore()
@@ -70,18 +78,38 @@ const ticketLoading = ref(false)
 const ticketError = ref('')
 const reviewRemark = ref('')
 const auditingAction = ref<ReviewAction | ''>('')
+const withdrawTickets = ref<ApiWithdrawTicket[]>([])
+const withdrawTicketsLoading = ref(false)
+const withdrawTicketsError = ref('')
+const withdrawDetailsOpen = ref(false)
+const selectedWithdrawTicketIds = ref<string[]>([])
+const withdrawBatchAction = ref<WithdrawBatchAction>('')
 
 let memberRequestId = 0
 let ticketRequestId = 0
+let withdrawTicketsRequestId = 0
 let memberSearchTimer: number | undefined
 
 const selectedScope = computed(() => orgScopeStore.selected)
+const currentBusiness = computed(() => orgScopeStore.currentBusiness)
+const currentBusinessKey = computed(() => {
+  const business = currentBusiness.value
+  if (!business) return ''
+
+  return [
+    normalizeText(business.id),
+    normalizeText(business.businessDate),
+    normalizeText(business.openedAt),
+    normalizeText(business.storeId || business.store?.id),
+  ].join(':')
+})
 const selectedScopeKey = computed(() => {
   const scope = selectedScope.value
   if (!scope) return ''
 
   return `${scope.merchantId}:${scope.storeId}`
 })
+const currentBusinessStartTime = computed(() => getBusinessStartTime(currentBusiness.value))
 const selectedMemberId = computed(() => normalizeText(selectedMember.value?.id))
 const normalizedPoints = computed(() => normalizeIntegerText(pointsInput.value))
 const currentDepositKey = computed(() => {
@@ -118,6 +146,38 @@ const currentScopeText = computed(() => {
 
   return `${scope.merchantName} / ${scope.storeName}`
 })
+const approvedWithdrawTickets = computed(() =>
+  withdrawTickets.value.filter((ticket) => normalizeStatus(ticket.status) === 'approved'),
+)
+const pendingWithdrawTickets = computed(() =>
+  withdrawTickets.value.filter((ticket) => normalizeStatus(ticket.status) === 'pending'),
+)
+const approvedWithdrawPoints = computed(() =>
+  approvedWithdrawTickets.value.reduce((total, ticket) => total + getWithdrawTicketPoints(ticket), 0),
+)
+const approvedWithdrawPointsText = computed(() => formatPoints(approvedWithdrawPoints.value))
+const selectedPendingWithdrawTicketIds = computed(() => {
+  const pendingIds = new Set(pendingWithdrawTickets.value.map(getWithdrawTicketId).filter(Boolean))
+
+  return selectedWithdrawTicketIds.value.filter((id) => pendingIds.has(id))
+})
+const isAllPendingWithdrawTicketsSelected = computed(
+  () =>
+    pendingWithdrawTickets.value.length > 0 &&
+    selectedPendingWithdrawTicketIds.value.length === pendingWithdrawTickets.value.length,
+)
+const withdrawBusinessStartText = computed(() => {
+  if (currentBusinessStartTime.value) return `当前营业日 ${formatDateTime(currentBusinessStartTime.value)} 起`
+  if (orgScopeStore.currentBusinessLoading) return '正在同步营业日'
+
+  return '暂无当前营业日'
+})
+const canApproveAllWithdrawTickets = computed(
+  () => pendingWithdrawTickets.value.length > 0 && !withdrawTicketsLoading.value && withdrawBatchAction.value === '',
+)
+const canApproveSelectedWithdrawTickets = computed(
+  () => selectedPendingWithdrawTicketIds.value.length > 0 && withdrawBatchAction.value === '',
+)
 
 const stepItems = computed(() => [
   {
@@ -136,6 +196,9 @@ const stepItems = computed(() => [
 
 const selectedMemberTitle = computed(() =>
   selectedMember.value ? getMemberName(selectedMember.value) : '未选择会员',
+)
+const selectedMemberAvatarUrl = computed(() =>
+  selectedMember.value ? normalizeMemberAvatarUrl(selectedMember.value) : '',
 )
 const selectedMemberSubtitle = computed(() => {
   const member = selectedMember.value
@@ -286,6 +349,15 @@ function pickRecordText(record: JsonRecord | null, keys: string[]) {
   return ''
 }
 
+function pickRecordNumber(record: JsonRecord | null, keys: string[]) {
+  const text = pickRecordText(record, keys)
+  if (!text) return null
+
+  const numberValue = Number(text.replace(/,/g, ''))
+
+  return Number.isFinite(numberValue) ? numberValue : null
+}
+
 function filterDetails(details: Array<{ label: string; value: string }>) {
   return details.filter((detail) => detail.value && detail.value !== '--')
 }
@@ -343,6 +415,55 @@ function formatDateTime(value?: string) {
     month: '2-digit',
     year: 'numeric',
   })
+}
+
+function formatDatePart(value: unknown) {
+  const text = normalizeText(value)
+  const matchedDate = text.match(/\d{4}[-/]\d{1,2}[-/]\d{1,2}/)
+
+  if (matchedDate) {
+    return matchedDate[0].replace(/\//g, '-')
+  }
+
+  const date = new Date(text)
+  if (Number.isNaN(date.getTime())) return ''
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+function formatTimePart(value: unknown) {
+  const text = normalizeText(value)
+  const timeAfterDate = text.match(/(?:T|\s)(\d{1,2}):(\d{2})(?::(\d{2}))?/)
+  const timeOnly = text.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?/)
+  const matchedTime = timeAfterDate || timeOnly
+
+  if (matchedTime) {
+    const hour = matchedTime[1].padStart(2, '0')
+    const minute = matchedTime[2].padStart(2, '0')
+    const second = (matchedTime[3] || '00').padStart(2, '0')
+
+    return `${hour}:${minute}:${second}`
+  }
+
+  const date = new Date(text)
+  if (Number.isNaN(date.getTime())) return ''
+
+  const hour = String(date.getHours()).padStart(2, '0')
+  const minute = String(date.getMinutes()).padStart(2, '0')
+  const second = String(date.getSeconds()).padStart(2, '0')
+
+  return `${hour}:${minute}:${second}`
+}
+
+function getBusinessStartTime(business: typeof orgScopeStore.currentBusiness) {
+  const datePart = formatDatePart(business?.businessDate) || formatDatePart(business?.openedAt)
+  if (!datePart) return ''
+
+  return `${datePart} ${formatTimePart(business?.openedAt) || '00:00:00'}`
 }
 
 function getMemberName(member: ApiMember) {
@@ -416,6 +537,54 @@ function getEntityPointsText(entity: JsonRecord | null, keys: string[]) {
   return text ? formatPoints(text) : ''
 }
 
+function getWithdrawTicketId(ticket: ApiWithdrawTicket) {
+  return normalizeText(ticket.id)
+}
+
+function getWithdrawTicketPoints(ticket: ApiWithdrawTicket) {
+  const entity = parseJsonRecord(ticket.entityJson)
+  const pointsEntity = parsePointsWithdrawTicketEntity(ticket.entityJson)
+  const points =
+    pointsEntity?.points ??
+    pickRecordNumber(entity, ['points', 'withdrawPoints', 'withdraw_points', 'amount', 'pointAmount']) ??
+    pointsEntity?.originalPoints ??
+    pickRecordNumber(entity, ['originalPoints', 'original_points', 'depositPoints', 'deposit_points'])
+
+  return points === null || points === undefined ? 0 : Math.abs(points)
+}
+
+function getWithdrawTicketPointsText(ticket: ApiWithdrawTicket) {
+  return formatPoints(getWithdrawTicketPoints(ticket))
+}
+
+function getWithdrawTicketTitle(ticket: ApiWithdrawTicket) {
+  const entity = parseJsonRecord(ticket.entityJson)
+  const memberName =
+    normalizeText(ticket.member?.name) ||
+    pickRecordText(entity, ['memberName', 'member_name', 'nickname']) ||
+    selectedMemberTitle.value
+  const ticketId = getWithdrawTicketId(ticket)
+
+  return [memberName, ticketId ? `#${ticketId}` : '积分提取'].filter(Boolean).join(' ')
+}
+
+function getWithdrawTicketMeta(ticket: ApiWithdrawTicket) {
+  return [
+    formatDateTime(ticket.createdAt),
+    getTicketStatusConfig(ticket as ApiTicket).label,
+  ].filter((item) => item && item !== '--').join(' · ') || '积分提取工单'
+}
+
+function isWithdrawTicketPending(ticket: ApiWithdrawTicket) {
+  return normalizeStatus(ticket.status) === 'pending'
+}
+
+function isWithdrawTicketSelected(ticket: ApiWithdrawTicket) {
+  const ticketId = getWithdrawTicketId(ticket)
+
+  return Boolean(ticketId && selectedWithdrawTicketIds.value.includes(ticketId))
+}
+
 function waitForOrgScopeLoading() {
   return new Promise<void>((resolve) => {
     if (!orgScopeStore.loading) {
@@ -459,6 +628,55 @@ function resetSubmittedTicket() {
   ticketLoading.value = false
   auditingAction.value = ''
   reviewRemark.value = ''
+}
+
+function resetWithdrawTickets() {
+  withdrawTicketsRequestId += 1
+  withdrawTickets.value = []
+  withdrawTicketsLoading.value = false
+  withdrawTicketsError.value = ''
+  selectedWithdrawTicketIds.value = []
+  withdrawDetailsOpen.value = false
+  withdrawBatchAction.value = ''
+}
+
+function waitForCurrentBusinessLoading() {
+  return new Promise<void>((resolve) => {
+    if (!orgScopeStore.currentBusinessLoading) {
+      resolve()
+      return
+    }
+
+    const stop = watch(
+      () => orgScopeStore.currentBusinessLoading,
+      (loading) => {
+        if (loading) return
+
+        stop()
+        resolve()
+      },
+    )
+  })
+}
+
+async function ensureCurrentBusiness() {
+  const scope = await ensureActiveScope()
+  if (!scope) return null
+
+  if (
+    currentBusiness.value &&
+    normalizeText(currentBusiness.value.storeId || currentBusiness.value.store?.id) === scope.storeId
+  ) {
+    return currentBusiness.value
+  }
+
+  if (orgScopeStore.currentBusinessLoading) {
+    await waitForCurrentBusinessLoading()
+  } else {
+    await orgScopeStore.loadCurrentBusiness(scope)
+  }
+
+  return currentBusiness.value
 }
 
 async function loadMembers() {
@@ -510,6 +728,69 @@ async function loadMembers() {
   }
 }
 
+async function loadWithdrawTickets() {
+  const requestId = ++withdrawTicketsRequestId
+  const memberId = selectedMemberId.value
+  const scope = selectedScope.value
+
+  selectedWithdrawTicketIds.value = []
+
+  if (!memberId || !scope) {
+    resetWithdrawTickets()
+    return
+  }
+
+  withdrawTicketsLoading.value = true
+  withdrawTicketsError.value = ''
+
+  try {
+    const business = await ensureCurrentBusiness()
+    const startTime = getBusinessStartTime(business)
+
+    if (requestId !== withdrawTicketsRequestId) return
+
+    if (!business || !startTime) {
+      withdrawTickets.value = []
+      withdrawTicketsError.value = orgScopeStore.currentBusinessErrorMessage || '暂无当前营业日'
+      return
+    }
+
+    const loadedTickets: ApiWithdrawTicket[] = []
+
+    for (let page = 1; page <= WITHDRAW_TICKET_MAX_PAGES; page += 1) {
+      const result = await getApiTicketV1Tickets({
+        'pageRequest.page': page,
+        'pageRequest.pageSize': WITHDRAW_TICKET_PAGE_SIZE,
+        merchantId: scope.merchantId,
+        memberId,
+        startTime,
+        storeId: scope.storeId,
+        type: 'points_withdraw',
+      })
+
+      if (requestId !== withdrawTicketsRequestId) return
+
+      const pageTickets = result.tickets ?? []
+      loadedTickets.push(...pageTickets)
+
+      const total = Number(result.pageReply?.total)
+      if (pageTickets.length < WITHDRAW_TICKET_PAGE_SIZE) break
+      if (Number.isFinite(total) && loadedTickets.length >= total) break
+    }
+
+    withdrawTickets.value = loadedTickets
+  } catch {
+    if (requestId !== withdrawTicketsRequestId) return
+
+    withdrawTickets.value = []
+    withdrawTicketsError.value = '当日提取工单加载失败'
+  } finally {
+    if (requestId === withdrawTicketsRequestId) {
+      withdrawTicketsLoading.value = false
+    }
+  }
+}
+
 function queueMembersLoad() {
   if (memberSearchTimer !== undefined) {
     window.clearTimeout(memberSearchTimer)
@@ -528,6 +809,7 @@ function selectMember(member: ApiMember) {
 
   if (previousMemberId !== normalizeText(member.id)) {
     resetSubmittedTicket()
+    resetWithdrawTickets()
   }
 
   currentStep.value = 'deposit'
@@ -693,6 +975,76 @@ async function handleAuditTicket(action: ReviewAction) {
   }
 }
 
+function openWithdrawDetails() {
+  if (!selectedMemberId.value) {
+    message.warning('请先选择会员')
+    return
+  }
+
+  withdrawDetailsOpen.value = true
+}
+
+function closeWithdrawDetails() {
+  if (withdrawBatchAction.value) return
+
+  withdrawDetailsOpen.value = false
+}
+
+function toggleWithdrawTicket(ticket: ApiWithdrawTicket) {
+  if (!isWithdrawTicketPending(ticket) || withdrawBatchAction.value) return
+
+  const ticketId = getWithdrawTicketId(ticket)
+  if (!ticketId) return
+
+  selectedWithdrawTicketIds.value = selectedWithdrawTicketIds.value.includes(ticketId)
+    ? selectedWithdrawTicketIds.value.filter((id) => id !== ticketId)
+    : [...selectedWithdrawTicketIds.value, ticketId]
+}
+
+function toggleAllPendingWithdrawTickets() {
+  selectedWithdrawTicketIds.value = isAllPendingWithdrawTicketsSelected.value
+    ? []
+    : pendingWithdrawTickets.value.map(getWithdrawTicketId).filter(Boolean)
+}
+
+async function approveWithdrawTicketIds(ids: string[], action: Exclude<WithdrawBatchAction, ''>) {
+  const ticketIds = [...new Set(ids.map(normalizeText).filter(Boolean))]
+  if (!ticketIds.length || withdrawBatchAction.value) return
+
+  withdrawBatchAction.value = action
+
+  try {
+    const result = await putApiTicketV1TicketsBatchComplete({
+      ids: ticketIds,
+      reviewRemark: '存积分时批量通过当日积分提取工单',
+    })
+    const successCount = Number(result.successCount)
+
+    message.success(`已通过 ${Number.isFinite(successCount) ? successCount : ticketIds.length} 个提取工单`)
+    await loadWithdrawTickets()
+  } finally {
+    withdrawBatchAction.value = ''
+  }
+}
+
+async function approveAllPendingWithdrawTickets() {
+  if (!pendingWithdrawTickets.value.length) {
+    message.info('暂无待审核提取工单')
+    return
+  }
+
+  await approveWithdrawTicketIds(pendingWithdrawTickets.value.map(getWithdrawTicketId), 'all')
+}
+
+async function approveSelectedWithdrawTickets() {
+  if (!selectedPendingWithdrawTicketIds.value.length) {
+    message.warning('请先勾选待审核工单')
+    return
+  }
+
+  await approveWithdrawTicketIds(selectedPendingWithdrawTicketIds.value, 'selected')
+}
+
 async function handleBack() {
   if (window.history.length > 1) {
     router.back()
@@ -718,6 +1070,7 @@ watch(selectedScopeKey, (nextScopeKey, previousScopeKey) => {
   pointsInput.value = ''
   resetPreview()
   resetSubmittedTicket()
+  resetWithdrawTickets()
 })
 
 watch(
@@ -725,6 +1078,19 @@ watch(
   () => {
     resetPreview()
   },
+)
+
+watch(
+  () => [selectedScopeKey.value, selectedMemberId.value, currentBusinessKey.value],
+  ([scopeKey, memberId]) => {
+    if (!scopeKey || !memberId) {
+      resetWithdrawTickets()
+      return
+    }
+
+    void loadWithdrawTickets()
+  },
+  { immediate: true },
 )
 
 onBeforeUnmount(() => {
@@ -804,7 +1170,8 @@ onBeforeUnmount(() => {
 
         <article v-if="selectedMember" class="points-selected-member">
           <span class="points-selected-avatar" aria-hidden="true">
-            <UserOutlined />
+            <img v-if="selectedMemberAvatarUrl" :src="selectedMemberAvatarUrl" alt="" />
+            <UserOutlined v-else />
           </span>
           <div>
             <strong>{{ selectedMemberTitle }}</strong>
@@ -855,7 +1222,8 @@ onBeforeUnmount(() => {
 
         <article class="points-selected-member points-deposit-member has-action">
           <span class="points-selected-avatar" aria-hidden="true">
-            <UserOutlined />
+            <img v-if="selectedMemberAvatarUrl" :src="selectedMemberAvatarUrl" alt="" />
+            <UserOutlined v-else />
           </span>
           <div>
             <strong>{{ selectedMemberTitle }}</strong>
@@ -874,6 +1242,37 @@ onBeforeUnmount(() => {
             @input="handlePointsInput"
           />
         </label>
+
+        <section class="points-withdraw-summary" aria-label="当日积分提取工单">
+          <div class="points-withdraw-main">
+            <span>当日已提取积分</span>
+            <strong>{{ withdrawTicketsLoading ? '同步中' : approvedWithdrawPointsText }}</strong>
+            <small>{{ withdrawBusinessStartText }}</small>
+          </div>
+
+          <div class="points-withdraw-side">
+            <div class="points-withdraw-counts" aria-label="积分提取工单状态">
+              <span>已通过 {{ approvedWithdrawTickets.length }}</span>
+              <span>待审核 {{ pendingWithdrawTickets.length }}</span>
+            </div>
+            <div class="points-withdraw-actions">
+              <button type="button" @click="openWithdrawDetails">查看明细</button>
+              <button
+                class="is-primary"
+                type="button"
+                :disabled="!canApproveAllWithdrawTickets"
+                @click="approveAllPendingWithdrawTickets"
+              >
+                {{ withdrawBatchAction === 'all' ? '通过中' : '一键通过' }}
+              </button>
+            </div>
+          </div>
+
+          <p v-if="withdrawTicketsError" class="points-withdraw-error">
+            <span>{{ withdrawTicketsError }}</span>
+            <button type="button" @click="loadWithdrawTickets">重试</button>
+          </p>
+        </section>
 
         <button
           class="points-primary-button"
@@ -987,6 +1386,87 @@ onBeforeUnmount(() => {
             </button>
           </div>
         </template>
+      </article>
+    </section>
+
+    <section
+      v-if="withdrawDetailsOpen"
+      class="points-withdraw-dialog-overlay"
+      role="presentation"
+      @click.self="closeWithdrawDetails"
+    >
+      <article
+        class="points-withdraw-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="当日积分提取工单明细"
+      >
+        <header class="points-withdraw-dialog-head">
+          <div>
+            <span>WITHDRAW TICKETS</span>
+            <h2>当日提取明细</h2>
+          </div>
+          <button type="button" aria-label="关闭" @click="closeWithdrawDetails">×</button>
+        </header>
+
+        <div class="points-withdraw-dialog-toolbar">
+          <label>
+            <input
+              type="checkbox"
+              :checked="isAllPendingWithdrawTicketsSelected"
+              :disabled="!pendingWithdrawTickets.length || withdrawBatchAction !== ''"
+              @change="toggleAllPendingWithdrawTickets"
+            />
+            <span>全选待审核</span>
+          </label>
+          <button type="button" :disabled="withdrawTicketsLoading" @click="loadWithdrawTickets">
+            {{ withdrawTicketsLoading ? '刷新中' : '刷新' }}
+          </button>
+        </div>
+
+        <div class="points-withdraw-ticket-list" aria-label="积分提取工单列表">
+          <p v-if="withdrawTicketsLoading" class="points-list-state">正在加载提取工单</p>
+          <p v-else-if="withdrawTicketsError" class="points-list-state is-error">{{ withdrawTicketsError }}</p>
+          <p v-else-if="!withdrawTickets.length" class="points-list-state">当前营业日暂无提取工单</p>
+
+          <template v-else>
+            <button
+              v-for="ticket in withdrawTickets"
+              :key="getWithdrawTicketId(ticket)"
+              class="points-withdraw-ticket-row"
+              :class="{
+                'is-selected': isWithdrawTicketSelected(ticket),
+                'is-disabled': !isWithdrawTicketPending(ticket),
+              }"
+              type="button"
+              :disabled="!isWithdrawTicketPending(ticket) || withdrawBatchAction !== ''"
+              @click="toggleWithdrawTicket(ticket)"
+            >
+              <span class="points-withdraw-checkbox" aria-hidden="true">
+                <CheckCircleFilled v-if="isWithdrawTicketSelected(ticket)" />
+              </span>
+              <span class="points-withdraw-ticket-copy">
+                <strong>{{ getWithdrawTicketTitle(ticket) }}</strong>
+                <small>{{ getWithdrawTicketMeta(ticket) }}</small>
+              </span>
+              <span class="points-withdraw-ticket-points">{{ getWithdrawTicketPointsText(ticket) }}</span>
+            </button>
+          </template>
+        </div>
+
+        <footer class="points-withdraw-dialog-foot">
+          <button class="points-withdraw-total-button" type="button" disabled>
+            <span>已通过积分总计</span>
+            <strong>{{ approvedWithdrawPointsText }}</strong>
+          </button>
+          <button
+            type="button"
+            :disabled="!canApproveSelectedWithdrawTickets"
+            @click="approveSelectedWithdrawTickets"
+          >
+            {{ withdrawBatchAction === 'selected' ? '通过中' : `批量通过 ${selectedPendingWithdrawTicketIds.length}` }}
+          </button>
+        </footer>
       </article>
     </section>
   </main>

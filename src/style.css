@@ -5137,6 +5137,7 @@ body.is-keyboard-open .home-indicator {
   font-size: 16px;
 }
 
+.points-selected-avatar img,
 .points-member-avatar img {
   width: 100%;
   height: 100%;
@@ -5204,8 +5205,16 @@ body.is-keyboard-open .home-indicator {
 }
 
 .points-action-panel {
-  grid-template-rows: auto auto auto auto minmax(0, auto) auto;
-  align-content: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.points-action-panel > * {
+  flex: 0 0 auto;
 }
 
 .points-deposit-member {
@@ -5226,6 +5235,124 @@ body.is-keyboard-open .home-indicator {
   font-size: clamp(26px, 8vw, 36px);
   font-weight: 900;
   line-height: 1;
+}
+
+.points-withdraw-summary {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(118px, auto);
+  align-items: stretch;
+  gap: 10px;
+  padding: 11px;
+  border: 1px solid rgba(19, 92, 67, 0.11);
+  border-radius: 8px;
+  background: rgba(19, 92, 67, 0.065);
+}
+
+.points-withdraw-main,
+.points-withdraw-side,
+.points-withdraw-counts,
+.points-withdraw-error {
+  min-width: 0;
+}
+
+.points-withdraw-main {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+}
+
+.points-withdraw-main span,
+.points-withdraw-main small,
+.points-withdraw-counts span,
+.points-withdraw-error {
+  overflow: hidden;
+  color: rgba(17, 17, 17, 0.5);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-withdraw-main strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #050505;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-withdraw-side {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+}
+
+.points-withdraw-counts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.points-withdraw-counts span {
+  min-height: 20px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.points-withdraw-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.points-withdraw-actions button,
+.points-withdraw-error button,
+.points-withdraw-dialog-toolbar button,
+.points-withdraw-dialog-foot button {
+  min-width: 0;
+  min-height: 32px;
+  overflow: hidden;
+  padding: 0 9px;
+  border-radius: 8px;
+  color: #111111;
+  background: rgba(255, 255, 255, 0.78);
+  font-size: 11px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.points-withdraw-actions button.is-primary,
+.points-withdraw-dialog-foot button:not(.points-withdraw-total-button) {
+  color: #ffffff;
+  background: #111111;
+}
+
+.points-withdraw-actions button:disabled,
+.points-withdraw-dialog-toolbar button:disabled,
+.points-withdraw-dialog-foot button:disabled:not(.points-withdraw-total-button) {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.points-withdraw-error {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  color: rgba(186, 30, 53, 0.82);
 }
 
 .points-primary-button,
@@ -5276,7 +5403,7 @@ body.is-keyboard-open .home-indicator {
 .points-preview-card {
   min-height: 0;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
   gap: 10px;
   padding: 11px;
   border: 1px solid rgba(17, 17, 17, 0.045);
@@ -5538,6 +5665,230 @@ body.is-keyboard-open .home-indicator {
   width: 15px;
   height: 15px;
   flex: 0 0 auto;
+}
+
+.points-withdraw-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  align-items: end;
+  padding: calc(var(--safe-top) + 14px) calc(var(--page-edge) + var(--safe-right))
+    calc(var(--safe-bottom) + 14px) calc(var(--page-edge) + var(--safe-left));
+  background: rgba(17, 17, 17, 0.34);
+}
+
+.points-withdraw-dialog {
+  max-height: min(78svh, 620px);
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 11px;
+  padding: clamp(12px, 3.6vw, 15px);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 22px 52px rgba(17, 17, 17, 0.24);
+}
+
+.points-withdraw-dialog-head,
+.points-withdraw-dialog-toolbar,
+.points-withdraw-dialog-foot,
+.points-withdraw-ticket-row {
+  min-width: 0;
+}
+
+.points-withdraw-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.points-withdraw-dialog-head div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.points-withdraw-dialog-head span,
+.points-withdraw-dialog-foot span {
+  overflow: hidden;
+  color: rgba(17, 17, 17, 0.44);
+  font-size: 10px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-withdraw-dialog-head h2 {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #050505;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-withdraw-dialog-head button {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  color: #111111;
+  background: rgba(17, 17, 17, 0.065);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.points-withdraw-dialog-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.points-withdraw-dialog-toolbar label {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(17, 17, 17, 0.68);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.points-withdraw-dialog-toolbar input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  accent-color: #111111;
+}
+
+.points-withdraw-ticket-list {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 1px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.points-withdraw-ticket-row {
+  min-height: 62px;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid rgba(17, 17, 17, 0.055);
+  border-radius: 8px;
+  color: #111111;
+  background: rgba(247, 247, 248, 0.92);
+  cursor: pointer;
+}
+
+.points-withdraw-ticket-row.is-selected {
+  border-color: rgba(19, 92, 67, 0.24);
+  background: rgba(19, 92, 67, 0.08);
+}
+
+.points-withdraw-ticket-row.is-disabled {
+  cursor: default;
+}
+
+.points-withdraw-checkbox {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(17, 17, 17, 0.18);
+  border-radius: 50%;
+  color: #135c43;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.points-withdraw-ticket-row.is-disabled .points-withdraw-checkbox {
+  border-color: rgba(17, 17, 17, 0.07);
+  background: rgba(17, 17, 17, 0.04);
+}
+
+.points-withdraw-ticket-copy {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  text-align: left;
+}
+
+.points-withdraw-ticket-copy strong,
+.points-withdraw-dialog-foot strong,
+.points-withdraw-ticket-points {
+  min-width: 0;
+  overflow: hidden;
+  color: #050505;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-withdraw-ticket-copy strong {
+  font-size: 13px;
+}
+
+.points-withdraw-ticket-copy small {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(17, 17, 17, 0.46);
+  font-size: 10px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.points-withdraw-ticket-points {
+  max-width: 86px;
+  font-size: 15px;
+}
+
+.points-withdraw-dialog-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(126px, auto);
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(17, 17, 17, 0.07);
+}
+
+.points-withdraw-total-button {
+  min-height: 44px;
+  justify-content: start;
+  color: #111111;
+  background: rgba(17, 17, 17, 0.055);
+  cursor: default;
+  opacity: 1;
+}
+
+.points-withdraw-total-button,
+.points-withdraw-total-button span,
+.points-withdraw-total-button strong {
+  min-width: 0;
+}
+
+.points-withdraw-total-button {
+  display: grid;
+  gap: 5px;
+  text-align: left;
+}
+
+.points-withdraw-dialog-foot strong {
+  font-size: 18px;
+  line-height: 1;
 }
 
 .wine-storage-page {

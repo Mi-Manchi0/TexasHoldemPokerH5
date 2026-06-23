@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Local Android signing keys
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+release-keystore.properties*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

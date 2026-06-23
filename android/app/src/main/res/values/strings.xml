@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Texas Holdem Poker</string>
+    <string name="title_activity_main">Texas Holdem Poker</string>
+    <string name="package_name">com.texasholdempoker.h5</string>
+    <string name="custom_url_scheme">com.texasholdempoker.h5</string>
+</resources>
