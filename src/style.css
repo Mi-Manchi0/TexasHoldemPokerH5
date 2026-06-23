@@ -1340,8 +1340,24 @@ body.is-keyboard-open .home-indicator {
   );
 }
 
+.home-arrive-scanner-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
 .home-arrive-scanner-dialog .home-arrive-submit {
   width: 100%;
+  min-width: 0;
+}
+
+.home-arrive-image-input {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .home-arrive-manual-dialog {
@@ -6759,6 +6775,10 @@ body.is-keyboard-open .tab-page {
   }
 
   .home-arrive-manual {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-arrive-scanner-actions {
     grid-template-columns: minmax(0, 1fr);
   }
 

@@ -1,4 +1,4 @@
-import jsQR from 'jsqr'
+import QrScanner from 'qr-scanner'
 
 export interface ArriveVerifyPayload {
   memberId: string
@@ -15,14 +15,6 @@ export type ArriveVerifyResolveResult =
 interface ArriveVerifyContext {
   canOperateStore: (storeId: string) => boolean
   merchantId: string
-}
-
-let scanCanvas: HTMLCanvasElement | null = null
-
-const getScanCanvas = () => {
-  if (!scanCanvas) scanCanvas = document.createElement('canvas')
-
-  return scanCanvas
 }
 
 const normalizeText = (value: unknown) => {
@@ -110,51 +102,10 @@ export const resolveArriveVerifyFromRaw = (
   }
 }
 
-const loadImageFromFile = (file: File) =>
-  new Promise<HTMLImageElement>((resolve, reject) => {
-    const url = URL.createObjectURL(file)
-    const image = new Image()
-
-    image.onload = () => {
-      URL.revokeObjectURL(url)
-      resolve(image)
-    }
-    image.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Image decode failed'))
-    }
-    image.src = url
+export const decodeQrFromImage = async (file: File) => {
+  const result = await QrScanner.scanImage(file, {
+    returnDetailedScanResult: true,
   })
 
-export const decodeQrFromImage = async (file: File) => {
-  const imageSource =
-    'createImageBitmap' in globalThis
-      ? await createImageBitmap(file)
-      : await loadImageFromFile(file)
-  const sourceWidth = imageSource.width
-  const sourceHeight = imageSource.height
-  const maxSize = 1400
-  const scale = Math.min(1, maxSize / Math.max(sourceWidth, sourceHeight))
-  const width = Math.max(1, Math.round(sourceWidth * scale))
-  const height = Math.max(1, Math.round(sourceHeight * scale))
-  const canvas = getScanCanvas()
-
-  canvas.width = width
-  canvas.height = height
-
-  const context = canvas.getContext('2d', { willReadFrequently: true })
-  if (!context) return ''
-
-  context.drawImage(imageSource, 0, 0, width, height)
-
-  if ('close' in imageSource) {
-    imageSource.close()
-  }
-
-  const imageData = context.getImageData(0, 0, width, height)
-
-  return decodeQrFromImageData(imageData)
+  return normalizeText(result.data)
 }
-
-export const decodeQrFromImageData = (imageData: ImageData) =>
-  jsQR(imageData.data, imageData.width, imageData.height)?.data || ''
